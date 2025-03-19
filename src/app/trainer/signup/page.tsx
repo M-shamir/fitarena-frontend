@@ -45,11 +45,12 @@ export default function SignUp() {
       setSuccessMessage('');
   
       // Send signup data to backend
-      const response = await fetch('http://localhost/trainer/auth/signup', {
+      const response = await fetch('http://localhost/api/trainer/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials:'include',
         body: JSON.stringify(formData),
       });
   
@@ -57,7 +58,7 @@ export default function SignUp() {
   
       if (response.ok) {
        
-        localStorage.setItem('email', formData.email);
+        
   
       
         setSuccessMessage(result.message || 'Sign up success');

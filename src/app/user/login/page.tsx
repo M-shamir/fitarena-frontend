@@ -128,8 +128,13 @@ export default function Login() {
                 <p className="text-red-500 text-xs mt-1">{formErrors.password}</p>
               )}
             </div>
+            
           </div>
-
+          <div className="text-right mt-2">
+    <Link href="/user/forgot-password" className="text-sm text-[#22b664] hover:text-[#1da058]">
+      Forgot Password?
+    </Link>
+  </div>
           <div>
             <button
               type="submit"

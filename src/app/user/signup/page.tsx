@@ -61,7 +61,6 @@ export default function SignUp() {
       })
       const result = await response.json();
       if (response.ok){
-        localStorage.setItem('email',formData.email)
         SetSuccessMesssage(result.message || 'Sign up success')
         router.push(`/user/otp-confirmation/`);
       }else{

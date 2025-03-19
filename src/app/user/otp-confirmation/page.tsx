@@ -72,11 +72,7 @@ export default function VerifyOTP() {
     setError('');
     setIsVerifying(true);
     const email = localStorage.getItem('email');
-    if (!email) {
-      setError('Email not found in localStorage. Please try again.');
-      setIsVerifying(false);
-      return;
-    }
+    
 
     try {
       const response = await fetch('http://localhost/api/user/auth/verifyotp', {
@@ -93,7 +89,8 @@ export default function VerifyOTP() {
       if (response.ok) {
         router.push('/user/login');
       } else {
-        setError(data.error || 'OTP verification failed.');
+      const errorMessage = data.otp ? data.otp[0] : data.error || 'OTP verification failed.';
+      setError(errorMessage);
       }
     } catch (error) {
       setError('Error during verification. Please try again.');

@@ -45,11 +45,12 @@ export default function SignUp() {
       setSuccessMessage('');
   
      
-      const response = await fetch('http://localhost/stadium_owner/auth/signup', {
+      const response = await fetch('http://localhost/api/stadium_owner/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials:'include',
         body: JSON.stringify(formData),
       });
   
@@ -57,9 +58,7 @@ export default function SignUp() {
   
       if (response.ok) {
         
-        localStorage.setItem('email', formData.email);
-  
-     
+        
         setSuccessMessage(result.message || 'Sign up success');
   
         
