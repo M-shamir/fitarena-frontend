@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'; // Changed from 'next/router' to 'next/navigation'
+import { log } from 'console';
 
 export default function VerifyOTP() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -10,7 +11,7 @@ export default function VerifyOTP() {
   const [timeLeft, setTimeLeft] = useState(30);
   const [canResend, setCanResend] = useState(false);
   
-  const router = useRouter(); // This now uses the App Router's useRouter
+  const router = useRouter(); 
   
   const inputRefs = useRef([]);
 
@@ -80,11 +81,11 @@ export default function VerifyOTP() {
     try {
       const response = await fetch('http://localhost/api/user/auth/verifyotp', {
         method: 'POST',
-        body: JSON.stringify({ otp: otpValue, email: email  }),
+        body: JSON.stringify({ otp: otpValue  }),
         headers: {
           'Content-Type': 'application/json',
         },
-        
+        credentials:"include"
       });
       
       const data = await response.json();
@@ -101,7 +102,7 @@ export default function VerifyOTP() {
     }
   };
   
-  const resendOTP = () => {
+  const resendOTP = async() => {
     if (!canResend) return;
     
     console.log('Resending OTP...');
@@ -111,7 +112,29 @@ export default function VerifyOTP() {
     // Clear current OTP
     setOtp(['', '', '', '', '', '']);
     inputRefs.current[0].focus();
+    try {
+      const response = await fetch('http://localhost/api/user/auth/resendotp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: "include", // Include cookies (email will be sent along with the request)
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        console.log('OTP Resent successfully');
+        // Additional success handling if necessary
+      } else {
+        setError(data.error || 'Failed to resend OTP.');
+      }
+    } catch (error) {
+      setError('Error during OTP resend. Please try again.');
+    }
   };
+
+
 
   return (
     <div className="min-h-screen bg-white flex flex-col justify-center py-12 sm:px-6 lg:px-8">

@@ -6,18 +6,16 @@ import Link from 'next/link';
 import { ToastContainer, toast } from 'react-toastify';
 
 type FormData = {
-  username: string;
-  password: string;
+  email: string;
 }
 
-export default function Login() {
+export default function ForgotPassword() {
   const [formData, setFormData] = useState<FormData>({
-    username: '',
-    password: ''
+    email: ''
   });
   const router = useRouter();
   const [formErrors, setFormErrors] = useState<any>({});
-  const [successMessage, SetSuccessMesssage] = useState<string>('');
+  const [successMessage, setSuccessMessage] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -33,10 +31,10 @@ export default function Login() {
     try {
       // Clear previous error and success messages
       setErrorMessage('');
-      SetSuccessMesssage('');
+      setSuccessMessage('');
       setFormErrors({});
   
-      const response = await fetch('http://localhost/api/user/auth/login', {
+      const response = await fetch('http://localhost/api/user/forgot-password/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -47,15 +45,16 @@ export default function Login() {
       const result = await response.json();
   
       if (response.ok) {
-        // If login is successful, set success message and store token
-        SetSuccessMesssage(result.message || 'Login successful');
-        localStorage.setItem('accessToken', result.accessToken);
+        // If request is successful, set success message
+        setSuccessMessage(result.message || 'Password reset link sent to your email');
   
         // Show success message using Toastify
-        toast.success(result.message || 'Login successful');
+        toast.success(result.message || 'Password reset link sent to your email');
   
-        // Redirect to the home page
-        router.push('/user/home');
+        // Optionally redirect to login page after a delay
+        setTimeout(() => {
+          router.push('/user/login');
+        }, 3000);
       } else {
         // Log the result to debug
         console.log(result);
@@ -67,11 +66,11 @@ export default function Login() {
           });
         } else if (result.errors) {
           // Handle other field-specific errors
-          Object.values(result.errors).forEach((error: string) => {
-            toast.error(error);
+          Object.values(result.errors).forEach((error: unknown) => {
+            toast.error(error as string);
           });
         } else {
-          toast.error(result.message || 'Login failed');
+          toast.error(result.message || 'Failed to send reset link');
         }
       }
     } catch (error) {
@@ -79,53 +78,36 @@ export default function Login() {
       toast.error('An error occurred. Please try again.');
     }
   };
+
   return (
     <div className="min-h-screen bg-white flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
       <Head>
-        <title>Login | FitArena</title>
+        <title>Forgot Password | FitArena</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-[#22b664]">FitArena</h1>
-          <p className="mt-2 text-gray-600">Login to book sports facilities</p>
+          <p className="mt-2 text-gray-600">Reset your password</p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm space-y-4">
             <div>
-              <label htmlFor="username" className="sr-only">Username</label>
+              <label htmlFor="email" className="sr-only">Email</label>
               <input
-                id="username"
-                name="username"
-                type="text"
+                id="email"
+                name="email"
+                type="email"
                 required
                 className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#22b664] focus:border-[#22b664] focus:z-10"
-                placeholder="Username"
-                value={formData.username}
+                placeholder="Email address"
+                value={formData.email}
                 onChange={handleChange}
               />
-              {formErrors.username && (
-                <p className="text-red-500 text-xs mt-1">{formErrors.username}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="password" className="sr-only">Password</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#22b664] focus:border-[#22b664] focus:z-10"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-              {formErrors.password && (
-                <p className="text-red-500 text-xs mt-1">{formErrors.password}</p>
+              {formErrors.email && (
+                <p className="text-red-500 text-xs mt-1">{formErrors.email}</p>
               )}
             </div>
           </div>
@@ -135,18 +117,17 @@ export default function Login() {
               type="submit"
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-[#22b664] hover:bg-[#1da058] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#22b664]"
             >
-              Log In
+              Send Reset Link
             </button>
           </div>
           <div className="flex items-center justify-center">
-  <div className="text-sm text-gray-700"> {/* Light black color */}
-    Don't have an account?{' '}
-    <Link href="/user/signup" className="font-medium text-[#22b664] hover:text-[#1da058]">
-      Sign Up
-    </Link>
-  </div>
-</div>
-
+            <div className="text-sm text-gray-700">
+              Remember your password?{' '}
+              <Link href="/user/login" className="font-medium text-[#22b664] hover:text-[#1da058]">
+                Log In
+              </Link>
+            </div>
+          </div>
         </form>
 
         {successMessage && <div className="text-green-500 mt-4">{successMessage}</div>}
