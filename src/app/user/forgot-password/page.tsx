@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ToastContainer, toast } from 'react-toastify';
+import api from '@/utils/api';
 
 type FormData = {
   email: string;
@@ -29,55 +30,42 @@ export default function ForgotPassword() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      // Clear previous error and success messages
       setErrorMessage('');
       setSuccessMessage('');
       setFormErrors({});
   
-      const response = await fetch('http://localhost/api/user/forgot-password/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await api.post('/user/forgot-password/', formData);
   
-      const result = await response.json();
+      const result = response.data;
   
-      if (response.ok) {
-        // If request is successful, set success message
-        setSuccessMessage(result.message || 'Password reset link sent to your email');
+      setSuccessMessage(result.message || 'Password reset link sent to your email');
+      toast.success(result.message || 'Password reset link sent to your email');
   
-        // Show success message using Toastify
-        toast.success(result.message || 'Password reset link sent to your email');
+      setTimeout(() => {
+        router.push('/user/login');
+      }, 3000);
+    } catch (error: any) {
+      console.log(error);
   
-        // Optionally redirect to login page after a delay
-        setTimeout(() => {
-          router.push('/user/login');
-        }, 3000);
-      } else {
-        // Log the result to debug
-        console.log(result);
+      if (error.response) {
+        const result = error.response.data;
   
-        // Handle backend-specific errors and display them
         if (result.non_field_errors) {
-          result.non_field_errors.forEach((error: string) => {
-            toast.error(error);  // Display each backend error in a separate Toast
-          });
+          result.non_field_errors.forEach((err: string) => toast.error(err));
         } else if (result.errors) {
-          // Handle other field-specific errors
-          Object.values(result.errors).forEach((error: unknown) => {
-            toast.error(error as string);
-          });
+          Object.values(result.errors).forEach((err: unknown) =>
+            toast.error(err as string)
+          );
         } else {
           toast.error(result.message || 'Failed to send reset link');
         }
+      } else {
+        setErrorMessage('An error occurred. Please try again.');
+        toast.error('An error occurred. Please try again.');
       }
-    } catch (error) {
-      setErrorMessage('An error occurred. Please try again.');
-      toast.error('An error occurred. Please try again.');
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-white flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">

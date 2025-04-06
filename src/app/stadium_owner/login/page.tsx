@@ -4,6 +4,8 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { z } from "zod";
 import { useRouter } from 'next/navigation';
+import { loginStadiumOwner } from '@/services/loginService';
+import { handleLogin } from '@/utils/handleLogin';
 
 
 const loginSchema = z.object({
@@ -36,51 +38,18 @@ export default function TrainerLogin() {
   };
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setFormErrors({});
-    setErrorMessage('');
-    setSuccessMessage('');
-    
-    try {
-
-      loginSchema.parse(formData);
-      setIsLoading(true);
-
-
-      const response = await fetch('http://localhost/stadium_owner/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      
-      const result = await response.json();
-      
-      if (response.ok) {
-        setSuccessMessage(result.message || 'Login successful');
-
-        if (result.token) {
-          localStorage.setItem('token', result.token);
-        }
- 
-        router.push('/stadium_owner/dashboard');
-      } else {
-        setErrorMessage(result.message || 'Invalid username or password');
-      }
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const errors: { [key: string]: string } = {};
-        error.errors.forEach((err) => {
-          errors[err.path[0]] = err.message;
-        });
-        setFormErrors(errors);
-      } else {
-        setErrorMessage('An error occurred during login');
-      }
-    } finally {
-      setIsLoading(false);
-    }
+    handleLogin({
+      e,
+      formData,
+      loginSchema,
+      setFormErrors,
+      setErrorMessage,
+      setSuccessMessage,
+      setIsLoading,
+      loginFn:loginStadiumOwner,
+      redirectPath:'/stadium_owner/dashboard',
+      router
+      })
   };
 
   return (

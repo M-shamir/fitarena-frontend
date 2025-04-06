@@ -56,7 +56,7 @@ export default function StadiumOwnerDashboard() {
     // Clear localStorage or session
     localStorage.removeItem('token');
     // Redirect to login
-    router.push('/stadium_onwner/login');
+    router.push('/trainer/login');
   };
 
   return (

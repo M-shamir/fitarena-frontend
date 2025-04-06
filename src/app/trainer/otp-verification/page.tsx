@@ -2,6 +2,8 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import api from '@/utils/api';
+import { verifyOTPService,resendOTPService } from '@/services/otpService';
 
 export default function VerifyOTP() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -60,82 +62,46 @@ export default function VerifyOTP() {
     }
   };
   
-  const verifyOTP = async () => {
+const verifyOTP = async () => {
     const otpValue = otp.join('');
-   
+  
     if (otpValue.length !== 6) {
       setError('Please enter all 6 digits');
       return;
     }
-   
+  
     setError('');
     setIsVerifying(true);
-    const email = localStorage.getItem('email');
-    
-
-    try {
-      const response = await fetch('http://localhost/api/trainer/auth/verifyotp', {
-        method: 'POST',
-        body: JSON.stringify({ otp: otpValue  }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials:"include"
-      });
-      
-      const data = await response.json();
   
-      if (response.ok) {
-        router.push('/trainer/login');
-      } else {
-      const errorMessage = data.otp ? data.otp[0] : data.error || 'OTP verification failed.';
-      setError(errorMessage);
-      }
-    } catch (error) {
-      setError('Error during verification. Please try again.');
-    } finally {
-      setIsVerifying(false);
+    const role = 'trainer'; // or 'user'
+  
+    const result = await verifyOTPService(role, otpValue);
+    if (result.success) {
+      router.push(`/${role}/login`);
+    } else {
+      setError(result.message);
     }
+  
+    setIsVerifying(false);
   };
   
   const resendOTP = async () => {
     if (!canResend) return;
-    
+  
     setTimeLeft(30);
     setCanResend(false);
-    
-    // Clear current OTP
     setOtp(['', '', '', '', '', '']);
     inputRefs.current[0].focus();
-    
-    const email = localStorage.getItem('email');
-    if (!email) {
-      setError('Email not found. Please return to sign up.');
-      return;
-    }
-    
-    try {
-      // Add actual resend OTP implementation here
-      console.log('Resending OTP to:', email);
-      // Example API call (uncomment and adjust as needed)
-      /*
-      const response = await fetch('http://localhost/trainer/auth/resendotp', {
-        method: 'POST',
-        body: JSON.stringify({ email }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      if (!response.ok) {
-        const data = await response.json();
-        setError(data.error || 'Failed to resend OTP.');
-      }
-      */
-    } catch (error) {
-      setError('Error resending OTP. Please try again.');
+  
+    const role = 'trainer'; // or 'user'
+  
+    const result = await resendOTPService(role);
+    if (!result.success) {
+      setError(result.message);
     }
   };
+
+  
 
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">

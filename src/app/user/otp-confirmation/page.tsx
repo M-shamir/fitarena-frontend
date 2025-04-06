@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation'; // Changed from 'next/router' to 'next/navigation'
 import { log } from 'console';
 
+import { verifyOTPService,resendOTPService } from '@/services/otpService';
+
 export default function VerifyOTP() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [isVerifying, setIsVerifying] = useState(false);
@@ -62,74 +64,44 @@ export default function VerifyOTP() {
   };
   
   const verifyOTP = async () => {
-    const otpValue = otp.join('');
-   
-    if (otpValue.length !== 6) {
-      setError('Please enter all 6 digits');
-      return;
-    }
-   
-    setError('');
-    setIsVerifying(true);
-    const email = localStorage.getItem('email');
+      const otpValue = otp.join('');
     
-
-    try {
-      const response = await fetch('http://localhost/api/user/auth/verifyotp', {
-        method: 'POST',
-        body: JSON.stringify({ otp: otpValue  }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials:"include"
-      });
-      
-      const data = await response.json();
-  
-      if (response.ok) {
-        router.push('/user/login');
-      } else {
-      const errorMessage = data.otp ? data.otp[0] : data.error || 'OTP verification failed.';
-      setError(errorMessage);
+      if (otpValue.length !== 6) {
+        setError('Please enter all 6 digits');
+        return;
       }
-    } catch (error) {
-      setError('Error during verification. Please try again.');
-    } finally {
+    
+      setError('');
+      setIsVerifying(true);
+    
+      const role = 'user'; // or 'user'
+    
+      const result = await verifyOTPService(role, otpValue);
+      if (result.success) {
+        router.push(`/${role}/login`);
+      } else {
+        setError(result.message);
+      }
+    
       setIsVerifying(false);
-    }
-  };
-  
-  const resendOTP = async() => {
-    if (!canResend) return;
+    };
     
-    console.log('Resending OTP...');
-    setTimeLeft(30);
-    setCanResend(false);
+    const resendOTP = async () => {
+      if (!canResend) return;
     
-    // Clear current OTP
-    setOtp(['', '', '', '', '', '']);
-    inputRefs.current[0].focus();
-    try {
-      const response = await fetch('http://localhost/api/user/auth/resendotp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: "include", // Include cookies (email will be sent along with the request)
-      });
-  
-      const data = await response.json();
-  
-      if (response.ok) {
-        console.log('OTP Resent successfully');
-        // Additional success handling if necessary
-      } else {
-        setError(data.error || 'Failed to resend OTP.');
+      setTimeLeft(30);
+      setCanResend(false);
+      setOtp(['', '', '', '', '', '']);
+      inputRefs.current[0].focus();
+    
+      const role = 'user'; // or 'user'
+    
+      const result = await resendOTPService(role);
+      if (!result.success) {
+        setError(result.message);
       }
-    } catch (error) {
-      setError('Error during OTP resend. Please try again.');
-    }
-  };
+    };
+  
 
 
 

@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { verifyOTPService,resendOTPService } from '@/services/otpService';
 
 export default function VerifyOTP() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -25,7 +26,7 @@ export default function VerifyOTP() {
   }, [timeLeft]);
   
  
-  const handleChange = (index, value) => {
+  const handleChange = (index:any, value:any) => {
     if (value.match(/^[0-9]$/) || value === '') {
       const newOtp = [...otp];
       newOtp[index] = value;
@@ -39,14 +40,14 @@ export default function VerifyOTP() {
   };
   
 
-  const handleKeyDown = (index, e) => {
+  const handleKeyDown = (index:any, e) => {
     if (e.key === 'Backspace' && otp[index] === '' && index > 0) {
       inputRefs.current[index - 1].focus();
     }
   };
   
   
-  const handlePaste = (e) => {
+  const handlePaste = (e:any) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData('text/plain').trim();
     
@@ -60,78 +61,44 @@ export default function VerifyOTP() {
   };
   
   const verifyOTP = async () => {
-    const otpValue = otp.join('');
-   
-    if (otpValue.length !== 6) {
-      setError('Please enter all 6 digits');
-      return;
-    }
-   
-    setError('');
-    setIsVerifying(true);
-    
-    try {
-      const response = await fetch('http://localhost/api/stadium_owner/auth/verifyotp', {
-        method: 'POST',
-        body: JSON.stringify({ otp: otpValue  }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials:"include"
-      });
-      
-      const data = await response.json();
-  
-      if (response.ok) {
-        router.push('/stadium_owner/login');
-      } else {
-      const errorMessage = data.otp ? data.otp[0] : data.error || 'OTP verification failed.';
-      setError(errorMessage);
-      }
-    } catch (error) {
-      setError('Error during verification. Please try again.');
-    } finally {
-      setIsVerifying(false);
-    }
-  };
-  
-  const resendOTP = async () => {
-    if (!canResend) return;
-    
-    setTimeLeft(30);
-    setCanResend(false);
-    
-    // Clear current OTP
-    setOtp(['', '', '', '', '', '']);
-    inputRefs.current[0].focus();
-    
-    const email = localStorage.getItem('email');
-    if (!email) {
-      setError('Email not found. Please return to sign up.');
-      return;
-    }
-    
-    try {
-      const response = await fetch('http://localhost/api/stadium_owner/auth/resendotp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: "include", // Include cookies (email will be sent along with the request)
-      });
-  
-      const data = await response.json();
-  
-      if (response.ok) {
-        console.log('OTP Resent successfully');
-        // Additional success handling if necessary
-      } else {
-        setError(data.error || 'Failed to resend OTP.');
-      }
-    } catch (error) {
-      setError('Error during OTP resend. Please try again.');
-    }
-  };
+       const otpValue = otp.join('');
+     
+       if (otpValue.length !== 6) {
+         setError('Please enter all 6 digits');
+         return;
+       }
+     
+       setError('');
+       setIsVerifying(true);
+     
+       const role = 'stadium_owner'; 
+     
+       const result = await verifyOTPService(role, otpValue);
+       if (result.success) {
+         router.push(`/${role}/login`);
+       } else {
+         setError(result.message);
+       }
+     
+       setIsVerifying(false);
+     };
+     
+     const resendOTP = async () => {
+       if (!canResend) return;
+     
+       setTimeLeft(30);
+       setCanResend(false);
+       setOtp(['', '', '', '', '', '']);
+       inputRefs.current[0].focus();
+     
+       const role = 'stadium_owner'; // or 'user'
+     
+       const result = await resendOTPService(role);
+       if (!result.success) {
+         setError(result.message);
+       }
+     };
+
 
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">

@@ -1,25 +1,31 @@
-"use client";
+'use client';
 import { useState, ChangeEvent, FormEvent } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ToastContainer, toast } from 'react-toastify';
+import { z } from 'zod';
+import { loginUser } from '@/services/loginService';
+import { handleLogin } from '@/utils/handleLogin';
+// Define Zod schema
+const loginSchema = z.object({
+  username: z.string().min(1, 'Username is required'),
+  password: z.string().min(1, 'Password is required'),
+});
 
-type FormData = {
-  username: string;
-  password: string;
-}
+type FormData = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const [formData, setFormData] = useState<FormData>({
     username: '',
-    password: ''
+    password: '',
   });
   const router = useRouter();
   const [formErrors, setFormErrors] = useState<any>({});
-  const [successMessage, SetSuccessMesssage] = useState<string>('');
+  const [successMessage, setSuccessMessage] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -27,58 +33,23 @@ export default function Login() {
       [name]: value,
     }));
   };
-
+  
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    try {
-      // Clear previous error and success messages
-      setErrorMessage('');
-      SetSuccessMesssage('');
-      setFormErrors({});
-  
-      const response = await fetch('http://localhost/api/user/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-  
-      const result = await response.json();
-  
-      if (response.ok) {
-        // If login is successful, set success message and store token
-        SetSuccessMesssage(result.message || 'Login successful');
-        localStorage.setItem('accessToken', result.accessToken);
-  
-        // Show success message using Toastify
-        toast.success(result.message || 'Login successful');
-  
-        // Redirect to the home page
-        router.push('/user/home');
-      } else {
-        // Log the result to debug
-        console.log(result);
-  
-        // Handle backend-specific errors and display them
-        if (result.non_field_errors) {
-          result.non_field_errors.forEach((error: string) => {
-            toast.error(error);  // Display each backend error in a separate Toast
-          });
-        } else if (result.errors) {
-          // Handle other field-specific errors
-          Object.values(result.errors).forEach((error: string) => {
-            toast.error(error);
-          });
-        } else {
-          toast.error(result.message || 'Login failed');
-        }
-      }
-    } catch (error) {
-      setErrorMessage('An error occurred. Please try again.');
-      toast.error('An error occurred. Please try again.');
-    }
+    handleLogin({
+    e,
+    formData,
+    loginSchema,
+    setFormErrors,
+    setErrorMessage,
+    setSuccessMessage,
+    setIsLoading,
+    loginFn:loginUser,
+    redirectPath:'home',
+    router
+    })
   };
+  
+
   return (
     <div className="min-h-screen bg-white flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
       <Head>
@@ -100,11 +71,10 @@ export default function Login() {
                 id="username"
                 name="username"
                 type="text"
-                required
-                className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#22b664] focus:border-[#22b664] focus:z-10"
-                placeholder="Username"
                 value={formData.username}
                 onChange={handleChange}
+                className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#22b664] focus:border-[#22b664]"
+                placeholder="Username"
               />
               {formErrors.username && (
                 <p className="text-red-500 text-xs mt-1">{formErrors.username}</p>
@@ -117,24 +87,23 @@ export default function Login() {
                 id="password"
                 name="password"
                 type="password"
-                autoComplete="current-password"
-                required
-                className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#22b664] focus:border-[#22b664] focus:z-10"
-                placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
+                className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#22b664] focus:border-[#22b664]"
+                placeholder="Password"
               />
               {formErrors.password && (
                 <p className="text-red-500 text-xs mt-1">{formErrors.password}</p>
               )}
             </div>
-            
           </div>
+
           <div className="text-right mt-2">
-    <Link href="/user/forgot-password" className="text-sm text-[#22b664] hover:text-[#1da058]">
-      Forgot Password?
-    </Link>
-  </div>
+            <Link href="/user/forgot-password" className="text-sm text-[#22b664] hover:text-[#1da058]">
+              Forgot Password?
+            </Link>
+          </div>
+
           <div>
             <button
               type="submit"
@@ -143,22 +112,21 @@ export default function Login() {
               Log In
             </button>
           </div>
-          <div className="flex items-center justify-center">
-  <div className="text-sm text-gray-700"> {/* Light black color */}
-    Don't have an account?{' '}
-    <Link href="/user/signup" className="font-medium text-[#22b664] hover:text-[#1da058]">
-      Sign Up
-    </Link>
-  </div>
-</div>
 
+          <div className="flex items-center justify-center">
+            <div className="text-sm text-gray-700">
+              Don&apos;t have an account?{' '}
+              <Link href="/user/signup" className="font-medium text-[#22b664] hover:text-[#1da058]">
+                Sign Up
+              </Link>
+            </div>
+          </div>
         </form>
 
         {successMessage && <div className="text-green-500 mt-4">{successMessage}</div>}
         {errorMessage && <div className="text-red-500 mt-4">{errorMessage}</div>}
       </div>
 
-      {/* Add ToastContainer for Toastify */}
       <ToastContainer />
     </div>
   );

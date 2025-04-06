@@ -1,12 +1,13 @@
 "use client";
 import { useState, ChangeEvent, FormEvent } from 'react';
-import Head from 'next/head';
+import api  from '@/utils/api'
 import Image from 'next/image';
 import Link from 'next/link';
 import { signupSchema } from '@/validation/userValidation';
 import { z } from "zod";
 import { useRouter } from 'next/navigation'
 import { ToastContainer, toast } from 'react-toastify';
+import Head from 'next/head';
 
 
 type FormData = {
@@ -42,48 +43,33 @@ export default function SignUp() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+  
     try {
-      
       signupSchema.parse(formData);
-      setErrorMessage('')
-      SetSuccessMesssage('')
-
-      const response =  await fetch('http://localhost/api/user/auth/signup',{
-        method:'POST',
-        headers:{
-            'Content-Type': 'application/json',
-            
-        },
-        credentials:'include',
-
-        
-        body: JSON.stringify(formData),
-      })
-      const result = await response.json();
-      if (response.ok){
-        SetSuccessMesssage(result.message || 'Sign up success')
-        router.push(`/user/otp-confirmation/`);
-      }else{
-        
-        const backendError = result.email ? result.email[0] : 'Sign-up failed';
+      setErrorMessage('');
+      SetSuccessMesssage('');
+  
+      const response = await api.post('user/auth/signup', formData); 
+      const result = response.data;
+  
+      SetSuccessMesssage(result.message || 'Sign up success');
+      router.push('/user/otp-confirmation/');
+      
+    } catch (error: any) {
+      if (error.response) {
+        const result = error.response.data;
+        const backendError = result.email ? result.email[0] : result.message || 'Sign-up failed';
         setErrorMessage(backendError);
         toast.error(backendError);
-
-      }
-    } catch (error) {
-      if (error instanceof z.ZodError) {
+      } else if (error instanceof z.ZodError) {
         const errors: { [key: string]: string } = {};
-        
-
         error.errors.forEach((err) => {
           errors[err.path[0]] = err.message;
         });
-        
-
         setFormErrors(errors);
-        Object.values(errors).forEach((errMsg) => {
-          toast.error(errMsg);
-        });
+        Object.values(errors).forEach((errMsg) => toast.error(errMsg));
+      } else {
+        toast.error('An unexpected error occurred.');
       }
     }
   };

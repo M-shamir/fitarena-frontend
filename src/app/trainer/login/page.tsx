@@ -1,9 +1,11 @@
-"use client";
+"use client"
 import { useState, ChangeEvent, FormEvent } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { z } from "zod";
 import { useRouter } from 'next/navigation';
+import { loginTrainer } from '@/services/loginService';
+import { handleLogin } from '@/utils/handleLogin';
 
 // Create a schema for login validation
 const loginSchema = z.object({
@@ -36,51 +38,18 @@ export default function TrainerLogin() {
   };
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setFormErrors({});
-    setErrorMessage('');
-    setSuccessMessage('');
-    
-    try {
-      // Validate form data
-      loginSchema.parse(formData);
-      setIsLoading(true);
-
-      // Send login request
-      const response = await fetch('http://localhost/trainer/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      
-      const result = await response.json();
-      
-      if (response.ok) {
-        setSuccessMessage(result.message || 'Login successful');
-        // Store any tokens or user info if needed
-        if (result.token) {
-          localStorage.setItem('token', result.token);
-        }
-        // Redirect to dashboard or appropriate page
-        router.push('/trainer/dashboard');
-      } else {
-        setErrorMessage(result.message || 'Invalid username or password');
-      }
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const errors: { [key: string]: string } = {};
-        error.errors.forEach((err) => {
-          errors[err.path[0]] = err.message;
-        });
-        setFormErrors(errors);
-      } else {
-        setErrorMessage('An error occurred during login');
-      }
-    } finally {
-      setIsLoading(false);
-    }
+    handleLogin({
+        e,
+        formData,
+        loginSchema,
+        setFormErrors,
+        setErrorMessage,
+        setSuccessMessage,
+        setIsLoading,
+        loginFn:loginTrainer,
+        redirectPath:'/trainer/dashboard',
+        router
+        })
   };
 
   return (

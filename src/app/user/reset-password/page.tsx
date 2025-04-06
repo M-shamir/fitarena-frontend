@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
+import api from '@/utils/api';
 
 export default function ResetPassword() {
   const searchParams = useSearchParams();
@@ -21,38 +22,35 @@ export default function ResetPassword() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (newPassword !== confirmPassword) {
       toast.error("Passwords do not match!");
       return;
     }
-
+  
     setLoading(true);
+  
     try {
-      const response = await fetch("http://localhost/api/user/reset-password/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token, new_password: newPassword }),
+      const response = await api.post("/user/reset-password/", {
+        token,
+        new_password: newPassword,
       });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        toast.success("Password reset successful. Redirecting to login...");
-        setTimeout(() => {
-          router.push("/user/login");
-        }, 3000);
+  
+      toast.success("Password reset successful. Redirecting to login...");
+      setTimeout(() => {
+        router.push("/user/login");
+      }, 3000);
+    } catch (error: any) {
+      if (error.response) {
+        toast.error(error.response.data.error || "Failed to reset password.");
       } else {
-        toast.error(result.error || "Failed to reset password.");
+        toast.error("Something went wrong. Please try again.");
       }
-    } catch (error) {
-      toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
