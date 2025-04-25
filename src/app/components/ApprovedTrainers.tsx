@@ -41,8 +41,12 @@ const ApprovedTrainers: React.FC = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      // Handle the response format according to your data structure
-      setTrainers(response.data.approved_trainers || []);
+
+      // Sort the trainers by ID in ascending order
+      const sortedTrainers = response.data.approved_trainers || [];
+      sortedTrainers.sort((a: Trainer, b: Trainer) => a.id - b.id);
+      
+      setTrainers(sortedTrainers);
     } catch (err) {
       setError("Failed to fetch approved trainers");
     } finally {
@@ -152,7 +156,7 @@ const ApprovedTrainers: React.FC = () => {
                           onClick={() => revokeApproval(trainer.id)}
                           className="px-3 py-1 text-xs font-semibold rounded bg-red-600 text-white hover:bg-red-700 transition-colors"
                         >
-                          Revoke
+                          Unlist
                         </button>
                       </div>
                     </td>

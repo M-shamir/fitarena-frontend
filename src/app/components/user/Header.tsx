@@ -1,3 +1,4 @@
+"use client"
 import Link from 'next/link';
 import { Montserrat } from 'next/font/google';
 import { motion } from 'framer-motion';
