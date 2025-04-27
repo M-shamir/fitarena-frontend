@@ -1,139 +1,88 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/navigation';
+import Sidebar from '@/app/components/stadium_owner/Sidebar';
+// import DashboardOverview from '@/app/components/owner/DashboardOverview';
+// import AddStadiumForm from '@/app/components/owner/AddStadiumForm';
+// import ViewStadiums from '@/app/components/owner/ViewStadiums';
+// import EditStadium from '@/app/components/owner/EditStadium';
+// import StadiumVerification from '@/app/components/owner/StadiumVerification';
+// import AddSlotForm from '@/app/components/owner/AddSlotForm';
+// import ManageSlots from '@/app/components/owner/ManageSlots';
+// import BookingRequests from '@/app/components/owner/BookingRequests';
+// import BookingHistory from '@/app/components/owner/BookingHistory';
+// import PaymentStatus from '@/app/components/owner/PaymentStatus';
+// import UpcomingBookings from '@/app/components/owner/UpcomingBookings';
+// import ProfileSettings from '@/app/components/owner/ProfileSettings';
+// import SupportChat from '@/app/components/owner/SupportChat';
+// import RejectionReasons from '@/app/components/owner/RejectionReasons';
+// import RaiseComplaint from '@/app/components/owner/RaiseComplaint';
+// import NotificationSettings from '@/app/components/owner/NotificationSettings';
 
-
-const mockClients = [
-  { id: 1, name: "Alex Johnson", plan: "Weight Loss", nextSession: "2025-03-14", progress: 73 },
-  { id: 2, name: "Jamie Smith", plan: "Muscle Building", nextSession: "2025-03-13", progress: 45 },
-  { id: 3, name: "Taylor Wilson", plan: "Endurance", nextSession: "2025-03-15", progress: 89 },
-  { id: 4, name: "Casey Brown", plan: "Flexibility", nextSession: "2025-03-16", progress: 62 }
-];
-
-const mockStats = {
-  totalClients: 12,
-  activeClients: 8,
-  completedSessions: 24,
-  upcomingSessions: 5,
-  revenue: 1850
-};
-
-export default function Dashboard() {
-  const [clients, setClients] = useState([]);
-  const [stats, setStats] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('overview');
+export default function OwnerDashboard() {
+  const [activeView, setActiveView] = useState('dashboardOverview');
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        
-        setTimeout(() => {
-          setClients(mockClients);
-          setStats(mockStats);
-          setIsLoading(false);
-        }, 1000);
-      } catch (error) {
-        console.error("Failed to fetch dashboard data", error);
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    router.push('/trainer/login');
-  };
-
   return (
-    <div className="min-h-screen bg-gray-900">
-      {/* Navbar */}
-      <nav className="bg-gray-800 border-b border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <h1 className="text-2xl font-bold text-[#22b664]">FitArena</h1>
-            <div className="flex space-x-4">
-              {['overview', 'clients', 'sessions', 'programs'].map(tab => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-3 py-2 rounded-md text-sm font-medium ${
-                    activeTab === tab ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                  }`}
-                >
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                </button>
-              ))}
-              <button
-                onClick={handleLogout}
-                className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-              >
-                Sign out
-              </button>
+    <div className="flex h-screen bg-gray-900 text-white overflow-hidden">
+      <Head>
+        <title>Stadium Owner Dashboard | FitArena</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      <Sidebar activeView={activeView} setActiveView={setActiveView} />
+
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <header className="bg-gray-800 border-b border-gray-700 p-4 flex justify-between items-center">
+          <h1 className="text-xl font-semibold">Stadium Owner Dashboard</h1>
+          <div className="flex items-center space-x-4">
+            <button className="p-2 rounded-full hover:bg-gray-700 transition duration-200">
+              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+              </svg>
+            </button>
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 rounded-full bg-[#22b664]/20 flex items-center justify-center">
+                <svg className="w-5 h-5 text-[#22b664]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <span className="text-sm">Owner Name</span>
             </div>
           </div>
-        </div>
-      </nav>
+        </header>
 
-      {/* Main Content */}
-      <div className="py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-2xl font-semibold text-white mb-4">Trainer Dashboard</h1>
+        <main className="flex-1 overflow-y-auto p-6 bg-gray-900">
+          {/* {activeView === 'dashboardOverview' && <DashboardOverview />} */}
+          
 
-        {isLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-[#22b664]"></div>
-          </div>
-        ) : (
-          <>
-            {activeTab === 'overview' && (
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
-                {Object.entries(stats).map(([key, value]) => (
-                  <div key={key} className="bg-gray-800 shadow rounded-lg border border-gray-700">
-                    <div className="px-4 py-5 sm:p-6">
-                      <dl>
-                        <dt className="text-sm font-medium text-gray-400 truncate">{key.replace(/([A-Z])/g, ' $1')}</dt>
-                        <dd className="mt-1 text-3xl font-semibold text-white">{value}</dd>
-                      </dl>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+          {/* {activeView === 'addStadium' && <AddStadiumForm setActiveView={setActiveView} />}
+          {activeView === 'viewStadiums' && <ViewStadiums />}
+          {activeView === 'editStadium' && <EditStadium />}
+          {activeView === 'stadiumVerification' && <StadiumVerification />} */}
+          
+          
+          {/* {activeView === 'addSlot' && <AddSlotForm />}
+          {activeView === 'manageSlots' && <ManageSlots />}
+          {activeView === 'slotBookingSummary' && <SlotBookingSummary />}
+          
 
-            {activeTab === 'clients' && (
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-700">
-                  <thead className="bg-gray-800">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Name</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Plan</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Next Session</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Progress</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-gray-900 divide-y divide-gray-700">
-                    {clients.map((client) => (
-                      <tr key={client.id}>
-                        <td className="px-6 py-4 whitespace-nowrap text-white">{client.name}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-gray-300">{client.plan}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-gray-300">{client.nextSession}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-gray-300">{client.progress}%</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-
-            {activeTab !== 'overview' && activeTab !== 'clients' && (
-              <div className="text-gray-400 text-center py-10">
-                <p className="text-lg">No data available for "{activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}" yet.</p>
-              </div>
-            )}
-          </>
-        )}
+          {activeView === 'bookingRequests' && <BookingRequests />}
+          {activeView === 'bookingHistory' && <BookingHistory />}
+          {activeView === 'paymentStatus' && <PaymentStatus />}
+          {activeView === 'upcomingBookings' && <UpcomingBookings />}
+          
+      
+          {activeView === 'profileSettings' && <ProfileSettings />}
+          
+          {activeView === 'supportChat' && <SupportChat />}
+          {activeView === 'rejectionReasons' && <RejectionReasons />}
+          {activeView === 'raiseComplaint' && <RaiseComplaint />}
+          
+          
+          {activeView === 'notificationSettings' && <NotificationSettings />} */}
+        </main>
       </div>
     </div>
   );
