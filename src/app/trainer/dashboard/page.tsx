@@ -7,6 +7,7 @@ import DashboardOverview from '@/app/components/trainer/DashboardOverview';
 import AddSessionForm from '@/app/components/trainer/AddSessionForm';
 import PendingApprovals from '@/app/components/trainer/PendingApprovals';
 import ApprovedSessions from '@/app/components/trainer/ApprovedSessions';
+import TrainerProfileView from '@/app/components/trainer/TrainerProfileView';
 
 export default function TrainerDashboard() {
   const [activeView, setActiveView] = useState('dashboardOverview');
@@ -46,6 +47,8 @@ export default function TrainerDashboard() {
           {activeView === 'addSession' && <AddSessionForm setActiveView={setActiveView} />}
           {activeView === 'pendingApprovals' && <PendingApprovals />}
           {activeView === 'approvedSessions' && <ApprovedSessions />}
+          {activeView === 'viewProfile' && <TrainerProfileView/>}
+          
         </main>
       </div>
     </div>
