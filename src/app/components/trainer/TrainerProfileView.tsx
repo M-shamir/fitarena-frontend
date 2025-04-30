@@ -3,16 +3,17 @@ import { useEffect, useState } from 'react';
 import api from '@/utils/api';
 
 interface TrainerProfile {
-    username: string;
-    email: string;
-    profile_photo: string;
-    phone_number: string;
-    gender: string;
-    trainer_type: number[];
-    certifications: string;
-    languages_spoken: number[];
-    training_photo: string | null;
-  }
+  username: string;
+  email: string;
+  profile_photo: string;
+  phone_number: string;
+  gender: string;
+  trainer_type_names: string[]; 
+  certifications: string;
+  languages_spoken_names: string[]; 
+  training_photo: string | null;
+}
+
   
 
 export default function TrainerProfileView() {
@@ -102,7 +103,7 @@ export default function TrainerProfileView() {
           <div className="bg-gray-700/50 rounded-lg p-4">
             <h3 className="text-lg font-semibold text-white mb-3">Specializations</h3>
             <div className="flex flex-wrap gap-2">
-              {profile.trainer_type.map((type, index) => (
+            {profile.trainer_type_names.map((type, index) => (
                 <span 
                   key={index}
                   className="px-3 py-1 rounded-full text-xs font-medium bg-[#22b664]/20 text-[#22b664]"
@@ -117,7 +118,7 @@ export default function TrainerProfileView() {
           <div className="bg-gray-700/50 rounded-lg p-4">
             <h3 className="text-lg font-semibold text-white mb-3">Languages Spoken</h3>
             <div className="flex flex-wrap gap-2">
-              {profile.languages_spoken.map((language, index) => (
+            {profile.languages_spoken_names.map((language, index)  => (
                 <span 
                   key={index}
                   className="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400"

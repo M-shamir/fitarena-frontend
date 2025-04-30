@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Head from 'next/head';
 import Link from 'next/link';
-import DashboardContent from '@/app/stadium_owner/dashboard/page';
+import DashboardContent from '@/app/components/DashboardContent';
 import UserManagementContent from '@/app/components/UserManagementContent';
 import PendingTrainers from '@/app/components/PendingTrainers';
 import ApprovedTrainers from '@/app/components/ApprovedTrainers';

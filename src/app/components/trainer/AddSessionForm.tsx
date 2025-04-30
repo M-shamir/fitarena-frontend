@@ -103,7 +103,7 @@ export default function AddSessionForm({ setActiveView }: AddSessionFormProps) {
       price: formData.price,
     };
   
-    // Construct the course_variant object
+    
     const courseVariant = {
       start_time: formData.start_time,
       end_time: formData.end_time,
@@ -113,7 +113,7 @@ export default function AddSessionForm({ setActiveView }: AddSessionFormProps) {
     formDataToSend.append('base_info', JSON.stringify(baseInfo));
     formDataToSend.append('course_variant', JSON.stringify(courseVariant));
   
-    // Append thumbnail separately
+   
     if (formData.thumbnail) {
       formDataToSend.append('thumbnail', formData.thumbnail);
     }
@@ -161,7 +161,7 @@ export default function AddSessionForm({ setActiveView }: AddSessionFormProps) {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Thumbnail Upload */}
+        
         <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-300">Course Thumbnail</label>
           <div className="flex items-center space-x-4">

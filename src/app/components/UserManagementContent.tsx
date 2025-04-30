@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "@/utils/api"; 
 
 interface User {
   id: number;
@@ -9,7 +9,7 @@ interface User {
   profile_photo: string;
   is_staff: boolean;
   is_verified: boolean;
-  is_active: boolean; // Updated: use is_active instead of is_blocked
+  is_active: boolean;
 }
 
 const UserManagementContent: React.FC = () => {
@@ -22,14 +22,8 @@ const UserManagementContent: React.FC = () => {
   }, []);
 
   const fetchUsers = async () => {
-    const token = localStorage.getItem("adminToken"); // Get token from localStorage
-
     try {
-      const response = await axios.get("http://localhost/api/admin-api/users/", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api.get("/admin-api/users/");
       setUsers(response.data.users || []);
     } catch (err) {
       setError("Failed to fetch users");
@@ -38,21 +32,10 @@ const UserManagementContent: React.FC = () => {
     }
   };
 
-  // Block/Unblock User
   const toggleUserStatus = async (userId: number) => {
-    const token = localStorage.getItem("adminToken");
     try {
-      await axios.patch(
-        `http://localhost/api/admin-api/users/${userId}/block-unblock/`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await api.patch(`/admin-api/users/${userId}/block-unblock/`);
 
-      // Update UI after success
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
           user.id === userId ? { ...user, is_active: !user.is_active } : user

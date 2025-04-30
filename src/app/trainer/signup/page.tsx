@@ -69,7 +69,7 @@ const trainingPhotoInputRef = useRef<HTMLInputElement>(null);
         setTrainerTypes(response.data);
       } catch (error) {
         console.error('Error fetching trainer types:', error);
-        setFormErrors(prev => ({ ...prev, trainer_type: 'Failed to load trainer types' }));
+        setFormErrors((prev: any) => ({ ...prev, trainer_type: 'Failed to load trainer types' }));
       } finally {
         setIsLoadingTrainerTypes(false);
       }
@@ -82,7 +82,7 @@ const trainingPhotoInputRef = useRef<HTMLInputElement>(null);
         setLanguages(response.data);
       } catch (error) {
         console.error('Error fetching languages:', error);
-        setFormErrors(prev => ({ ...prev, languages_spoken: 'Failed to load languages' }));
+        setFormErrors((prev: any) => ({ ...prev, languages_spoken: 'Failed to load languages' }));
       } finally {
         setIsLoadingLanguages(false);
       }

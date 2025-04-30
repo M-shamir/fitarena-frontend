@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "@/utils/api"; // <-- Replaces axios import
 
 interface Trainer {
   id: number;
@@ -19,15 +19,8 @@ const PendingTrainers: React.FC = () => {
   }, []);
 
   const fetchPendingTrainers = async () => {
-    const token = localStorage.getItem("adminToken");
-
     try {
-      const response = await axios.get("http://localhost/api/admin-api/trainers/pending/", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      // Handle the response format according to your data structure
+      const response = await api.get("/admin-api/trainers/pending/");
       setTrainers(response.data.pending_trainers || []);
     } catch (err) {
       setError("Failed to fetch pending trainers");
@@ -36,43 +29,19 @@ const PendingTrainers: React.FC = () => {
     }
   };
 
-  // Approve trainer
   const approveTrainer = async (trainerId: number) => {
-    const token = localStorage.getItem("adminToken");
     try {
-      await axios.post(
-        `http://localhost/api/admin-api/trainers/${trainerId}/approve/`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      // Remove the approved trainer from the list
-      setTrainers((prevTrainers) => prevTrainers.filter((trainer) => trainer.id !== trainerId));
+      await api.post(`/admin-api/trainers/${trainerId}/approve/`);
+      setTrainers((prev) => prev.filter((trainer) => trainer.id !== trainerId));
     } catch (err) {
       alert("Failed to approve trainer");
     }
   };
 
-  // Reject trainer
   const rejectTrainer = async (trainerId: number) => {
-    const token = localStorage.getItem("adminToken");
     try {
-      await axios.post(
-        `http://localhost/api/admin-api/trainers/${trainerId}/reject/`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      // Remove the rejected trainer from the list
-      setTrainers((prevTrainers) => prevTrainers.filter((trainer) => trainer.id !== trainerId));
+      await api.post(`/admin-api/trainers/${trainerId}/reject/`);
+      setTrainers((prev) => prev.filter((trainer) => trainer.id !== trainerId));
     } catch (err) {
       alert("Failed to reject trainer");
     }

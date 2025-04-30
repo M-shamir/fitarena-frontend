@@ -9,6 +9,7 @@ import PendingApprovals from '@/app/components/trainer/PendingApprovals';
 import ApprovedSessions from '@/app/components/trainer/ApprovedSessions';
 import TrainerProfileView from '@/app/components/trainer/TrainerProfileView';
 
+
 export default function TrainerDashboard() {
   const [activeView, setActiveView] = useState('dashboardOverview');
   const router = useRouter();
@@ -48,6 +49,8 @@ export default function TrainerDashboard() {
           {activeView === 'pendingApprovals' && <PendingApprovals />}
           {activeView === 'approvedSessions' && <ApprovedSessions />}
           {activeView === 'viewProfile' && <TrainerProfileView/>}
+
+
           
         </main>
       </div>

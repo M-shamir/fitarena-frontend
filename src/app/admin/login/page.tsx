@@ -1,11 +1,11 @@
 "use client";
 import { useState, ChangeEvent, FormEvent } from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
 import { z } from "zod";
 import { useRouter } from 'next/navigation';
+import api from '@/utils/api'; 
 
-// Create a schema for admin login validation
+
 const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),
   password: z.string().min(1, "Password is required"),
@@ -22,7 +22,7 @@ export default function AdminLogin() {
     password: '',
   });
   const router = useRouter();
-  const [formErrors, setFormErrors] = useState<any>({});
+  const [formErrors, setFormErrors] = useState<Partial<FormData>>({});
   const [successMessage, setSuccessMessage] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -33,6 +33,10 @@ export default function AdminLogin() {
       ...prevState,
       [name]: value,
     }));
+    // Clear error when user starts typing
+    if (formErrors[name as keyof FormData]) {
+      setFormErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -46,38 +50,36 @@ export default function AdminLogin() {
       loginSchema.parse(formData);
       setIsLoading(true);
 
-      // Send login request
-      const response = await fetch('http://localhost/api/admin-api/login/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      // Send login request using axios instance
+      const response = await api.post('/admin-api/login/', formData);
       
-      const result = await response.json();
-      
-      if (response.ok) {
-        localStorage.setItem('adminToken', result.access_token); // Access token
-        setSuccessMessage(result.message || 'Login successful');
-        // Store any tokens or user info if needed
-        if (result.token) {
-          localStorage.setItem('adminToken', result.token);
+      if (response.data) {
+        // Store tokens securely (consider using httpOnly cookies for production)
+        if (response.data.access_token) {
+          localStorage.setItem('adminToken', response.data.access_token);
         }
+        setSuccessMessage(response.data.message || 'Login successful');
+        
         // Redirect to admin dashboard
         router.push('/admin/dashboard');
-      } else {
-        setErrorMessage(result.message || 'Invalid username or password');
       }
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof z.ZodError) {
-        const errors: { [key: string]: string } = {};
+        // Handle validation errors
+        const errors: Partial<FormData> = {};
         error.errors.forEach((err) => {
-          errors[err.path[0]] = err.message;
+          const fieldName = err.path[0] as keyof FormData;
+          errors[fieldName] = err.message;
         });
         setFormErrors(errors);
+      } else if (error.response) {
+        // Handle API errors
+        const message = error.response.data?.message || 
+                       error.response.data?.detail || 
+                       'Invalid username or password';
+        setErrorMessage(message);
       } else {
-        setErrorMessage('An error occurred during login');
+        setErrorMessage('An error occurred during login. Please try again.');
       }
     } finally {
       setIsLoading(false);
@@ -88,6 +90,7 @@ export default function AdminLogin() {
     <div className="min-h-screen bg-gray-900 flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
       <Head>
         <title>Admin Login | FitArena</title>
+        <meta name="description" content="Admin login portal for FitArena" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -112,16 +115,20 @@ export default function AdminLogin() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm space-y-4">
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-1">Username</label>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-1">
+                Username
+              </label>
               <input
                 id="username"
                 name="username"
                 type="text"
+                autoComplete="username"
                 required
-                className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-600 bg-gray-700 placeholder-gray-400 text-white focus:outline-none focus:ring-[#22b664] focus:border-[#22b664] focus:z-10"
+                className={`appearance-none rounded-lg relative block w-full px-3 py-3 border ${formErrors.username ? 'border-red-500' : 'border-gray-600'} bg-gray-700 placeholder-gray-400 text-white focus:outline-none focus:ring-[#22b664] focus:border-[#22b664] focus:z-10`}
                 placeholder="Admin Username"
                 value={formData.username}
                 onChange={handleChange}
+                disabled={isLoading}
               />
               {formErrors.username && (
                 <p className="text-red-400 text-xs mt-1">{formErrors.username}</p>
@@ -129,17 +136,20 @@ export default function AdminLogin() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">Password</label>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">
+                Password
+              </label>
               <input
                 id="password"
                 name="password"
                 type="password"
                 autoComplete="current-password"
                 required
-                className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-600 bg-gray-700 placeholder-gray-400 text-white focus:outline-none focus:ring-[#22b664] focus:border-[#22b664] focus:z-10"
+                className={`appearance-none rounded-lg relative block w-full px-3 py-3 border ${formErrors.password ? 'border-red-500' : 'border-gray-600'} bg-gray-700 placeholder-gray-400 text-white focus:outline-none focus:ring-[#22b664] focus:border-[#22b664] focus:z-10`}
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
+                disabled={isLoading}
               />
               {formErrors.password && (
                 <p className="text-red-400 text-xs mt-1">{formErrors.password}</p>
@@ -147,15 +157,23 @@ export default function AdminLogin() {
             </div>
           </div>
 
-          
-
           <div>
             <button
               type="submit"
               disabled={isLoading}
-              className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white ${isLoading ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#22b664] hover:bg-[#1da058]'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#22b664] transition-all duration-200`}
+              className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white ${
+                isLoading ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#22b664] hover:bg-[#1da058]'
+              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#22b664] transition-all duration-200`}
             >
-              {isLoading ? 'Signing in...' : 'Sign in'}
+              {isLoading ? (
+                <span className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Signing in...
+                </span>
+              ) : 'Sign in'}
             </button>
           </div>
         </form>
