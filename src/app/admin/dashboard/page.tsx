@@ -3,32 +3,37 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Head from 'next/head';
 import Link from 'next/link';
-import DashboardContent from '@/app/components/DashboardContent';
-import UserManagementContent from '@/app/components/UserManagementContent';
-import PendingTrainers from '@/app/components/PendingTrainers';
-import ApprovedTrainers from '@/app/components/ApprovedTrainers';
-import PendingCourses from '@/app/components/PendingCourses';
+import DashboardContent from '@/app/components/admin/DashboardContent';
+import UserManagementContent from '@/app/components/admin/UserManagementContent';
+import PendingTrainers from '@/app/components/admin/PendingTrainers';
+import ApprovedTrainers from '@/app/components/admin/ApprovedTrainers';
+import PendingCourses from '@/app/components/admin/PendingCourses';
+import PendingStadiums from '@/app/components/admin/PendingStadiums';
+import ApprovedStadiumOwners from '@/app/components/admin/ApprovedStadiumsOwners';
+
 
 export default function AdminDashboard() {
   const [activePage, setActivePage] = useState('dashboard');
   const [trainerDropdownOpen, setTrainerDropdownOpen] = useState(false);
+  const [stadiumDropdownOpen, setStadiumDropdownOpen] = useState(false);
   const router = useRouter();
   
   const handleLogout = () => {
-    // Clear admin token
-    localStorage.removeItem('adminToken');
-    // Redirect to login page
     router.push('/admin/login');
   };
 
   const toggleTrainerDropdown = () => {
     setTrainerDropdownOpen(!trainerDropdownOpen);
   };
+
+  const toggleStadiumDropdown = () => {
+    setStadiumDropdownOpen(!stadiumDropdownOpen);
+  };
   
   return (
-    <div className="min-h-screen flex bg-gray-900">
+    <div className="min-h-screen flex bg-gray-910">
       {/* Sidebar */}
-      <div className="w-64 bg-gray-800 border-r border-gray-700">
+      <div className="w-64 bg-gray-800 border-r border-gray-900">
         <div className="flex items-center justify-center h-16 border-b border-gray-700">
           <h1 className="text-2xl font-bold text-[#22b664]">FitArena</h1>
         </div>
@@ -63,79 +68,139 @@ export default function AdminDashboard() {
               </svg>
               User Management
             </button>
-         {/* Trainer Management Dropdown */}
-<div className="relative">
-  <button
-    onClick={toggleTrainerDropdown}
-    className={`flex items-center justify-between px-4 py-3 text-sm rounded-lg w-full ${
-      activePage === 'pendingTrainers' || activePage === 'approvedTrainers' || activePage === 'pendingCourses'
-        ? 'bg-[#22b664] text-white' 
-        : 'text-gray-300 hover:bg-gray-700'
-    }`}
-  >
-    <div className="flex items-center">
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
-        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v1h8v-1zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-      </svg>
-      Trainer Management
-    </div>
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      className={`h-4 w-4 transition-transform duration-200 ${trainerDropdownOpen ? 'transform rotate-180' : ''}`} 
-      viewBox="0 0 20 20" 
-      fill="currentColor"
-    >
-      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-    </svg>
-  </button>
-  
-  {/* Dropdown Items */}
-  {trainerDropdownOpen && (
-    <div className="ml-6 mt-1 space-y-1">
-      <button
-        onClick={() => setActivePage('pendingTrainers')}
-        className={`flex items-center px-4 py-2 text-sm rounded-lg w-full ${
-          activePage === 'pendingTrainers' 
-            ? 'bg-[#1a8d4d] text-white' 
-            : 'text-gray-300 hover:bg-gray-700'
-        }`}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
-          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
-        </svg>
-        Pending Trainers
-      </button>
-      
-      <button
-        onClick={() => setActivePage('approvedTrainers')}
-        className={`flex items-center px-4 py-2 text-sm rounded-lg w-full ${
-          activePage === 'approvedTrainers' 
-            ? 'bg-[#1a8d4d] text-white' 
-            : 'text-gray-300 hover:bg-gray-700'
-        }`}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
-          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-        </svg>
-        Approved Trainers
-      </button>
-      
-      <button
-        onClick={() => setActivePage('pendingCourses')}
-        className={`flex items-center px-4 py-2 text-sm rounded-lg w-full ${
-          activePage === 'pendingCourses' 
-            ? 'bg-[#1a8d4d] text-white' 
-            : 'text-gray-300 hover:bg-gray-700'
-        }`}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
-          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
-        </svg>
-        Pending Courses
-      </button>
-    </div>
-  )}
-</div>
+       
+            {/* Trainer Management Dropdown */}
+            <div className="relative">
+              <button
+                onClick={toggleTrainerDropdown}
+                className={`flex items-center justify-between px-4 py-3 text-sm rounded-lg w-full ${
+                  activePage === 'pendingTrainers' || activePage === 'approvedTrainers' || activePage === 'pendingCourses'
+                    ? 'bg-[#22b664] text-white' 
+                    : 'text-gray-300 hover:bg-gray-700'
+                }`}
+              >
+                <div className="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v1h8v-1zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                  </svg>
+                  Trainer Management
+                </div>
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  className={`h-4 w-4 transition-transform duration-200 ${trainerDropdownOpen ? 'transform rotate-180' : ''}`} 
+                  viewBox="0 0 20 20" 
+                  fill="currentColor"
+                >
+                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
+              
+              {/* Trainer Dropdown Items */}
+              {trainerDropdownOpen && (
+                <div className="ml-6 mt-1 space-y-1">
+                  <button
+                    onClick={() => setActivePage('pendingTrainers')}
+                    className={`flex items-center px-4 py-2 text-sm rounded-lg w-full ${
+                      activePage === 'pendingTrainers' 
+                        ? 'bg-[#1a8d4d] text-white' 
+                        : 'text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+                    </svg>
+                    Pending Trainers
+                  </button>
+                  
+                  <button
+                    onClick={() => setActivePage('approvedTrainers')}
+                    className={`flex items-center px-4 py-2 text-sm rounded-lg w-full ${
+                      activePage === 'approvedTrainers' 
+                        ? 'bg-[#1a8d4d] text-white' 
+                        : 'text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    Approved Trainers
+                  </button>
+                  
+                  <button
+                    onClick={() => setActivePage('pendingCourses')}
+                    className={`flex items-center px-4 py-2 text-sm rounded-lg w-full ${
+                      activePage === 'pendingCourses' 
+                        ? 'bg-[#1a8d4d] text-white' 
+                        : 'text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+                    </svg>
+                    Pending Courses
+                  </button>
+                </div>
+              )}
+            </div>
+
+            
+            <div className="relative">
+              <button
+                onClick={toggleStadiumDropdown}
+                className={`flex items-center justify-between px-4 py-3 text-sm rounded-lg w-full ${
+                  activePage === 'pendingStadiums' || activePage === 'approvedStadiums'
+                    ? 'bg-[#22b664] text-white' 
+                    : 'text-gray-300 hover:bg-gray-700'
+                }`}
+              >
+                <div className="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clipRule="evenodd" />
+                  </svg>Stadium Management
+                </div>
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  className={`h-4 w-4 transition-transform duration-200 ${stadiumDropdownOpen ? 'transform rotate-180' : ''}`} 
+                  viewBox="0 0 20 20" 
+                  fill="currentColor"
+                >
+                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
+              
+              {/* Stadium Dropdown Items */}
+              {stadiumDropdownOpen && (
+                <div className="ml-6 mt-1 space-y-1">
+                  <button
+                    onClick={() => setActivePage('pendingStadiumsOwners')}
+                    className={`flex items-center px-4 py-2 text-sm rounded-lg w-full ${
+                      activePage === 'pendingStadiums' 
+                        ? 'bg-[#1a8d4d] text-white' 
+                        : 'text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+                    </svg>
+                    Pending Stadiums
+                  </button>
+                  
+                  <button
+                    onClick={() => setActivePage('approvedStadiumsOwners')}
+                    className={`flex items-center px-4 py-2 text-sm rounded-lg w-full ${
+                      activePage === 'approvedStadiums' 
+                        ? 'bg-[#1a8d4d] text-white' 
+                        : 'text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    Approved Stadiums
+                  </button>
+                </div>
+              )}
+            </div>
 
           </nav>
           
@@ -161,7 +226,11 @@ export default function AdminDashboard() {
             <h2 className="text-xl font-semibold text-white">
               {activePage === 'dashboard' ? 'Dashboard' : 
                activePage === 'users' ? 'User Management' : 
-               activePage === 'pendingTrainers' ? 'Pending Trainers' : 'Approved Trainers'}
+               activePage === 'pendingTrainers' ? 'Pending Trainers' : 
+               activePage === 'approvedTrainers' ? 'Approved Trainers' :
+               activePage === 'pendingCourses' ? 'Pending Courses' :
+               activePage === 'pendingStadiums' ? 'Pending Stadiums' :
+               activePage === 'approvedStadiums' ? 'Approved Stadiums' : ''}
             </h2>
             <div className="flex items-center">
               <span className="bg-[#22b664] p-2 rounded-full">
@@ -175,20 +244,26 @@ export default function AdminDashboard() {
         </div>
         
         {/* Main Content */}
-  <div className="p-6 bg-gray-900 min-h-screen">
-  {activePage === 'dashboard' ? (
-    <DashboardContent />
-  ) : activePage === 'users' ? (
-    <UserManagementContent />
-  ) : activePage === 'pendingTrainers' ? (
-    <PendingTrainers />
-  ) : activePage === 'pendingCourses' ? (
-    <PendingCourses /> 
-  ) : (
-    <ApprovedTrainers />
-  )}
-  </div>
-
+        <div className="p-6 bg-gray-900 min-h-screen">
+          {activePage === 'dashboard' ? (
+            <DashboardContent />
+          ) : activePage === 'users' ? (
+            <UserManagementContent />
+          ) : activePage === 'pendingTrainers' ? (
+            <PendingTrainers />
+          ) : activePage === 'pendingCourses' ? (
+            <PendingCourses /> 
+          ) : activePage === 'approvedTrainers' ? (
+            <ApprovedTrainers />
+          ) : activePage === 'pendingStadiumsOwners' ? (
+            <PendingStadiums />
+          )  
+          : activePage === 'approvedStadiumsOwners' ? (
+            <ApprovedStadiumOwners />
+          )  
+          
+          : null}
+        </div>
       </div>
     </div>
   );
