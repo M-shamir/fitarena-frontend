@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { useState } from 'react';
 
 interface SidebarProps {
@@ -95,24 +94,14 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
               >
                 📋 View All Stadiums
               </button>
+              
               <button 
-                onClick={() => setActiveView('editStadium')}
-                className={`block w-full text-left p-2 rounded-lg ${activeView === 'editStadium' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}
+                onClick={() => setActiveView('pendingstadiums')}
+                className={`block w-full text-left p-2 rounded-lg ${activeView === 'pendingstadiums' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}
               >
-                ✏️ Edit/Delete Stadium
+                🚦Pending Stadiums
               </button>
-              <button 
-                onClick={() => setActiveView('stadiumStatus')}
-                className={`block w-full text-left p-2 rounded-lg ${activeView === 'stadiumStatus' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}
-              >
-                🚦 Status (Pending, Approved, Rejected)
-              </button>
-              <button 
-                onClick={() => setActiveView('stadiumVerification')}
-                className={`block w-full text-left p-2 rounded-lg ${activeView === 'stadiumVerification' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}
-              >
-                📍 Stadium Verification Info
-              </button>
+              
             </div>
           )}
         </div>

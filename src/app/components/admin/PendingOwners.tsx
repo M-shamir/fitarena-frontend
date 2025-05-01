@@ -9,17 +9,17 @@ interface StadiumOwner {
   stadiumowner_profile: number;
 }
 
-const PendingStadiums: React.FC = () => {
+const PendingOwners: React.FC = () => {
   const [owners, setOwners] = useState<StadiumOwner[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
 
   useEffect(() => {
-    fetchPendingStadiums();
+    fetchPendingOwners();
   }, []);
 
-  const fetchPendingStadiums = async () => {
+  const fetchPendingOwners = async () => {
     try {
       const response = await api.get("/admin-api/stadium_owner/pending/");
       const pendingOwners = response.data.pending_stadium_owners || [];
@@ -39,7 +39,6 @@ const PendingStadiums: React.FC = () => {
     setActionLoading(ownerId);
     try {
       await api.post(`/admin-api/stadium_owner/${ownerId}/${action}/`);
-     
       setOwners(prev => prev.filter(owner => owner.id !== ownerId));
     } catch (err) {
       alert(`Failed to ${action} stadium owner`);
@@ -54,7 +53,7 @@ const PendingStadiums: React.FC = () => {
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-2xl font-semibold text-white">Pending Stadium Owners</h3>
         <button 
-          onClick={fetchPendingStadiums}
+          onClick={fetchPendingOwners}
           className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors flex items-center"
           disabled={loading}
         >
@@ -158,4 +157,4 @@ const PendingStadiums: React.FC = () => {
   );
 };
 
-export default PendingStadiums;
+export default PendingOwners;

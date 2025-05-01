@@ -8,8 +8,10 @@ import UserManagementContent from '@/app/components/admin/UserManagementContent'
 import PendingTrainers from '@/app/components/admin/PendingTrainers';
 import ApprovedTrainers from '@/app/components/admin/ApprovedTrainers';
 import PendingCourses from '@/app/components/admin/PendingCourses';
-import PendingStadiums from '@/app/components/admin/PendingStadiums';
+import PendingOwners from '@/app/components/admin/PendingOwners';
 import ApprovedStadiumOwners from '@/app/components/admin/ApprovedStadiumsOwners';
+import PendingStadiums from '@/app/components/admin/PendingStadium';
+import ApprovedStadiums from '@/app/components/admin/ApprovedStadiums';
 
 
 export default function AdminDashboard() {
@@ -168,39 +170,68 @@ export default function AdminDashboard() {
                 </svg>
               </button>
               
-              {/* Stadium Dropdown Items */}
-              {stadiumDropdownOpen && (
-                <div className="ml-6 mt-1 space-y-1">
-                  <button
-                    onClick={() => setActivePage('pendingStadiumsOwners')}
-                    className={`flex items-center px-4 py-2 text-sm rounded-lg w-full ${
-                      activePage === 'pendingStadiums' 
-                        ? 'bg-[#1a8d4d] text-white' 
-                        : 'text-gray-300 hover:bg-gray-700'
-                    }`}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
-                    </svg>
-                    Pending Stadiums
-                  </button>
-                  
-                  <button
-                    onClick={() => setActivePage('approvedStadiumsOwners')}
-                    className={`flex items-center px-4 py-2 text-sm rounded-lg w-full ${
-                      activePage === 'approvedStadiums' 
-                        ? 'bg-[#1a8d4d] text-white' 
-                        : 'text-gray-300 hover:bg-gray-700'
-                    }`}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    Approved Stadiums
-                  </button>
-                </div>
-              )}
-            </div>
+             {/* Stadium Dropdown Items */}
+  {stadiumDropdownOpen && (
+    <div className="ml-6 mt-1 space-y-1">
+      <button
+        onClick={() => setActivePage('pendingStadiumsOwners')}
+        className={`flex items-center px-4 py-2 text-sm rounded-lg w-full ${
+          activePage === 'pendingStadiumsOwners' 
+            ? 'bg-[#1a8d4d] text-white' 
+            : 'text-gray-300 hover:bg-gray-700'
+        }`}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+        </svg>
+        Pending Owners
+      </button>
+      
+      <button
+        onClick={() => setActivePage('approvedStadiumsOwners')}
+        className={`flex items-center px-4 py-2 text-sm rounded-lg w-full ${
+          activePage === 'approvedStadiumsOwners' 
+            ? 'bg-[#1a8d4d] text-white' 
+            : 'text-gray-300 hover:bg-gray-700'
+        }`}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+        </svg>
+        Approved Owners
+      </button>
+
+      {/* Add these new options */}
+      <button
+        onClick={() => setActivePage('pendingStadiums')}
+        className={`flex items-center px-4 py-2 text-sm rounded-lg w-full ${
+          activePage === 'pendingStadiums' 
+            ? 'bg-[#1a8d4d] text-white' 
+            : 'text-gray-300 hover:bg-gray-700'
+        }`}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+        </svg>
+        Pending Stadiums
+      </button>
+      
+      <button
+        onClick={() => setActivePage('approvedStadiums')}
+        className={`flex items-center px-4 py-2 text-sm rounded-lg w-full ${
+          activePage === 'approvedStadiums' 
+            ? 'bg-[#1a8d4d] text-white' 
+            : 'text-gray-300 hover:bg-gray-700'
+        }`}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+        </svg>
+        Approved Stadiums
+      </button>
+    </div>
+  )}
+</div>
 
           </nav>
           
@@ -229,8 +260,8 @@ export default function AdminDashboard() {
                activePage === 'pendingTrainers' ? 'Pending Trainers' : 
                activePage === 'approvedTrainers' ? 'Approved Trainers' :
                activePage === 'pendingCourses' ? 'Pending Courses' :
-               activePage === 'pendingStadiums' ? 'Pending Stadiums' :
-               activePage === 'approvedStadiums' ? 'Approved Stadiums' : ''}
+               activePage === 'pendingStadiumsOwners' ? 'Pending Owners' :
+               activePage === 'approvedStadiumsOwners' ? 'Approved Owners' : ''}
             </h2>
             <div className="flex items-center">
               <span className="bg-[#22b664] p-2 rounded-full">
@@ -256,10 +287,16 @@ export default function AdminDashboard() {
           ) : activePage === 'approvedTrainers' ? (
             <ApprovedTrainers />
           ) : activePage === 'pendingStadiumsOwners' ? (
-            <PendingStadiums />
+            <PendingOwners />
           )  
           : activePage === 'approvedStadiumsOwners' ? (
             <ApprovedStadiumOwners />
+          ) 
+          : activePage === 'pendingStadiums' ? (
+            <PendingStadiums/>
+          )  
+          : activePage === 'approvedStadiums' ? (
+            <ApprovedStadiums/>
           )  
           
           : null}

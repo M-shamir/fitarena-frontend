@@ -3,8 +3,8 @@ import { useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/app/components/stadium_owner/Sidebar';
-// import DashboardOverview from '@/app/components/owner/DashboardOverview';
-// import AddStadiumForm from '@/app/components/owner/AddStadiumForm';
+import StadiumPendingApprovals from '@/app/components/stadium_owner/StadiumPendingApprovals';
+import AddStadiumForm from '@/app/components/stadium_owner/AddStadiumForm';
 // import ViewStadiums from '@/app/components/owner/ViewStadiums';
 // import EditStadium from '@/app/components/owner/EditStadium';
 // import StadiumVerification from '@/app/components/owner/StadiumVerification';
@@ -57,8 +57,10 @@ export default function OwnerDashboard() {
           {/* {activeView === 'dashboardOverview' && <DashboardOverview />} */}
           
 
-          {/* {activeView === 'addStadium' && <AddStadiumForm setActiveView={setActiveView} />}
-          {activeView === 'viewStadiums' && <ViewStadiums />}
+          {activeView === 'addStadium' && <AddStadiumForm setActiveView={setActiveView} />}
+          {activeView === 'pendingstadiums' && <StadiumPendingApprovals />}
+          
+          {/* {activeView === 'viewStadiums' && <ViewStadiums />}
           {activeView === 'editStadium' && <EditStadium />}
           {activeView === 'stadiumVerification' && <StadiumVerification />} */}
           
