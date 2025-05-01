@@ -1,5 +1,7 @@
 import Link from 'next/link';
+import api from '@/utils/api';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface SidebarProps {
   activeView: string;
@@ -7,6 +9,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
+  const router = useRouter()
   const [openMenus, setOpenMenus] = useState({
     dashboard: false,
     schedule: false,
@@ -15,9 +18,28 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
     reviews: false,
     profile: false
   });
+  
 
   const toggleMenu = (menu: keyof typeof openMenus) => {
     setOpenMenus(prev => ({ ...prev, [menu]: !prev[menu] }));
+  };
+  const handleLogout = async () => {
+    ; // Get the router instance
+  
+    try {
+      const response = await api.post('/trainer/logout/');
+  
+      if (response.status === 200) {
+        
+        router.push('/trainer/login');
+      } else {
+        alert('Logout failed');
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+      
+      
+    }
   };
 
   return (
@@ -272,16 +294,17 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
 
       {/* Logout */}
       <div className="p-4 border-t border-gray-700">
-        <button 
-          onClick={() => setActiveView('logout')}
-          className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition duration-200"
-        >
-          <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-          </svg>
-          <span>Logout</span>
-        </button>
-      </div>
+  <button 
+    onClick={handleLogout}
+    className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition duration-200"
+  >
+    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+    </svg>
+    <span>Logout</span>
+  </button>
+</div>
+
     </div>
   );
 }

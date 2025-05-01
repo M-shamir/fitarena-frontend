@@ -12,16 +12,33 @@ import PendingOwners from '@/app/components/admin/PendingOwners';
 import ApprovedStadiumOwners from '@/app/components/admin/ApprovedStadiumsOwners';
 import PendingStadiums from '@/app/components/admin/PendingStadium';
 import ApprovedStadiums from '@/app/components/admin/ApprovedStadiums';
+import api from '@/utils/api';
 
 
 export default function AdminDashboard() {
+  const router = useRouter();
+  
   const [activePage, setActivePage] = useState('dashboard');
   const [trainerDropdownOpen, setTrainerDropdownOpen] = useState(false);
   const [stadiumDropdownOpen, setStadiumDropdownOpen] = useState(false);
-  const router = useRouter();
   
-  const handleLogout = () => {
-    router.push('/admin/login');
+  const handleLogout = async () => {
+    
+  
+    try {
+      const response = await api.post('/admin-api/logout/');
+  
+      if (response.status === 200) {
+        
+        router.push('/trainer/login');
+      } else {
+        alert('Logout failed');
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+      
+      
+    }
   };
 
   const toggleTrainerDropdown = () => {

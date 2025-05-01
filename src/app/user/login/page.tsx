@@ -44,7 +44,7 @@ export default function Login() {
     setSuccessMessage,
     setIsLoading,
     loginFn:loginUser,
-    redirectPath:'home',
+    redirectPath:'',
     router
     })
   };
