@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import Sidebar from '@/app/components/stadium_owner/Sidebar';
 import StadiumPendingApprovals from '@/app/components/stadium_owner/StadiumPendingApprovals';
 import AddStadiumForm from '@/app/components/stadium_owner/AddStadiumForm';
+import StadiumApprovedSlots from '@/app/components/stadium_owner/AddSlot';
+import ApprovedStadiums from '@/app/components/stadium_owner/ApprovedStadium';
 // import ViewStadiums from '@/app/components/owner/ViewStadiums';
 // import EditStadium from '@/app/components/owner/EditStadium';
 // import StadiumVerification from '@/app/components/owner/StadiumVerification';
@@ -60,10 +62,13 @@ export default function OwnerDashboard() {
           {activeView === 'addStadium' && <AddStadiumForm setActiveView={setActiveView} />}
           {activeView === 'pendingstadiums' && <StadiumPendingApprovals />}
           
+          
+         {activeView === 'viewStadiums' && <ApprovedStadiums />}
           {/* {activeView === 'viewStadiums' && <ViewStadiums />}
           {activeView === 'editStadium' && <EditStadium />}
           {activeView === 'stadiumVerification' && <StadiumVerification />} */}
           
+           {activeView === 'addSlot' && <StadiumApprovedSlots />}
           
           {/* {activeView === 'addSlot' && <AddSlotForm />}
           {activeView === 'manageSlots' && <ManageSlots />}

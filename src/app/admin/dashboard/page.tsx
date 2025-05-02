@@ -12,6 +12,7 @@ import PendingOwners from '@/app/components/admin/PendingOwners';
 import ApprovedStadiumOwners from '@/app/components/admin/ApprovedStadiumsOwners';
 import PendingStadiums from '@/app/components/admin/PendingStadium';
 import ApprovedStadiums from '@/app/components/admin/ApprovedStadiums';
+import ApprovedTrainerCourses from '@/app/components/admin/ApprovedTrainerCources';
 import api from '@/utils/api';
 
 
@@ -158,6 +159,19 @@ export default function AdminDashboard() {
                     </svg>
                     Pending Courses
                   </button>
+                  <button
+      onClick={() => setActivePage('approvedCourses')}
+      className={`flex items-center px-4 py-2 text-sm rounded-lg w-full ${
+        activePage === 'approvedCourses' 
+          ? 'bg-[#1a8d4d] text-white' 
+          : 'text-gray-300 hover:bg-gray-700'
+      }`}
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+      </svg>
+      Approved Courses
+    </button>
                 </div>
               )}
             </div>
@@ -314,6 +328,9 @@ export default function AdminDashboard() {
           )  
           : activePage === 'approvedStadiums' ? (
             <ApprovedStadiums/>
+          )  
+          : activePage === 'approvedCourses' ? (
+            <ApprovedTrainerCourses/>
           )  
           
           : null}

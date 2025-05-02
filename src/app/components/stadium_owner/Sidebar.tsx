@@ -172,7 +172,7 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
             <span>Add New Slot</span>
           </span>
         </button>
-        <button 
+        {/* <button 
           onClick={() => setActiveView('manageSlots')}
           className={`block w-full text-left p-2 rounded-lg ${activeView === 'manageSlots' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}
         >
@@ -182,8 +182,8 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
             </svg>
             <span>View/Edit Slots</span>
           </span>
-        </button>
-        <button 
+        </button> */}
+        {/* <button 
           onClick={() => setActiveView('blockSlots')}
           className={`block w-full text-left p-2 rounded-lg ${activeView === 'blockSlots' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}
         >
@@ -193,8 +193,8 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
             </svg>
             <span>Block/Unblock Slots</span>
           </span>
-        </button>
-        <button 
+        </button> */}
+        {/* <button 
           onClick={() => setActiveView('slotBookingSummary')}
           className={`block w-full text-left p-2 rounded-lg ${activeView === 'slotBookingSummary' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}
         >
@@ -204,7 +204,7 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
             </svg>
             <span>Slot Booking Summary</span>
           </span>
-        </button>
+        </button> */}
       </div>
     )}
   </div>
