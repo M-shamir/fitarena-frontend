@@ -7,7 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { z } from 'zod';
 import { loginUser } from '@/services/loginService';
 import { handleLogin } from '@/utils/handleLogin';
-// Define Zod schema
+
 const loginSchema = z.object({
   username: z.string().min(1, 'Username is required'),
   password: z.string().min(1, 'Password is required'),
