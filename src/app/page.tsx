@@ -2,10 +2,14 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Header from './components/user/layout/Header';
-import Footer from './components/user/layout/Footer'
+import Footer from './components/user/layout/Footer';
 import Hero from './components/user/sections/Hero';
-
-
+import QuickBooking from './components/user/sections/QuickBooking';
+import PopularStadiums from './components/user/sections/PopularStadiums';
+import Trainers from './components/user/sections/Trainers';
+import HostGame from './components/user/sections/HostGame';
+import Testimonials from './components/user/sections/Testimonials';
+import Newsletter from './components/user/sections/Newsletter';
 
 export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
@@ -37,10 +41,17 @@ export default function Home() {
         <Header darkMode={darkMode} setDarkMode={setDarkMode} />
         
         <main>
-          <Hero />
+        <Hero />
+          <QuickBooking />
+          <PopularStadiums />
+          <Trainers />
+          <HostGame />
+          <Testimonials />
+          <Newsletter />
           
           
         </main>
+        <Footer />
 
       </div>
     </div>

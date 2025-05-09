@@ -7,8 +7,8 @@ import Link from 'next/link';
 
 const navItems = [
   { name: 'Home', href: '/' },
-  { name: 'Stadiums', href: '/stadiums' },
-  { name: 'Trainers', href: '/trainers' },
+  { name: 'Stadiums', href: '/user/stadiums' },
+  { name: 'Trainers', href: '/user/trainers' },
   { name: 'Host', href: '/host' },
 ];
 
