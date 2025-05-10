@@ -75,13 +75,13 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-900 flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
       <Head>
         <title>Sign Up | FitArena</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
+      <div className="max-w-md w-full space-y-8 bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-[#22b664]">FitArena</h1>
           <p className="mt-2 text-gray-600">Create your account to book sports facilities</p>
@@ -90,13 +90,13 @@ export default function SignUp() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm space-y-4">
             <div>
-              <label htmlFor="username" className="sr-only">Username</label>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">Username</label>
               <input
                 id="username"
                 name="username"
                 type="text"
                 required
-                className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#22b664] focus:border-[#22b664] focus:z-10"
+                className="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 focus:border-[#22b664] focus:ring-1 focus:ring-[#22b664] text-white placeholder-gray-400 transition duration-200"
                 placeholder="Username"
                 value={formData.username}
                 onChange={handleChange}
@@ -107,14 +107,14 @@ export default function SignUp() {
             </div>
 
             <div>
-              <label htmlFor="email" className="sr-only">Email address</label>
+              <label htmlFor="email"  className="block text-sm font-medium text-gray-300 mb-2">Email address</label>
               <input
                 id="email"
                 name="email"
                 type="email"
                 autoComplete="email"
                 required
-                className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#22b664] focus:border-[#22b664] focus:z-10"
+                className="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 focus:border-[#22b664] focus:ring-1 focus:ring-[#22b664] text-white placeholder-gray-400 transition duration-200"
                 placeholder="Email address"
                 value={formData.email}
                 onChange={handleChange}
@@ -125,14 +125,14 @@ export default function SignUp() {
             </div>
 
             <div>
-              <label htmlFor="password" className="sr-only">Password</label>
+              <label htmlFor="password"  className="block text-sm font-medium text-gray-300 mb-2">Password</label>
               <input
                 id="password"
                 name="password"
                 type="password"
                 autoComplete="new-password"
                 required
-                className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#22b664] focus:border-[#22b664] focus:z-10"
+                className="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 focus:border-[#22b664] focus:ring-1 focus:ring-[#22b664] text-white placeholder-gray-400 transition duration-200"
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
@@ -143,14 +143,14 @@ export default function SignUp() {
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="sr-only">Confirm Password</label>
+              <label htmlFor="confirmPassword"  className="block text-sm font-medium text-gray-300 mb-2">Confirm Password</label>
               <input
                 id="confirmPassword"
                 name="confirmPassword"
                 type="password"
                 autoComplete="new-password"
                 required
-                className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#22b664] focus:border-[#22b664] focus:z-10"
+                className="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 focus:border-[#22b664] focus:ring-1 focus:ring-[#22b664] text-white placeholder-gray-400 transition duration-200"
                 placeholder="Confirm Password"
                 value={formData.confirmPassword}
                 onChange={handleChange}

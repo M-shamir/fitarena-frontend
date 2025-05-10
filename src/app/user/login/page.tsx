@@ -44,90 +44,103 @@ export default function Login() {
     setSuccessMessage,
     setIsLoading,
     loginFn:loginUser,
-    redirectPath:'',
+    redirectPath:'/',
     router
     })
   };
   
 
   return (
-    <div className="min-h-screen bg-white flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
-      <Head>
-        <title>Login | FitArena</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4 sm:p-6">
+  <Head>
+    <title>Login | FitArena</title>
+    <link rel="icon" href="/favicon.ico" />
+  </Head>
 
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-[#22b664]">FitArena</h1>
-          <p className="mt-2 text-gray-600">Login to book sports facilities</p>
+  <div className="max-w-md w-full space-y-8 bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700">
+    <div className="text-center">
+      <h1 className="text-3xl font-bold text-white">FitArena</h1>
+      <p className="mt-2 text-gray-400">Login to book sports facilities</p>
+    </div>
+    {successMessage && <div className="bg-green-900/30 border border-green-500 text-green-300 px-4 py-3 rounded-lg mt-4">{successMessage}</div>}
+    {errorMessage && <div className="bg-red-900/30 border border-red-500 text-red-300 px-4 py-3 rounded-lg mt-4">{errorMessage}</div>}
+
+    <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+      <div className="rounded-md shadow-sm space-y-4">
+        <div>
+          <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">Username</label>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            value={formData.username}
+            onChange={handleChange}
+            className="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 focus:border-[#22b664] focus:ring-1 focus:ring-[#22b664] text-white placeholder-gray-400 transition duration-200"
+            placeholder="Enter your username"
+          />
+          {formErrors.username && (
+            <p className="mt-1 text-sm text-red-400">{formErrors.username}</p>
+          )}
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm space-y-4">
-            <div>
-              <label htmlFor="username" className="sr-only">Username</label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                value={formData.username}
-                onChange={handleChange}
-                className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#22b664] focus:border-[#22b664]"
-                placeholder="Username"
-              />
-              {formErrors.username && (
-                <p className="text-red-500 text-xs mt-1">{formErrors.username}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="password" className="sr-only">Password</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#22b664] focus:border-[#22b664]"
-                placeholder="Password"
-              />
-              {formErrors.password && (
-                <p className="text-red-500 text-xs mt-1">{formErrors.password}</p>
-              )}
-            </div>
-          </div>
-
-          <div className="text-right mt-2">
-            <Link href="/user/forgot-password" className="text-sm text-[#22b664] hover:text-[#1da058]">
-              Forgot Password?
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-300">Password</label>
+            <Link href="/user/forgot-password" className="text-xs text-[#22b664] hover:text-[#1da058] transition duration-200">
+              Forgot password?
             </Link>
           </div>
-
-          <div>
-            <button
-              type="submit"
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-[#22b664] hover:bg-[#1da058] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#22b664]"
-            >
-              Log In
-            </button>
-          </div>
-
-          <div className="flex items-center justify-center">
-            <div className="text-sm text-gray-700">
-              Don&apos;t have an account?{' '}
-              <Link href="/user/signup" className="font-medium text-[#22b664] hover:text-[#1da058]">
-                Sign Up
-              </Link>
-            </div>
-          </div>
-        </form>
-
-        {successMessage && <div className="text-green-500 mt-4">{successMessage}</div>}
-        {errorMessage && <div className="text-red-500 mt-4">{errorMessage}</div>}
+          <input
+            id="password"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            className="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 focus:border-[#22b664] focus:ring-1 focus:ring-[#22b664] text-white placeholder-gray-400 transition duration-200"
+            placeholder="Enter your password"
+          />
+          {formErrors.password && (
+            <p className="mt-1 text-sm text-red-400">{formErrors.password}</p>
+          )}
+        </div>
       </div>
 
-      <ToastContainer />
-    </div>
+      <div className="flex items-center">
+        <input
+          id="remember-me"
+          name="remember-me"
+          type="checkbox"
+          className="h-4 w-4 rounded border-gray-600 text-[#22b664] focus:ring-[#22b664]"
+        />
+        <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-400">
+          Remember me
+        </label>
+      </div>
+
+      <div>
+        <button
+          type="submit"
+          className="w-full py-3 px-4 rounded-lg font-medium text-white bg-[#22b664] hover:bg-[#1da058] focus:ring-2 focus:ring-[#22b664] focus:ring-opacity-50 transition duration-200"
+        >
+          Log In
+        </button>
+      </div>
+
+      <div className="text-center text-sm text-gray-400">
+        Don&apos;t have an account?{' '}
+        <Link href="/user/signup" className="font-medium text-[#22b664] hover:text-[#1da058] transition duration-200">
+          Sign Up
+        </Link>
+      </div>
+    </form>
+
+   
+  </div>
+  
+</div>
+
   );
 }
+
+
+
