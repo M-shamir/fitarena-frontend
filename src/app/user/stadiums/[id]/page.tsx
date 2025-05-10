@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import Header from '@/app/components/user/layout/Header'
 import Footer from '@/app/components/user/layout/Footer'
 import { useEffect, useState } from 'react'
+import { use } from 'react'
 import api from '@/utils/api'
 
 interface Slot {
@@ -52,10 +53,13 @@ export default function StadiumDetailPage({ params }: { params: { id: string } }
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
+  const unwrappedParams = use(params) as { id: string }
+  const StadiumId = unwrappedParams.id
+
   useEffect(() => {
     const fetchStadium = async () => {
       try {
-        const response = await api.get(`/user/stadiums/${params.id}/`)
+        const response = await api.get(`/user/stadiums/${StadiumId}/`)
         setStadium(response.data)
       } catch (err) {
         setError('Failed to fetch stadium details')
@@ -66,7 +70,7 @@ export default function StadiumDetailPage({ params }: { params: { id: string } }
     }
 
     fetchStadium()
-  }, [params.id])
+  }, [StadiumId])
 
   if (loading) {
     return (

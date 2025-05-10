@@ -1,5 +1,4 @@
 'use client'
-import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiMapPin, FiX } from 'react-icons/fi';
 
@@ -15,40 +14,51 @@ export default function LocationPermissionModal({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.2 }}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full p-6 relative"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-md w-full p-6 relative border border-gray-100 dark:border-gray-700"
           >
-            <div className="flex items-center justify-center mb-4">
-              <FiMapPin className="text-blue-500 text-3xl mr-2" />
-              <h2 className="text-xl font-bold">Enable Location Services</h2>
+            <button 
+              onClick={onDeny}
+              className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              aria-label="Close"
+            >
+              <FiX className="text-gray-500 dark:text-gray-400 text-lg" />
+            </button>
+            
+            <div className="flex flex-col items-center text-center mb-6">
+              <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-full mb-4">
+                <FiMapPin className="text-green-500 dark:text-green-400 text-2xl" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                Discover Nearby Stadiums
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300">
+                Enable location access to find the best stadiums in your area
+              </p>
             </div>
             
-            <p className="text-gray-600 dark:text-gray-300 mb-6">
-              Allow Fitarena to access your location to find stadiums near you and provide personalized recommendations.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="space-y-3">
               <button
                 onClick={onAllow}
-                className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-colors"
+                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-medium py-3 px-4 rounded-xl transition-all shadow-md hover:shadow-lg active:scale-[0.98]"
               >
                 Allow Location Access
               </button>
               <button
                 onClick={onDeny}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white py-2 px-4 rounded-lg transition-colors"
+                className="w-full bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium py-3 px-4 rounded-xl transition-all border border-gray-200 dark:border-gray-600"
               >
-                Not Now
+                Maybe Later
               </button>
             </div>
             
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-4">
-              You can change this later in your browser settings.
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">
+              Your location helps us provide personalized recommendations. You can change permissions anytime in settings.
             </p>
           </motion.div>
         </div>

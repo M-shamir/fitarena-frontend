@@ -31,7 +31,7 @@ export default function AdminDashboard() {
   
       if (response.status === 200) {
         
-        router.push('/trainer/login');
+        router.push('/admin/login');
       } else {
         alert('Logout failed');
       }

@@ -292,7 +292,7 @@ export default function StadiumOwnerSignUp() {
                     <p className="text-sm text-gray-400 text-center">
                       <span className="font-medium text-[#22b664]">Click to upload</span> or drag and drop
                     </p>
-                    <p className="text-xs text-gray-500">Upload ID proof (Aadhar, Voter ID, etc.) - PDF, PNG, JPG (MAX. 10MB each)</p>
+                    <p className="text-xs text-gray-500">Upload Official Stadium Field Certification(PDF, PNG, JPG - MAX. 10MB each)</p>
                     <input 
                       id="documents" 
                       type="file" 
