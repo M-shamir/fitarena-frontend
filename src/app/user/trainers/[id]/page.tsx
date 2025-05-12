@@ -7,6 +7,7 @@ import Image from 'next/image'
 import Header from '@/app/components/user/layout/Header'
 import Footer from '@/app/components/user/layout/Footer'
 import api from '@/utils/api'
+import { useRouter} from 'next/navigation'
 
 interface TrainerType {
   id: number
@@ -59,6 +60,7 @@ interface Course {
 export default function TrainerCoursesPage({ params }: { params: { id: string } }) {
   const unwrappedParams = use(params) as { id: string }
   const trainerId = unwrappedParams.id
+  const router = useRouter()
 
   const [courses, setCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
@@ -79,6 +81,7 @@ export default function TrainerCoursesPage({ params }: { params: { id: string } 
   }, [trainerId])
 
   function handleEnroll(courseId: number) {
+    router.push(`/user/bookings/courses/${courseId}/checkout`)
     console.log(`Enrolling in course ${courseId}`)
   }
 
