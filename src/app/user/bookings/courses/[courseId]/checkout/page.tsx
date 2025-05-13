@@ -49,7 +49,7 @@ export default function CourseCheckoutPage() {
       } else {
         throw new Error("No redirect URL received");
       }
-    } catch (err) {
+    } catch (err:any) {
       setError(err.message || "Payment failed. Please try again.");
       setPaymentProcessing(false);
     }
