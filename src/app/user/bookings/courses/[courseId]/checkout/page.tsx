@@ -1,3 +1,4 @@
+// app/courses/[courseId]/checkout/page.tsx
 'use client'
 
 import React, { useEffect, useState } from 'react'
@@ -31,27 +32,16 @@ export default function CourseCheckoutPage() {
   }, [courseId])
 
   const handlePayment = async () => {
-    setPaymentProcessing(true);
+    setPaymentProcessing(true)
     try {
-      const amount = parseFloat(course.price).toFixed(2);
+      // Create payment session on backend
+      const response = await api.post(`/payment/course/${courseId}/`) 
       
-      const response = await api.post('/payment/create-checkout-session/', {
-        amount: amount,
-        currency: 'INR',
-        course_id: courseId,
-        success_url: `${window.location.origin}/user/bookings/courses/success?session_id={CHECKOUT_SESSION_ID}&courseId=${courseId}`,
-        cancel_url: `${window.location.origin}/user/bookings/courses/cancel?courseId=${courseId}`
-      });
-  
-      if (response.data.url) {
-        
-        window.location.href = response.data.url;
-      } else {
-        throw new Error("No redirect URL received");
-      }
-    } catch (err:any) {
-      setError(err.message || "Payment failed. Please try again.");
-      setPaymentProcessing(false);
+      // Redirect to Stripe Checkout
+      window.location.href = response.data.payment_url
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Payment failed to initialize')
+      setPaymentProcessing(false)
     }
   };
 
