@@ -289,7 +289,7 @@ export default function StadiumDetailPage({ params }: { params: { id: string } }
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => router.push(`/user/stadiums/${stadium.id}/booking`)}
+              onClick={() => router.push(`/user/bookings/slot/${stadium.id}/`)}
               className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all"
             >
               Book Now
