@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiArrowRight, FiMenu, FiX } from 'react-icons/fi';
+import { FiMenu, FiX, FiUser } from 'react-icons/fi';
 import DarkModeToggle from '../ui/DarkModeToggle';
 import Link from 'next/link';
 import useAuthStore from '@/store/authStore';
@@ -15,7 +15,7 @@ const navItems = [
 
 export default function Header({ darkMode, setDarkMode }: { darkMode: boolean; setDarkMode: (mode: boolean) => void }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, isAuthenticated, role, logout } = useAuthStore();
+  const { user, isAuthenticated } = useAuthStore();
 
   return (
     <nav className="fixed w-full z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-sm">
@@ -52,19 +52,29 @@ export default function Header({ darkMode, setDarkMode }: { darkMode: boolean; s
           <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
 
           {isAuthenticated ? (
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-600 dark:text-gray-300">
-                Hi, {user?.username || 'User'}
-              </span>
-              <motion.button
+            <Link href="/user/profile">
+              <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={logout}
-                className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2 rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
+                className="flex items-center justify-center cursor-pointer"
               >
-                Logout
-              </motion.button>
-            </div>
+                <div className="relative group">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 flex items-center justify-center">
+                    <span className="text-white font-medium">
+                      {user?.username?.charAt(0).toUpperCase() || 'U'}
+                    </span>
+                  </div>
+                  <div className="absolute -bottom-1 -right-1 bg-white dark:bg-gray-800 p-1 rounded-full border-2 border-white dark:border-gray-800">
+                    <FiUser className="w-3 h-3 text-green-500" />
+                  </div>
+                  <div className="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                    <span className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200">
+                      {user?.username || 'Profile'}
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            </Link>
           ) : (
             <Link href="/user/login">
               <motion.button
@@ -107,18 +117,21 @@ export default function Header({ darkMode, setDarkMode }: { darkMode: boolean; s
                   {item.name}
                 </Link>
               ))}
-              <div className="flex items-center space-x-4 pt-2">
+              <div className="flex items-center justify-between pt-2">
                 <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
                 {isAuthenticated ? (
-                  <button 
-                    onClick={() => {
-                      logout();
-                      setIsMenuOpen(false);
-                    }}
-                    className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2 rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
+                  <Link 
+                    href="/user/profile"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center space-x-2"
                   >
-                    Logout
-                  </button>
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 flex items-center justify-center">
+                      <span className="text-white text-sm font-medium">
+                        {user?.username?.charAt(0).toUpperCase() || 'U'}
+                      </span>
+                    </div>
+                    <span className="text-gray-600 dark:text-gray-300">Profile</span>
+                  </Link>
                 ) : (
                   <Link 
                     href="/user/login" 
