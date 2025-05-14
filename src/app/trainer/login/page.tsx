@@ -6,6 +6,7 @@ import { z } from "zod";
 import { useRouter } from 'next/navigation';
 import { loginTrainer } from '@/services/loginService';
 import { handleLogin } from '@/utils/handleLogin';
+import useAuthStore from "@/store/authStore"
 
 const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -23,6 +24,7 @@ export default function TrainerLogin() {
     password: '',
   });
   const router = useRouter();
+  const authStore = useAuthStore();
   const [formErrors, setFormErrors] = useState<any>({});
   const [successMessage, setSuccessMessage] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -36,23 +38,28 @@ export default function TrainerLogin() {
       [name]: value,
     }));
   };
-
   const handleSubmit = async (e: FormEvent) => {
-    handleLogin({
-      e,
-      formData,
-      loginSchema,
-      setFormErrors,
-      setErrorMessage,
-      setSuccessMessage,
-      setIsLoading,
-      loginFn: loginTrainer,
-      redirectPath: '/trainer/dashboard',
-      router
-    })
-  };
+      handleLogin({
+        e,
+        formData,
+        loginSchema,
+        setFormErrors,
+        setErrorMessage,
+        setSuccessMessage,
+        setIsLoading,
+        loginFn: loginTrainer,
+        redirectPath: '/trainer/dashboard',
+        router,
+        authStore: {
+          login: authStore.login,
+          setLoading: authStore.setLoading,
+          setError: authStore.setError
+        }
+      });
+    };
 
   return (
+    
     <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4 sm:p-6">
       <Head>
         <title>Trainer Login | FitArena</title>

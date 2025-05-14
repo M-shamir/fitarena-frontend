@@ -1,4 +1,5 @@
 'use client';
+import useAuthStore from "@/store/authStore"
 import { useState, ChangeEvent, FormEvent } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/navigation';
@@ -7,6 +8,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import { z } from 'zod';
 import { loginUser } from '@/services/loginService';
 import { handleLogin } from '@/utils/handleLogin';
+import { PublicRoute } from "@/app/components/auth/PublicRoute";
+
+
 
 const loginSchema = z.object({
   username: z.string().min(1, 'Username is required'),
@@ -20,7 +24,9 @@ export default function Login() {
     username: '',
     password: '',
   });
+  
   const router = useRouter();
+  const authStore = useAuthStore();
   const [formErrors, setFormErrors] = useState<any>({});
   const [successMessage, setSuccessMessage] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -36,21 +42,27 @@ export default function Login() {
   
   const handleSubmit = async (e: FormEvent) => {
     handleLogin({
-    e,
-    formData,
-    loginSchema,
-    setFormErrors,
-    setErrorMessage,
-    setSuccessMessage,
-    setIsLoading,
-    loginFn:loginUser,
-    redirectPath:'/',
-    router
-    })
+      e,
+      formData,
+      loginSchema,
+      setFormErrors,
+      setErrorMessage,
+      setSuccessMessage,
+      setIsLoading,
+      loginFn: loginUser,
+      redirectPath: '/',
+      router,
+      authStore: {
+        login: authStore.login,
+        setLoading: authStore.setLoading,
+        setError: authStore.setError
+      }
+    });
   };
   
 
   return (
+    
     <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4 sm:p-6">
   <Head>
     <title>Login | FitArena</title>

@@ -1,6 +1,7 @@
 "use client";
 import { useState } from 'react';
 import Head from 'next/head';
+import { ProtectedRoute } from '@/app/components/auth/ProtectedRoute';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/app/components/trainer/Sidebar';
 import DashboardOverview from '@/app/components/trainer/DashboardOverview';
@@ -15,6 +16,7 @@ export default function TrainerDashboard() {
   const router = useRouter();
 
   return (
+    <ProtectedRoute requiredRole="trainer" redirectTo="/trainer/login">
     <div className="flex h-screen bg-gray-900 text-white overflow-hidden">
       <Head>
         <title>Trainer Dashboard | FitArena</title>
@@ -55,5 +57,6 @@ export default function TrainerDashboard() {
         </main>
       </div>
     </div>
+    </ProtectedRoute>
   );
 }

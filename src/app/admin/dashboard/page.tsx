@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Head from 'next/head';
 import Link from 'next/link';
+import { ProtectedRoute } from '@/app/components/auth/ProtectedRoute'
 import DashboardContent from '@/app/components/admin/DashboardContent';
 import UserManagementContent from '@/app/components/admin/UserManagementContent';
 import PendingTrainers from '@/app/components/admin/PendingTrainers';
@@ -51,6 +52,9 @@ export default function AdminDashboard() {
   };
   
   return (
+    <ProtectedRoute requiredRole="admin">
+
+    
     <div className="min-h-screen flex bg-gray-910">
       {/* Sidebar */}
       <div className="w-64 bg-gray-800 border-r border-gray-900">
@@ -337,5 +341,6 @@ export default function AdminDashboard() {
         </div>
       </div>
     </div>
+    </ProtectedRoute>
   );
 }

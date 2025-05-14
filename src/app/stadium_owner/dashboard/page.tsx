@@ -7,6 +7,7 @@ import StadiumPendingApprovals from '@/app/components/stadium_owner/StadiumPendi
 import AddStadiumForm from '@/app/components/stadium_owner/AddStadiumForm';
 import StadiumApprovedSlots from '@/app/components/stadium_owner/AddSlot';
 import ApprovedStadiums from '@/app/components/stadium_owner/ApprovedStadium';
+import ProtectedRoute from '@/app/components/auth/ProtectedRoute';
 // import ViewStadiums from '@/app/components/owner/ViewStadiums';
 // import EditStadium from '@/app/components/owner/EditStadium';
 // import StadiumVerification from '@/app/components/owner/StadiumVerification';
@@ -27,6 +28,7 @@ export default function OwnerDashboard() {
   const router = useRouter();
 
   return (
+    <ProtectedRoute requiredRole="stadium_owner">
     <div className="flex h-screen bg-gray-900 text-white overflow-hidden">
       <Head>
         <title>Stadium Owner Dashboard | FitArena</title>
@@ -92,5 +94,6 @@ export default function OwnerDashboard() {
         </main>
       </div>
     </div>
+    </ProtectedRoute>
   );
 }

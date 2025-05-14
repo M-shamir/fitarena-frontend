@@ -11,6 +11,7 @@ import HostGame from './components/user/sections/HostGame';
 import Testimonials from './components/user/sections/Testimonials';
 import Newsletter from './components/user/sections/Newsletter';
 import LocationPermissionModal from './components/user/ui/LocationPermissionModal';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
@@ -86,6 +87,10 @@ export default function Home() {
   
 
   return (
+    <ProtectedRoute 
+      preventRoles={['admin', 'trainer', 'stadium_owner']}>
+
+      
     <div className={`min-h-screen ${darkMode ? 'dark' : ''}`}>
       <div className="dark:bg-gray-900 dark:text-white transition-colors duration-300">
         <Head>
@@ -113,5 +118,6 @@ export default function Home() {
         />
       </div>
     </div>
+    </ProtectedRoute>
   );
 }

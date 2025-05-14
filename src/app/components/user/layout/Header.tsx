@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiArrowRight, FiMenu, FiX } from 'react-icons/fi';
 import DarkModeToggle from '../ui/DarkModeToggle';
 import Link from 'next/link';
+import useAuthStore from '@/store/authStore';
 
 const navItems = [
   { name: 'Home', href: '/' },
@@ -14,6 +15,7 @@ const navItems = [
 
 export default function Header({ darkMode, setDarkMode }: { darkMode: boolean; setDarkMode: (mode: boolean) => void }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, isAuthenticated, role, logout } = useAuthStore();
 
   return (
     <nav className="fixed w-full z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-sm">
@@ -49,13 +51,31 @@ export default function Header({ darkMode, setDarkMode }: { darkMode: boolean; s
 
           <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
 
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2 rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
-          >
-            Sign In
-          </motion.button>
+          {isAuthenticated ? (
+            <div className="flex items-center space-x-4">
+              <span className="text-gray-600 dark:text-gray-300">
+                Hi, {user?.username || 'User'}
+              </span>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={logout}
+                className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2 rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
+              >
+                Logout
+              </motion.button>
+            </div>
+          ) : (
+            <Link href="/user/login">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2 rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
+              >
+                Sign In
+              </motion.button>
+            </Link>
+          )}
         </div>
 
         <button
@@ -89,9 +109,25 @@ export default function Header({ darkMode, setDarkMode }: { darkMode: boolean; s
               ))}
               <div className="flex items-center space-x-4 pt-2">
                 <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
-                <button className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2 rounded-full font-medium shadow-lg hover:shadow-xl transition-all">
-                  Sign In
-                </button>
+                {isAuthenticated ? (
+                  <button 
+                    onClick={() => {
+                      logout();
+                      setIsMenuOpen(false);
+                    }}
+                    className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2 rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
+                  >
+                    Logout
+                  </button>
+                ) : (
+                  <Link 
+                    href="/user/login" 
+                    onClick={() => setIsMenuOpen(false)}
+                    className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2 rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
+                  >
+                    Sign In
+                  </Link>
+                )}
               </div>
             </div>
           </motion.div>
