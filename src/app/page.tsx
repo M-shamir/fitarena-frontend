@@ -52,7 +52,7 @@ export default function Home() {
           lng: position.coords.longitude
         };
   
-        console.log('User location:', userCoords); // Verify this logs correctly
+        console.log('User location:', userCoords); 
   
         setUserLocation(userCoords);
         setLocationPermission('granted');
@@ -87,8 +87,7 @@ export default function Home() {
   
 
   return (
-    <ProtectedRoute 
-      preventRoles={['admin', 'trainer', 'stadium_owner']}>
+    
 
       
     <div className={`min-h-screen ${darkMode ? 'dark' : ''}`}>
@@ -101,11 +100,14 @@ export default function Home() {
         <Header darkMode={darkMode} setDarkMode={setDarkMode} />
         
         <main>
+        <ProtectedRoute 
+      preventRoles={['admin', 'trainer', 'stadium_owner']}>
           <Hero />
           <QuickBooking userLocation={userLocation} />
           <PopularStadiums userLocation={userLocation} />
           <Trainers />
           <HostGame />
+          </ProtectedRoute>
           <Testimonials />
           <Newsletter />
         </main>
@@ -118,6 +120,6 @@ export default function Home() {
         />
       </div>
     </div>
-    </ProtectedRoute>
+   
   );
 }

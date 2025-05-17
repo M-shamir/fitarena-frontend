@@ -1,4 +1,3 @@
-'use client'
 import { motion } from 'framer-motion'
 import { FiTwitter, FiFacebook, FiInstagram, FiLinkedin } from 'react-icons/fi'
 import Link from 'next/link'
