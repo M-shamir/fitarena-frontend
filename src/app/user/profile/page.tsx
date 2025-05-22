@@ -1,28 +1,57 @@
 'use client'
-import { useState } from 'react'
+
+import { useState, useEffect } from 'react'
 import Header from '@/app/components/user/layout/Header'
 import { FiUser, FiCalendar, FiVideo, FiSettings, FiLogOut, FiHome, FiMenu } from 'react-icons/fi'
 import ProfileSection from '@/app/components/user/profile/ProfileSection'
 import TrainerBookings from '@/app/components/user/profile/TrainerBookings'
 import StadiumBookings from '@/app/components/user/profile/StadiumBookings'
+import api from '@/utils/api' // Axios instance
 
 const ProfilePage = () => {
-  const [activeTab, setActiveTab] = useState('profile')
-  
-  // Dummy user data
-  const userData = {
-    username: 'john_doe',
-    email: 'john.doe@example.com',
-    profilePhoto: '/default-profile.jpg',
-    joinDate: 'Joined January 2023',
+  type UserData = {
+    username: string
+    email: string
+    profilePhoto: string
+    joinDate: string
     stats: {
-      completedSessions: 12,
-      upcomingSessions: 3,
-      favoriteSport: 'Basketball'
+      completedSessions: number
+      upcomingSessions: number
+      favoriteSport: string
     }
   }
+  
+  const [activeTab, setActiveTab] = useState('profile')
+  const [userData, setUserData] = useState<UserData | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  // Dummy trainer bookings
+  // Fetch profile from API
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await api.get('/user/profile/')
+        const profile = response.data.profile
+        setUserData({
+          username: profile.username,
+          email: profile.email,
+          profilePhoto: profile.profile_photo,
+          joinDate: 'Joined May 2025',
+          stats: {
+            completedSessions: 12,
+            upcomingSessions: 3,
+            favoriteSport: 'Basketball'
+          }
+        })
+      } catch (error) {
+        console.error('Failed to fetch profile:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProfile()
+  }, [])
+
   const trainerBookings = {
     upcoming: [
       { id: 1, title: 'Personal Training', trainer: 'Alex Johnson', date: '2023-08-20', time: '17:00 - 18:00' },
@@ -34,7 +63,6 @@ const ProfilePage = () => {
     ]
   }
 
-  // Dummy stadium bookings
   const stadiumBookings = {
     upcoming: [
       { id: 1, stadium: 'Central Arena', date: '2023-08-18', time: '17:00 - 19:00', sport: 'Basketball' },
@@ -50,18 +78,35 @@ const ProfilePage = () => {
     console.log('User logged out')
   }
 
+  if (loading || !userData) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <Header darkMode={false} setDarkMode={() => {}} />
+        <div className="flex justify-center items-center pt-24">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Header darkMode={false} setDarkMode={function (mode: boolean): void {
-              throw new Error('Function not implemented.')
-          } } />
+      <Header darkMode={false} setDarkMode={() => {}} />
       
       <div className="flex pt-24">
         {/* Sidebar Navigation */}
         <div className="w-64 min-h-screen bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4 hidden md:block">
           <div className="flex items-center space-x-3 p-4 mb-8">
             <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center">
-              <FiUser className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+              {userData.profilePhoto ? (
+                <img 
+                  src={userData.profilePhoto} 
+                  alt="Profile" 
+                  className="w-full h-full rounded-full object-cover"
+                />
+              ) : (
+                <FiUser className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+              )}
             </div>
             <div>
               <h2 className="font-semibold text-gray-800 dark:text-white">{userData.username}</h2>

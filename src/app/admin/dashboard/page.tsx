@@ -52,7 +52,7 @@ export default function AdminDashboard() {
   };
   
   return (
-    <ProtectedRoute requiredRole="admin">
+    
 
     
     <div className="min-h-screen flex bg-gray-910">
@@ -341,6 +341,6 @@ export default function AdminDashboard() {
         </div>
       </div>
     </div>
-    </ProtectedRoute>
+   
   );
 }

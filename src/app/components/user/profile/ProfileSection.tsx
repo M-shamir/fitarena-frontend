@@ -43,7 +43,7 @@ const ProfileSection = ({ userData }) => {
           <div>
             <h1 className="text-2xl font-bold text-gray-800 dark:text-white">{userData.username}</h1>
             <p className="text-gray-500 dark:text-gray-400">{userData.email}</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{userData.joinDate}</p>
+            
           </div>
         </div>
         
