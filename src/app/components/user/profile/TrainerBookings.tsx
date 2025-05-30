@@ -63,9 +63,9 @@ const TrainerBookings = ({ bookings }) => {
                     >
                       Cancel
                     </button>
-                    <button className="px-4 py-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition">
+                    {/* <button className="px-4 py-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition">
                       View Details
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>

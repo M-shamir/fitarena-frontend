@@ -2,13 +2,10 @@
 import { FiCalendar, FiCheckCircle, FiClock, FiX, FiMapPin } from 'react-icons/fi'
 import { useState } from 'react'
 
-
-
 const StadiumBookings = ({ bookings }) => {
   const [activeTab, setActiveTab] = useState('upcoming')
 
   const handleCancel = (bookingId) => {
-    // Implement cancel logic
     console.log('Cancel booking:', bookingId)
   }
 
