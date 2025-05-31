@@ -9,6 +9,9 @@ import AddSessionForm from '@/app/components/trainer/AddSessionForm';
 import PendingApprovals from '@/app/components/trainer/PendingApprovals';
 import ApprovedSessions from '@/app/components/trainer/ApprovedSessions';
 import TrainerProfileView from '@/app/components/trainer/TrainerProfileView';
+import CourseEnrollments from '@/app/components/trainer/CourseEnrollments';
+import LiveSessions from '@/app/components/trainer/LiveSessions';
+
 
 
 export default function TrainerDashboard() {
@@ -51,7 +54,9 @@ export default function TrainerDashboard() {
           {activeView === 'pendingApprovals' && <PendingApprovals />}
           {activeView === 'approvedSessions' && <ApprovedSessions />}
           {activeView === 'viewProfile' && <TrainerProfileView/>}
+          {activeView === 'courseEnrollments' && <CourseEnrollments/>}
 
+          {activeView === 'liveSessions' && <LiveSessions/>}
 
           
         </main>

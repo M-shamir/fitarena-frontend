@@ -84,6 +84,24 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
               >
                 Overview
               </button>
+              <button 
+                onClick={() => setActiveView('courseEnrollments')}
+                className={`block w-full text-left p-2 rounded-lg ${activeView === 'courseEnrollments' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}
+              >
+                🧑‍🎓 Course Enrollments
+              </button>
+              <button 
+                onClick={() => setActiveView('liveSessions')}
+                className={`block w-full text-left p-2 rounded-lg ${activeView === 'liveSessions' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}
+              >
+                🎥 Live Sessions
+              </button>
+              <button 
+                onClick={() => setActiveView('attendance')}
+                className={`block w-full text-left p-2 rounded-lg ${activeView === 'attendance' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}
+              >
+                📊 Attendance Reports
+              </button>
             </div>
           )}
         </div>
@@ -178,7 +196,7 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
           >
             <span className="flex items-center space-x-3">
               <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>
               </svg>
               <span>Payments</span>
             </span>
@@ -294,17 +312,16 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
 
       {/* Logout */}
       <div className="p-4 border-t border-gray-700">
-  <button 
-    onClick={handleLogout}
-    className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition duration-200"
-  >
-    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-    </svg>
-    <span>Logout</span>
-  </button>
-</div>
-
+        <button 
+          onClick={handleLogout}
+          className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-700 transition duration-200"
+        >
+          <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+          </svg>
+          <span>Logout</span>
+        </button>
+      </div>
     </div>
   );
 }
