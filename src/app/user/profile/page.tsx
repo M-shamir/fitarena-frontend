@@ -275,8 +275,8 @@ const ProfilePage = () => {
         <div className="flex-1 p-6">
           <div className="max-w-6xl mx-auto">
             {activeTab === 'profile' && userData && <ProfileSection userData={userData} />}
-            {activeTab === 'trainer' && <TrainerBookings bookings={getTrainerBookings()} />}
-            {activeTab === 'stadium' && <StadiumBookings bookings={getStadiumBookings()} />}
+            {activeTab === 'trainer' && <TrainerBookings  />}
+            {activeTab === 'stadium' && <StadiumBookings />}
           </div>
         </div>
       </div>
