@@ -11,6 +11,7 @@ import ApprovedSessions from '@/app/components/trainer/ApprovedSessions';
 import TrainerProfileView from '@/app/components/trainer/TrainerProfileView';
 import CourseEnrollments from '@/app/components/trainer/CourseEnrollments';
 import LiveSessions from '@/app/components/trainer/LiveSessions';
+import PaymentHistory from '@/app/components/trainer/PaymentHistory';
 
 
 
@@ -57,7 +58,7 @@ export default function TrainerDashboard() {
           {activeView === 'courseEnrollments' && <CourseEnrollments/>}
 
           {activeView === 'liveSessions' && <LiveSessions/>}
-
+          {activeView === 'paymentHistory' && <PaymentHistory/>}
           
         </main>
       </div>

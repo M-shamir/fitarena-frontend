@@ -1,7 +1,7 @@
 import StatsCards from './StatsCards';
 import UpcomingSessions from './UpcomingSessions';
 import RecentClients from './RecentClients';
-import QuickActions from './QuickActions';
+
 
 export default function DashboardOverview() {
   return (
@@ -18,7 +18,6 @@ export default function DashboardOverview() {
         <RecentClients />
       </div>
 
-      <QuickActions />
     </>
   );
 }

@@ -96,12 +96,12 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
               >
                 🎥 Live Sessions
               </button>
-              <button 
+              {/* <button 
                 onClick={() => setActiveView('attendance')}
                 className={`block w-full text-left p-2 rounded-lg ${activeView === 'attendance' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}
               >
                 📊 Attendance Reports
-              </button>
+              </button> */}
             </div>
           )}
         </div>
@@ -137,12 +137,12 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
               >
                 🕓 Pending Approvals
               </button>
-              <button 
+              {/* <button 
                 onClick={() => setActiveView('upcomingSessions')}
                 className={`block w-full text-left p-2 rounded-lg ${activeView === 'upcomingSessions' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}
               >
                 📅 Upcoming Sessions
-              </button>
+              </button> */}
               <button 
                 onClick={() => setActiveView('addSession')}
                 className={`block w-full text-left p-2 rounded-lg ${activeView === 'addSession' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}
@@ -153,40 +153,9 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
           )}
         </div>
 
-        {/* Bookings */}
-        <div>
-          <button
-            onClick={() => toggleMenu('bookings')}
-            className={`w-full flex items-center justify-between p-3 rounded-lg ${openMenus.bookings ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200`}
-          >
-            <span className="flex items-center space-x-3">
-              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-              </svg>
-              <span>Bookings</span>
-            </span>
-            <svg className={`w-4 h-4 text-gray-400 transform transition duration-200 ${openMenus.bookings ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </button>
 
-          {openMenus.bookings && (
-            <div className="pl-8 mt-1 space-y-1">
-              <button 
-                onClick={() => setActiveView('enrollments')}
-                className={`block w-full text-left p-2 rounded-lg ${activeView === 'enrollments' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}
-              >
-                View Enrollments
-              </button>
-              <button 
-                onClick={() => setActiveView('attendance')}
-                className={`block w-full text-left p-2 rounded-lg ${activeView === 'attendance' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}
-              >
-                Download Reports
-              </button>
-            </div>
-          )}
-        </div>
+
+        
 
         {/* Payments */}
         <div>
@@ -207,18 +176,13 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
 
           {openMenus.payments && (
             <div className="pl-8 mt-1 space-y-1">
-              <button 
+              {/* <button 
                 onClick={() => setActiveView('earnings')}
                 className={`block w-full text-left p-2 rounded-lg ${activeView === 'earnings' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}
               >
                 Earnings Overview
-              </button>
-              <button 
-                onClick={() => setActiveView('withdrawals')}
-                className={`block w-full text-left p-2 rounded-lg ${activeView === 'withdrawals' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}
-              >
-                Withdrawal Status
-              </button>
+              </button> */}
+            
               <button 
                 onClick={() => setActiveView('paymentHistory')}
                 className={`block w-full text-left p-2 rounded-lg ${activeView === 'paymentHistory' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}
@@ -243,7 +207,7 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
         </button>
 
         {/* Notifications */}
-        <button
+        {/* <button
           onClick={() => setActiveView('notifications')}
           className={`w-full flex items-center p-3 rounded-lg ${activeView === 'notifications' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200`}
         >
@@ -253,7 +217,7 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
             </svg>
             <span>Notifications</span>
           </span>
-        </button>
+        </button> */}
 
         {/* Profile */}
         <div>
