@@ -6,6 +6,7 @@ import ProfileSection from '@/app/components/user/profile/ProfileSection'
 import TrainerBookings from '@/app/components/user/profile/TrainerBookings'
 import StadiumBookings from '@/app/components/user/profile/StadiumBookings'
 import api from '@/utils/api'
+import { useRouter } from 'next/navigation';
 
 type UserData = {
   username: string
@@ -60,6 +61,7 @@ type BookingData = {
 }
 
 const ProfilePage = () => {
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState('profile')
   const [userData, setUserData] = useState<UserData | null>(null)
   const [bookingData, setBookingData] = useState<BookingData | null>(null)
@@ -194,10 +196,26 @@ const ProfilePage = () => {
     }
   }
 
-  const handleLogout = () => {
-    console.log('User logged out')
-  }
-
+  const handleLogout = async () => {
+    ; // Get the router instance
+  
+    try {
+      const response = await api.post('/user/logout/');
+  
+      if (response.status === 200) {
+        localStorage.removeItem('auth-storage');
+        localStorage.removeItem('locationPermissionAsked');
+        localStorage.removeItem('userLocation');
+        router.push('/user/login');
+      } else {
+        alert('Logout failed');
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+      
+      
+    }
+  };
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">

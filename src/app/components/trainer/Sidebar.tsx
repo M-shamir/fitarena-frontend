@@ -30,7 +30,7 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
       const response = await api.post('/trainer/logout/');
   
       if (response.status === 200) {
-        
+        localStorage.removeItem('auth-storage');
         router.push('/trainer/login');
       } else {
         alert('Logout failed');

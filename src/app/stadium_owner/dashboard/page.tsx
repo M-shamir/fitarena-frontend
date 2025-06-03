@@ -7,6 +7,10 @@ import StadiumPendingApprovals from '@/app/components/stadium_owner/StadiumPendi
 import AddStadiumForm from '@/app/components/stadium_owner/AddStadiumForm';
 import StadiumApprovedSlots from '@/app/components/stadium_owner/AddSlot';
 import ApprovedStadiums from '@/app/components/stadium_owner/ApprovedStadium';
+import BookingHistory from '@/app/components/stadium_owner/BookingHistory';
+import StadiumPaymentHistory from '@/app/components/stadium_owner/StadiumPaymentHistory';
+import StadiumOwnerDashboard from '@/app/components/stadium_owner/StadiumOwnerDashboard';
+import StadiumOwnerProfile from '@/app/components/stadium_owner/StadiumOwnerProfile';
 // import ViewStadiums from '@/app/components/owner/ViewStadiums';
 // import EditStadium from '@/app/components/owner/EditStadium';
 // import StadiumVerification from '@/app/components/owner/StadiumVerification';
@@ -57,7 +61,7 @@ export default function OwnerDashboard() {
         </header>
 
         <main className="flex-1 overflow-y-auto p-6 bg-gray-900">
-          {/* {activeView === 'dashboardOverview' && <DashboardOverview />} */}
+          {activeView === 'dashboardOverview' && <StadiumOwnerDashboard />}
           
 
           {activeView === 'addStadium' && <AddStadiumForm setActiveView={setActiveView} />}
@@ -70,19 +74,22 @@ export default function OwnerDashboard() {
           {activeView === 'stadiumVerification' && <StadiumVerification />} */}
           
            {activeView === 'addSlot' && <StadiumApprovedSlots />}
+           {activeView === 'bookingHistory' && <BookingHistory />}
+           {activeView === 'paymentStatus' && <StadiumPaymentHistory />}
+           {activeView === 'profileSettings' && <StadiumOwnerProfile />}
           
           {/* {activeView === 'addSlot' && <AddSlotForm />}
           {activeView === 'manageSlots' && <ManageSlots />}
           {activeView === 'slotBookingSummary' && <SlotBookingSummary />}
           
 
-          {activeView === 'bookingRequests' && <BookingRequests />}
-          {activeView === 'bookingHistory' && <BookingHistory />}
-          {activeView === 'paymentStatus' && <PaymentStatus />}
+          
+          
+          
           {activeView === 'upcomingBookings' && <UpcomingBookings />}
           
       
-          {activeView === 'profileSettings' && <ProfileSettings />}
+          
           
           {activeView === 'supportChat' && <SupportChat />}
           {activeView === 'rejectionReasons' && <RejectionReasons />}
