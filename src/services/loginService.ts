@@ -1,6 +1,18 @@
 import api from "@/utils/api";
 
-export const loginUser = (formData: any) => api.post('/user/auth/login', formData);
-export const loginTrainer = (formData: any) => api.post('/trainer/auth/login', formData);
-export const loginStadiumOwner = (formData: any) => api.post('/stadium_owner/auth/login', formData);
-export const loginAdmin = (FormData:any) => api.post('/admin/')
+interface LoginCredentials {
+  username: string;
+  password: string;
+}
+
+export const loginUser = (credentials: LoginCredentials) => 
+  api.post('/user/auth/login', credentials);
+
+export const loginTrainer = (credentials: LoginCredentials) => 
+  api.post('/trainer/auth/login', credentials);
+
+export const loginStadiumOwner = (credentials: LoginCredentials) => 
+  api.post('/stadium_owner/auth/login', credentials);
+
+export const loginAdmin = (credentials: LoginCredentials) => 
+  api.post('/admin/auth/login', credentials);

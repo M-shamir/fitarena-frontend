@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import Head from 'next/head';
 import { ProtectedRoute } from '@/app/components/auth/ProtectedRoute';
-import { useRouter } from 'next/navigation';
 import Sidebar from '@/app/components/trainer/Sidebar';
 import DashboardOverview from '@/app/components/trainer/DashboardOverview';
 import AddSessionForm from '@/app/components/trainer/AddSessionForm';
@@ -17,7 +16,7 @@ import PaymentHistory from '@/app/components/trainer/PaymentHistory';
 
 export default function TrainerDashboard() {
   const [activeView, setActiveView] = useState('dashboardOverview');
-  const router = useRouter();
+
 
   return (
     <ProtectedRoute requiredRole="trainer" redirectTo="/trainer/login">

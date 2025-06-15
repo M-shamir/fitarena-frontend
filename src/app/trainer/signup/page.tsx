@@ -4,6 +4,8 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import Image from 'next/image';
+
 
 // Types based on the provided models
 type TrainerType = {
@@ -525,7 +527,7 @@ const trainingPhotoInputRef = useRef<HTMLInputElement>(null);
         {trainingPhotos.map((file, index) => (
           <div key={index} className="relative group">
             <div className="aspect-square bg-gray-700 rounded-lg overflow-hidden">
-              <img 
+              <Image
                 src={URL.createObjectURL(file)} 
                 alt={`Preview ${index}`}
                 className="object-cover w-full h-full"

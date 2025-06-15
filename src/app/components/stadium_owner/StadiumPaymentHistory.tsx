@@ -64,8 +64,8 @@ const StadiumPaymentHistory = () => {
       // Initialize jsPDF
       const doc = new jsPDF();
       
-      // Manually add autoTable to the jsPDF instance
-      // @ts-ignore - We're adding the plugin manually
+      // With this:
+      // @ts-expect-error - We're adding the plugin manually
       doc.autoTable = autoTable;
       
       // Title

@@ -19,7 +19,7 @@ export const ProtectedRoute = ({
   preventRoles,
 }: ProtectedRouteProps) => {
   const router = useRouter()
-  const { user, isAuthenticated, role, loading } = useAuthStore()
+  const { isAuthenticated, role, loading } = useAuthStore()
 
   useEffect(() => {
     if (!loading && isAuthenticated) {

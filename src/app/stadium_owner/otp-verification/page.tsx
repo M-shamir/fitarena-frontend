@@ -26,7 +26,7 @@ export default function VerifyOTP() {
   }, [timeLeft]);
   
  
-  const handleChange = (index:any, value:any) => {
+  const handleChange = (index:number, value:any) => {
     if (value.match(/^[0-9]$/) || value === '') {
       const newOtp = [...otp];
       newOtp[index] = value;
@@ -40,14 +40,14 @@ export default function VerifyOTP() {
   };
   
 
-  const handleKeyDown = (index:any, e) => {
+  const handleKeyDown = (index:number, e) => {
     if (e.key === 'Backspace' && otp[index] === '' && index > 0) {
       inputRefs.current[index - 1].focus();
     }
   };
   
   
-  const handlePaste = (e:any) => {
+  const handlePaste = (e:React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData('text/plain').trim();
     
@@ -106,7 +106,7 @@ export default function VerifyOTP() {
         <h1 className="text-center text-3xl font-bold text-[#22b664]">FitArena</h1>
         <h2 className="mt-6 text-center text-2xl font-semibold text-gray-200">Verify your Email</h2>
         <p className="mt-2 text-center text-sm text-gray-400">
-          We've sent a 6-digit code to your Email. Enter the code below to confirm your trainer account.
+          We&apos;ve sent a 6-digit code to your Email. Enter the code below to confirm your trainer account.
         </p>
       </div>
 
@@ -146,7 +146,7 @@ export default function VerifyOTP() {
               </div>
               
               <p className="mt-3 text-sm text-gray-400">
-                Didn't receive a code?{' '}
+              Didn&apos;t receive a code?{' '}
                 <button
                   onClick={resendOTP}
                   disabled={!canResend}

@@ -1,6 +1,8 @@
 import { FiVideo, FiClock, FiCheckCircle, FiStar, FiX } from 'react-icons/fi'
 import { useState, useEffect } from 'react'
 import api from '@/utils/api'
+import Image from 'next/image';
+
 import { toast } from 'react-toastify'
 
 interface LiveSession {
@@ -48,11 +50,9 @@ interface Booking {
   // Add other booking properties as needed
 }
 
-interface TrainerBookingsProps {
-  pastBookings?: Booking[]
-}
 
-const TrainerBookings = ({ pastBookings = [] }: TrainerBookingsProps) => {
+
+const TrainerBookings = () => {
   const [activeTab, setActiveTab] = useState<'today' | 'upcoming' | 'past'>('today')
   const [liveSessions, setLiveSessions] = useState<LiveSession[]>([])
   const [upcomingCourses, setUpcomingCourses] = useState<UpcomingCourse[]>([])
@@ -215,7 +215,7 @@ const TrainerBookings = ({ pastBookings = [] }: TrainerBookingsProps) => {
                   <div className="flex items-start space-x-4">
                     {session.thumbnail && (
                       <div className="w-16 h-16 rounded-md overflow-hidden">
-                        <img 
+                        <Image
                           src={session.thumbnail} 
                           alt={session.course_title}
                           className="w-full h-full object-cover"
@@ -260,8 +260,7 @@ const TrainerBookings = ({ pastBookings = [] }: TrainerBookingsProps) => {
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8 text-center">
               <FiClock className="w-10 h-10 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300">No sessions today</h3>
-              <p className="text-gray-500 dark:text-gray-400 mt-1">You don't have any training sessions scheduled for today</p>
-            </div>
+<p className="text-gray-500 dark:text-gray-400 mt-1">You don&apos;t have any training sessions scheduled for today</p><p className="text-gray-500 dark:text-gray-400 mt-1">You don&apos;t have any training sessions scheduled for today</p>            </div>
           )}
         </div>
       ) : activeTab === 'upcoming' ? (
@@ -319,8 +318,7 @@ const TrainerBookings = ({ pastBookings = [] }: TrainerBookingsProps) => {
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8 text-center">
               <FiClock className="w-10 h-10 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300">No upcoming courses</h3>
-              <p className="text-gray-500 dark:text-gray-400 mt-1">You don't have any upcoming course enrollments</p>
-            </div>
+              <p className="text-gray-500 dark:text-gray-400 mt-1">You don&apos;t have any upcoming course enrollments</p>            </div>
           )}
         </div>
       ) : (
@@ -344,7 +342,7 @@ const TrainerBookings = ({ pastBookings = [] }: TrainerBookingsProps) => {
                   <div className="flex flex-col md:flex-row md:items-start gap-4">
                     {course.thumbnail && (
                       <div className="w-24 h-24 rounded-md overflow-hidden flex-shrink-0">
-                        <img 
+                        <Image
                           src={course.thumbnail} 
                           alt={course.title}
                           className="w-full h-full object-cover"
@@ -412,8 +410,7 @@ const TrainerBookings = ({ pastBookings = [] }: TrainerBookingsProps) => {
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8 text-center">
               <FiCheckCircle className="w-10 h-10 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300">No past courses</h3>
-              <p className="text-gray-500 dark:text-gray-400 mt-1">You don't have any completed or cancelled courses</p>
-            </div>
+              <p className="text-gray-500 dark:text-gray-400 mt-1">You don&apos;t have any completed or cancelled courses</p>            </div>
           )}
         </div>
       )}

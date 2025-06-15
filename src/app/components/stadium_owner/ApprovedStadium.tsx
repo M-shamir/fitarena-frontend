@@ -209,8 +209,7 @@ export default function ApprovedStadiums() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <h3 className="mt-2 text-sm font-medium text-gray-300">No slots generated</h3>
-                  <p className="mt-1 text-sm text-gray-500">This stadium doesn't have any slots yet.</p>
-                </div>
+                  <p className="mt-1 text-sm text-gray-500">This stadium doesn&apos;t have any slots yet.</p>                </div>
               ) : (
                 <div className="overflow-y-auto max-h-[60vh]">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

@@ -2,7 +2,6 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'; // Changed from 'next/router' to 'next/navigation'
-import { log } from 'console';
 
 import { verifyOTPService,resendOTPService } from '@/services/otpService';
 
@@ -111,7 +110,7 @@ export default function VerifyOTP() {
         <h1 className="text-center text-3xl font-bold text-[#22b664]">FitArena</h1>
         <h2 className="mt-6 text-center text-2xl font-semibold text-gray-200">Verify your Email</h2>
         <p className="mt-2 text-center text-sm text-gray-400">
-          We've sent a 6-digit code to your Email. Enter the code below to confirm your trainer account.
+          We ve sent a 6-digit code to your Email. Enter the code below to confirm your trainer account.
         </p>
       </div>
 
@@ -151,7 +150,7 @@ export default function VerifyOTP() {
               </div>
               
               <p className="mt-3 text-sm text-gray-400">
-                Didn't receive a code?{' '}
+                Didn t receive a code?{' '}
                 <button
                   onClick={resendOTP}
                   disabled={!canResend}

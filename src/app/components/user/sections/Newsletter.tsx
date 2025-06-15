@@ -47,8 +47,7 @@ export default function Newsletter() {
               className="bg-white/10 backdrop-blur-md p-6 rounded-xl inline-block"
             >
               <h3 className="text-xl font-bold mb-2">Thank You!</h3>
-              <p>You've been subscribed to our newsletter.</p>
-            </motion.div>
+              <p>You&apos;ve been subscribed to our newsletter.</p>            </motion.div>
           ) : (
             <motion.form
               onSubmit={handleSubmit}

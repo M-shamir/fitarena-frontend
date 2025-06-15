@@ -169,7 +169,7 @@ export default function TrainerLogin() {
             </div>
 
             <div className="text-center text-sm text-gray-400">
-              Don't have an account?{' '}
+              Don t have an account?{' '}
               <Link href="/trainer/signup" className="font-medium text-[#22b664] hover:text-[#1da058] transition duration-200">
                 Create account
               </Link>

@@ -74,6 +74,8 @@ export default function TrainerCoursesPage({ params }: { params: { id: string } 
         setCourses(response.data)
         setLoading(false)
       } catch (err) {
+        console.log(err);
+        
         setError("Failed to fetch courses")
         setLoading(false)
       }
@@ -135,8 +137,8 @@ export default function TrainerCoursesPage({ params }: { params: { id: string } 
           transition={{ duration: 0.5 }}
           className="mb-12"
         >
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">{trainer.user.username}'s Courses</h1>
-          <div className="flex items-center mb-4">
+<h1 className="text-3xl md:text-4xl font-bold mb-4">{trainer.user.username}&apos;s Courses</h1>
+<div className="flex items-center mb-4">
             <div className="flex items-center text-yellow-500 mr-4">
               <FiStar className="mr-1" /> 4.9
             </div>

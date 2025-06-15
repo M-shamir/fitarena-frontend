@@ -10,12 +10,17 @@ type FormData = {
   email: string;
 }
 
+type FormErrors = {
+  email?: string;
+}
+
+
 export default function ForgotPassword() {
   const [formData, setFormData] = useState<FormData>({
     email: ''
   });
   const router = useRouter();
-  const [formErrors, setFormErrors] = useState<any>({});
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [successMessage, setSuccessMessage] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
 
@@ -44,7 +49,7 @@ export default function ForgotPassword() {
       setTimeout(() => {
         router.push('/user/login');
       }, 3000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.log(error);
   
       if (error.response) {

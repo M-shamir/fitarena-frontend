@@ -1,13 +1,12 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FiStar, FiMapPin, FiClock, FiArrowRight, FiFilter, FiX } from 'react-icons/fi'
+import { FiMapPin, FiClock, FiArrowRight, FiFilter } from 'react-icons/fi'
 import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/app/components/user/layout/Header'
 import Footer from '@/app/components/user/layout/Footer'
 import api from '@/utils/api'
-import { log } from 'console'
 
 type Stadium = {
   id: number;
@@ -20,6 +19,12 @@ type Stadium = {
   image_url: string | null;
 }
 
+type PriceRange = {
+  label: string;
+  min: number;
+  max: number;
+}
+
 export default function StadiumsPage() {
   const [darkMode, setDarkMode] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
@@ -29,9 +34,9 @@ export default function StadiumsPage() {
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
   
   const [filters, setFilters] = useState({
-    cities: [],
-    states: [],
-    priceRange: null,
+    cities: [] as string[],
+    states: [] as string[],
+    priceRange: null as PriceRange | null,
     minRating: 0
   });
 
@@ -49,20 +54,12 @@ export default function StadiumsPage() {
     }
   }, []);
   
-  useEffect(() => {
-    if (userLocation) {
-      fetchStadiums();
-    }
-  }, [userLocation]);
-  
-  const fetchStadiums = async () => {
+  const fetchStadiums = useCallback(async () => {
     try {
       const endpoint = `/user/stadiums/nearby/?lat=${userLocation?.lat || 0}&lng=${userLocation?.lng || 0}`;
       const response = await api.get(endpoint);
       const data = response.data;
-      console.log(data);
       
-  
       if (!data || !Array.isArray(data.stadiums)) {
         throw new Error('Invalid data format received from server.');
       }
@@ -74,16 +71,16 @@ export default function StadiumsPage() {
       setLoading(false);
       console.error('Fetch error:', err);
     }
-  };
+  }, [userLocation]);
+
+  useEffect(() => {
+    if (userLocation) {
+      fetchStadiums();
+    }
+  }, [userLocation, fetchStadiums]);
 
   const allCities = [...new Set(stadiums.map(stadium => stadium.city))];
   const allStates = [...new Set(stadiums.map(stadium => stadium.state))];
-  const priceRanges = [
-    { label: "Under ₹500", min: 0, max: 500 },
-    { label: "₹500 - ₹1000", min: 500, max: 1000 },
-    { label: "₹1000 - ₹2000", min: 1000, max: 2000 },
-    { label: "Over ₹2000", min: 2000, max: Infinity }
-  ];
 
   const toggleCity = (city: string) => {
     setFilters(prev => ({
@@ -100,20 +97,6 @@ export default function StadiumsPage() {
       states: prev.states.includes(state)
         ? prev.states.filter(s => s !== state)
         : [...prev.states, state]
-    }));
-  };
-
-  const setPriceRange = (range: any) => {
-    setFilters(prev => ({
-      ...prev,
-      priceRange: prev.priceRange === range ? null : range
-    }));
-  };
-
-  const setMinRating = (rating: number) => {
-    setFilters(prev => ({
-      ...prev,
-      minRating: prev.minRating === rating ? 0 : rating
     }));
   };
 
@@ -282,74 +265,73 @@ export default function StadiumsPage() {
           </motion.div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-  {filteredStadiums.map((stadium, index) => (
-    <motion.div
-      key={stadium.id}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      whileHover={{ y: -5 }}
-      className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all overflow-hidden border border-gray-100 dark:border-gray-700"
-    >
-      <Link href={`/user/stadiums/${stadium.id}`}>
-        <div className="relative h-48 w-full">
-          {stadium.image_url ? (
-            <Image
-              src={stadium.image_url}
-              alt={stadium.name}
-              fill
-              className="object-cover hover:scale-105 transition-transform duration-500"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              priority={index < 3} // Only prioritize first few images
-            />
-          ) : (
-            <div className="bg-gradient-to-br from-gray-100 to-gray-300 dark:from-gray-700 dark:to-gray-900 h-full w-full flex items-center justify-center">
-              <span className="text-gray-500 dark:text-gray-400">No image available</span>
-            </div>
-          )}
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-            <h2 className="text-white font-bold text-xl drop-shadow-md">{stadium.name}</h2>
-            <p className="text-white/90 text-sm mt-1 line-clamp-1 drop-shadow-md">{stadium.description}</p>
-          </div>
-        </div>
+            {filteredStadiums.map((stadium, index) => (
+              <motion.div
+                key={stadium.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ y: -5 }}
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all overflow-hidden border border-gray-100 dark:border-gray-700"
+              >
+                <Link href={`/user/stadiums/${stadium.id}`}>
+                  <div className="relative h-48 w-full">
+                    {stadium.image_url ? (
+                      <Image
+                        src={stadium.image_url}
+                        alt={stadium.name}
+                        fill
+                        className="object-cover hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        priority={index < 3}
+                      />
+                    ) : (
+                      <div className="bg-gradient-to-br from-gray-100 to-gray-300 dark:from-gray-700 dark:to-gray-900 h-full w-full flex items-center justify-center">
+                        <span className="text-gray-500 dark:text-gray-400">No image available</span>
+                      </div>
+                    )}
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                      <h2 className="text-white font-bold text-xl drop-shadow-md">{stadium.name}</h2>
+                      <p className="text-white/90 text-sm mt-1 line-clamp-1 drop-shadow-md">{stadium.description}</p>
+                    </div>
+                  </div>
 
-        <div className="p-6">
-          <div className="flex items-center text-gray-600 dark:text-gray-300 text-sm mb-4">
-            <FiMapPin className="mr-2 flex-shrink-0" />
-            <span className="truncate">{stadium.address}</span>
-          </div>
+                  <div className="p-6">
+                    <div className="flex items-center text-gray-600 dark:text-gray-300 text-sm mb-4">
+                      <FiMapPin className="mr-2 flex-shrink-0" />
+                      <span className="truncate">{stadium.address}</span>
+                    </div>
 
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center text-gray-600 dark:text-gray-300 text-sm">
-              <FiMapPin className="mr-2 flex-shrink-0" />
-              <span>{stadium.city}, {stadium.state}</span>
-            </div>
-            
-            <div className={`flex items-center text-sm px-3 py-1 rounded-full ${
-              stadium.distance === 0 
-                ? "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200"
-                : "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-200"
-            }`}>
-              <FiClock className="mr-1.5 flex-shrink-0" />
-              {stadium.distance === 0 ? (
-                <span>You're here</span>
-              ) : stadium.distance ? (
-                <span>{stadium.distance.toFixed(1)} km</span>
-              ) : (
-                <span>Distance N/A</span>
-              )}
-            </div>
-          </div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center text-gray-600 dark:text-gray-300 text-sm">
+                        <FiMapPin className="mr-2 flex-shrink-0" />
+                        <span>{stadium.city}, {stadium.state}</span>
+                      </div>
+                      
+                      <div className={`flex items-center text-sm px-3 py-1 rounded-full ${
+                        stadium.distance === 0 
+                          ? "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200"
+                          : "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-200"
+                      }`}>
+                        <FiClock className="mr-1.5 flex-shrink-0" />
+                        {stadium.distance === 0 ? (
+                          <span>You&apos;re here</span>
+                        ) : stadium.distance ? (
+                          <span>{stadium.distance.toFixed(1)} km</span>
+                        ) : (
+                          <span>Distance N/A</span>
+                        )}
+                      </div>
+                    </div>
 
-          
-          <button className="w-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-medium py-2 px-4 rounded-lg transition-all">
-            View Details <FiArrowRight className="ml-2" />
-          </button>
-        </div>
-      </Link>
-    </motion.div>
-  ))}
-</div>
+                    <button className="w-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-medium py-2 px-4 rounded-lg transition-all">
+                      View Details <FiArrowRight className="ml-2" />
+                    </button>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
         )}
       </div>
       <Footer />

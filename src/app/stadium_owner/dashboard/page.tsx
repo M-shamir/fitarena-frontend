@@ -1,7 +1,6 @@
 "use client";
 import { useState } from 'react';
 import Head from 'next/head';
-import { useRouter } from 'next/navigation';
 import Sidebar from '@/app/components/stadium_owner/Sidebar';
 import StadiumPendingApprovals from '@/app/components/stadium_owner/StadiumPendingApprovals';
 import AddStadiumForm from '@/app/components/stadium_owner/AddStadiumForm';
@@ -28,7 +27,7 @@ import StadiumOwnerProfile from '@/app/components/stadium_owner/StadiumOwnerProf
 
 export default function OwnerDashboard() {
   const [activeView, setActiveView] = useState('dashboardOverview');
-  const router = useRouter();
+  
 
   return (
     

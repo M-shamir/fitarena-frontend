@@ -150,7 +150,7 @@ export default function TrainerProfileView() {
           {profile.training_photo && (
             <div className="bg-gray-700/50 rounded-lg p-4">
               <h3 className="text-lg font-semibold text-white mb-3">Training Photo</h3>
-              <img 
+              <Image
                 src={profile.training_photo} 
                 alt="Training" 
                 className="rounded-lg max-w-full h-auto max-h-64 object-cover"

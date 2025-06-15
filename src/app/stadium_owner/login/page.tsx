@@ -150,7 +150,7 @@ export default function TrainerLogin() {
 
           <div className="flex items-center justify-center">
             <div className="text-sm text-gray-400">
-              Don't have an account?{' '}
+              Dont have an account?{' '}
               <Link href="/stadium_owner/signup" className="font-medium text-[#22b664] hover:text-[#1da058]">
                 Sign Up
               </Link>

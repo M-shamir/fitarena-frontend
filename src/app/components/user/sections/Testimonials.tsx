@@ -39,7 +39,7 @@ export default function Testimonials() {
           <span className="text-green-500 font-medium">TESTIMONIALS</span>
           <h2 className="text-3xl md:text-4xl font-bold mt-2 mb-4">What Our Users Say</h2>
           <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Don't just take our word for it - hear from our community of sports enthusiasts.
+            Don&apos;t just take our word for it - hear from our community of sports enthusiasts.
           </p>
         </AnimatedContainer>
 
@@ -80,7 +80,7 @@ export default function Testimonials() {
                 </div>
                 
                 <blockquote className="text-gray-600 dark:text-gray-300 mb-6 flex-grow">
-                  "{testimonial.content}"
+                  &ldquo;{testimonial.content}&rdquo;
                 </blockquote>
                 
                 <motion.button
@@ -96,5 +96,5 @@ export default function Testimonials() {
         </div>
       </div>
     </section>
-  )
+  ) 
 }

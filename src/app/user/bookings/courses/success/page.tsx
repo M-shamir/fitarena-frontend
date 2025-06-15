@@ -2,18 +2,24 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import {  useSearchParams } from 'next/navigation'
 import api from '@/utils/api'
 import Header from '@/app/components/user/layout/Header'
 import Footer from '@/app/components/user/layout/Footer'
 import Link from 'next/link'
 
+
+type Course = {
+  id: number;
+  title: string;
+  description: string;
+}
+
 export default function PaymentSuccessPage() {
   const searchParams = useSearchParams()
-  const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [course, setCourse] = useState<any>(null)
+  const [course, setCourse] = useState<Course | null>(null)
 
   useEffect(() => {
     const session_id = searchParams.get('session_id')
@@ -36,8 +42,10 @@ export default function PaymentSuccessPage() {
           setError('Payment verification failed')
         }
         setLoading(false)
-      } catch (err: any) {
-        setError(err.response?.data?.error || 'Payment verification error')
+      } catch (err: unknown) {
+        console.log(err);
+        
+        setError('Payment verification error')
         setLoading(false)
       }
     }
@@ -87,8 +95,7 @@ export default function PaymentSuccessPage() {
           
           {course && (
             <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-2">You've enrolled in: {course.title}</h2>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">{course.description}</p>
+<h2 className="text-xl font-semibold mb-2">You&apos;ve enrolled in: {course.title}</h2>              <p className="text-gray-600 dark:text-gray-300 mb-4">{course.description}</p>
             </div>
           )}
           

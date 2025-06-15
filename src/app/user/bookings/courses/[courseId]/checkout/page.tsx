@@ -1,14 +1,14 @@
 // app/courses/[courseId]/checkout/page.tsx
 'use client'
 import React, { useEffect, useState } from 'react'
-import { useRouter, useParams } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import api from '@/utils/api'
 import Header from '@/app/components/user/layout/Header'
 import Footer from '@/app/components/user/layout/Footer'
 
 export default function CourseCheckoutPage() {
   const params = useParams()
-  const router = useRouter()
+  
   const courseId = params.courseId as string
   const [course, setCourse] = useState<any>(null)
   const [loading, setLoading] = useState(true)
@@ -22,6 +22,8 @@ export default function CourseCheckoutPage() {
         setCourse(response.data)
         setLoading(false)
       } catch (err) {
+        console.log(err);
+        
         setError("Failed to fetch course details")
         setLoading(false)
       }
@@ -33,12 +35,12 @@ export default function CourseCheckoutPage() {
   const handlePayment = async () => {
     setPaymentProcessing(true)
     try {
-      // Create payment session on backend
+
       const response = await api.post(`/payment/course/${courseId}/`) 
       
-      // Redirect to Stripe Checkout
+      
       window.location.href = response.data.payment_url
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.response?.data?.error || 'Payment failed to initialize')
       setPaymentProcessing(false)
     }

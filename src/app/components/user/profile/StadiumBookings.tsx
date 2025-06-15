@@ -76,7 +76,7 @@ const StadiumBooking = () => {
   const handleCancelBooking = async (slotbookingId: number) => {
     setCancellingBooking(slotbookingId);
     try {
-      const response = await api.post(`/user/bookings/${slotbookingId}/cancel/`);
+      await api.post(`/user/bookings/${slotbookingId}/cancel/`);
       
       // Update the relevant booking list based on active tab
       if (activeTab === 'today') {

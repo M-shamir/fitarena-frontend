@@ -31,7 +31,7 @@ export default function ResetPassword() {
     setLoading(true);
   
     try {
-      const response = await api.post("/user/reset-password/", {
+       await api.post("/user/reset-password/", {
         token,
         new_password: newPassword,
       });
@@ -40,7 +40,7 @@ export default function ResetPassword() {
       setTimeout(() => {
         router.push("/user/login");
       }, 3000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error.response) {
         toast.error(error.response.data.error || "Failed to reset password.");
       } else {

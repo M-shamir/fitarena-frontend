@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiArrowRight, FiStar, FiCheck, FiMail, FiMapPin, FiPhone, FiClock } from 'react-icons/fi';
+import { FiArrowRight, FiStar, FiCheck, FiMail, FiMapPin,  FiClock } from 'react-icons/fi';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('stadiums');
@@ -234,7 +234,7 @@ export default function Home() {
               <span className="text-green-500 font-medium">EASY BOOKING</span>
               <h2 className="text-3xl md:text-4xl font-bold mt-2 mb-4">Find Your Perfect Match</h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                Whether you're looking for a venue, a trainer, or organizing an event, we've got you covered.
+                Whether you are looking for a venue, a trainer, or organizing an event, we have got you covered.
               </p>
             </motion.div>
 
@@ -545,7 +545,7 @@ export default function Home() {
               <span className="text-green-500 font-medium">TESTIMONIALS</span>
               <h2 className="text-3xl md:text-4xl font-bold mt-2 mb-4">What Our Users Say</h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                Don't just take our word for it - hear from our community of sports enthusiasts.
+                Don t just take our word for it - hear from our community of sports enthusiasts.
               </p>
             </motion.div>
 
@@ -604,7 +604,7 @@ export default function Home() {
                     ))}
                   </div>
                   <p className="text-gray-600 dark:text-gray-300">
-                    "{testimonial.content}"
+                    {testimonial.content}
                   </p>
                 </motion.div>
               ))}

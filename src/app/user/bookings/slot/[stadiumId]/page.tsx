@@ -53,6 +53,8 @@ export default function SlotSelectionPage({ params }: { params: { stadiumId: str
           setSelectedDate(slotsRes.data[0].date);
         }
       } catch (err) {
+        console.log(err);
+        
         setError('Failed to fetch stadium details');
       } finally {
         setLoading(false);

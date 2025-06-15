@@ -6,6 +6,7 @@ import ProfileSection from '@/app/components/user/profile/ProfileSection'
 import TrainerBookings from '@/app/components/user/profile/TrainerBookings'
 import StadiumBookings from '@/app/components/user/profile/StadiumBookings'
 import api from '@/utils/api'
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 type UserData = {
@@ -55,16 +56,13 @@ type SlotBooking = {
   }
 }
 
-type BookingData = {
-  course_enrollments: CourseEnrollment[]
-  slot_bookings: SlotBooking[]
-}
+
 
 const ProfilePage = () => {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('profile')
   const [userData, setUserData] = useState<UserData | null>(null)
-  const [bookingData, setBookingData] = useState<BookingData | null>(null)
+
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -134,67 +132,9 @@ const ProfilePage = () => {
     fetchData()
   }, [])
 
-  const getTrainerBookings = () => {
-    if (!bookingData) return { upcoming: [], past: [], cancelled: [] }
 
-    const now = new Date()
-    return {
-      upcoming: bookingData.course_enrollments
-        .filter(enrollment => !enrollment.is_cancelled)
-        .map(enrollment => ({
-          id: enrollment.id,
-          title: enrollment.course_details.title,
-          trainer: `Trainer #${enrollment.course_details.trainer}`,
-          date: new Date(enrollment.course_details.start_date).toLocaleDateString(),
-          time: `${enrollment.course_details.start_time} - ${enrollment.course_details.end_time}`,
-          days: [...new Set(enrollment.course_details.days_of_week)].join(', '),
-          thumbnail: enrollment.course_details.thumbnail,
-          enrolledAt: new Date(enrollment.enrolled_at).toLocaleString()
-        })),
-      past: bookingData.course_enrollments
-        .filter(enrollment => enrollment.is_cancelled)
-        .map(enrollment => ({
-          id: enrollment.id,
-          title: enrollment.course_details.title,
-          trainer: `Trainer #${enrollment.course_details.trainer}`,
-          date: new Date(enrollment.course_details.start_date).toLocaleDateString(),
-          time: `${enrollment.course_details.start_time} - ${enrollment.course_details.end_time}`,
-          days: [...new Set(enrollment.course_details.days_of_week)].join(', '),
-          enrolledAt: new Date(enrollment.enrolled_at).toLocaleString(),
-          cancelled: true
-        }))
-    }
-  }
 
-  const getStadiumBookings = () => {
-    if (!bookingData) return { upcoming: [], past: [] }
-
-    return {
-      upcoming: bookingData.slot_bookings
-        .filter(booking => !booking.is_cancelled)
-        .map(booking => ({
-          id: booking.id,
-          stadium: booking.slot.stadium.name,
-          date: new Date(booking.booking_date).toLocaleDateString(),
-          time: `${booking.slot.start_time} - ${booking.slot.end_time}`,
-          sport: booking.slot.sport,
-          location: booking.slot.stadium.location,
-          bookedAt: booking.booked_at ? new Date(booking.booked_at).toLocaleString() : 'N/A'
-        })),
-      past: bookingData.slot_bookings
-        .filter(booking => booking.is_cancelled)
-        .map(booking => ({
-          id: booking.id,
-          stadium: booking.slot.stadium.name,
-          date: new Date(booking.booking_date).toLocaleDateString(),
-          time: `${booking.slot.start_time} - ${booking.slot.end_time}`,
-          sport: booking.slot.sport,
-          location: booking.slot.stadium.location,
-          bookedAt: booking.booked_at ? new Date(booking.booked_at).toLocaleString() : 'N/A',
-          cancelled: true
-        }))
-    }
-  }
+ 
 
   const handleLogout = async () => {
     ; // Get the router instance
@@ -237,11 +177,14 @@ const ProfilePage = () => {
           <div className="flex items-center space-x-3 p-4 mb-8">
             <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center">
               {userData?.profilePhoto ? (
-                <img 
-                  src={userData.profilePhoto} 
-                  alt="Profile" 
-                  className="w-full h-full rounded-full object-cover"
-                />
+                <Image
+                src={userData.profilePhoto}
+                alt="Profile"
+               width={120}
+               height={120}
+                className="object-cover"
+                
+              />
               ) : (
                 <FiUser className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
               )}

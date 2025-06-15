@@ -1,7 +1,6 @@
 "use client";
 import { useState, ChangeEvent, FormEvent } from 'react';
-import api  from '@/utils/api'
-import Image from 'next/image';
+import api from '@/utils/api'
 import Link from 'next/link';
 import { signupSchema } from '@/validation/userValidation';
 import { z } from "zod";
@@ -9,12 +8,19 @@ import { useRouter } from 'next/navigation'
 import { ToastContainer, toast } from 'react-toastify';
 import Head from 'next/head';
 
-
 type FormData = {
   username: string;
   email: string;
   password: string;
   confirmPassword: string;
+}
+
+type FormErrors = {
+  username?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+  [key: string]: string | undefined;
 }
 
 export default function SignUp() {
@@ -25,13 +31,7 @@ export default function SignUp() {
     confirmPassword: ''
   });
   const router = useRouter()
-  const [formErrors, setFormErrors] = useState<any>({});
-  const [successMessage,SetSuccessMesssage] =  useState<string>('')
-  const [errorMessage,setErrorMessage] = useState<string>('')
-
-
-
-
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -39,6 +39,10 @@ export default function SignUp() {
       ...prevState,
       [name]: value,
     }));
+    // Clear error when user types
+    if (formErrors[name]) {
+      setFormErrors(prev => ({ ...prev, [name]: undefined }));
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -46,25 +50,27 @@ export default function SignUp() {
   
     try {
       signupSchema.parse(formData);
-      setErrorMessage('');
-      SetSuccessMesssage('');
+      setFormErrors({});
   
       const response = await api.post('user/auth/signup', formData); 
       const result = response.data;
   
-      SetSuccessMesssage(result.message || 'Sign up success');
+      toast.success(result.message || 'Sign up success');
       router.push('/user/otp-confirmation/');
       
-    } catch (error: any) {
-      if (error.response) {
-        const result = error.response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error && 'response' in error) {
+        const axiosError = error as { response: { data:any } };
+        const result = axiosError.response.data;
         const backendError = result.email ? result.email[0] : result.message || 'Sign-up failed';
-        setErrorMessage(backendError);
         toast.error(backendError);
       } else if (error instanceof z.ZodError) {
-        const errors: { [key: string]: string } = {};
+        const errors: FormErrors = {};
         error.errors.forEach((err) => {
-          errors[err.path[0]] = err.message;
+          if (err.path.length > 0) {
+            const fieldName = err.path[0] as keyof FormErrors;
+            errors[fieldName] = err.message;
+          }
         });
         setFormErrors(errors);
         Object.values(errors).forEach((errMsg) => toast.error(errMsg));

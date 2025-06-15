@@ -32,11 +32,7 @@ export default function StadiumOwnerSignUp() {
 
   const documentInputRef = useRef<HTMLInputElement>(null);
 
-  const api = axios.create({
-    baseURL: 'http://localhost/api',
-    withCredentials: true,
-    timeout: 30000
-  });
+  
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

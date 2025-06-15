@@ -32,7 +32,7 @@ export default function ForgotPassword() {
 
       // Optionally redirect after success
       setTimeout(() => router.push('/trainer/login'), 3000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorMessage = error.response?.data?.message || 
                          error.response?.data?.error || 
                          'Failed to send reset link. Please try again.';

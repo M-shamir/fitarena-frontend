@@ -77,7 +77,7 @@ export default function SlotCheckoutPage({ params }: { params: { stadiumId: stri
           setStadium(stadiumRes.data)
         }
         
-      } catch (err: any) {
+      } catch (err: unknown) {
         setError(err.message || 'Failed to fetch slot details')
         router.push(`/user/bookings/slot/${params.stadiumId}`)
       } finally {
@@ -104,7 +104,7 @@ export default function SlotCheckoutPage({ params }: { params: { stadiumId: stri
       
       // Redirect to Stripe checkout
       window.location.href = response.data.payment_url
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.response?.data?.error || 'Payment initiation failed')
       setPaymentProcessing(false)
     }

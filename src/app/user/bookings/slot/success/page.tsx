@@ -2,7 +2,7 @@
 import { useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { FiCheckCircle, FiClock, FiCalendar } from 'react-icons/fi'
+import { FiCheckCircle, FiCalendar } from 'react-icons/fi'
 import Header from '@/app/components/user/layout/Header'
 import Footer from '@/app/components/user/layout/Footer'
 import api from '@/utils/api'

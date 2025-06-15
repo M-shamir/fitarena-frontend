@@ -52,6 +52,7 @@ const PaymentHistory = () => {
         const response = await api.get('/trainer/payment-history/');
         setPayments(response.data.payment_history);
         setEarnings(response.data.earnings_summary);
+       // eslint-disable-next-line @typescript-eslint/no-unused-vars
         setTrainerInfo(response.data.trainer_info);
         setLoading(false);
       } catch (err) {
@@ -74,7 +75,7 @@ const PaymentHistory = () => {
       const doc = new jsPDF();
       
       // Manually add autoTable to the jsPDF instance
-      // @ts-ignore - We're adding the plugin manually
+      // @ts-expect-error - We're adding the plugin manually
       doc.autoTable = autoTable;
       
       // Title
