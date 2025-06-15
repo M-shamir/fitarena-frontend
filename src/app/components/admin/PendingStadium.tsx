@@ -156,10 +156,10 @@ interface PendingStadium {
                           <Image 
                           src={stadium.image} 
                           alt={stadium.name} 
-                          fill // or use width and height
+                          width={800} 
+                          height={500} 
                           className="rounded-md object-cover"
                           onError={handleImageError}
-                          style={{ objectFit: 'cover' }}
                         />
                         ) : (
                           <span className="text-xs text-gray-500">No image</span>
