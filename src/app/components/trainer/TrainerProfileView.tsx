@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import api from '@/utils/api';
+import Image from 'next/image';
 
 interface TrainerProfile {
   username: string;
@@ -75,7 +76,7 @@ export default function TrainerProfileView() {
         <div className="md:col-span-1">
           <div className="bg-gray-700/50 rounded-lg p-4">
             <div className="flex flex-col items-center">
-              <img
+              <Image
                 src={profile.profile_photo}
                 alt="Profile"
                 className="w-32 h-32 rounded-full object-cover border-2 border-gray-600 mb-4"

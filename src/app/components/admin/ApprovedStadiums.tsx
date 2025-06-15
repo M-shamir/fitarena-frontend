@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import api from '@/utils/api';
 import { toast } from 'react-toastify';
+import Image from 'next/image';
 
 interface ApprovedStadium {
   id: number;
@@ -149,18 +150,22 @@ export default function ApprovedStadiums() {
                     <div className="text-sm text-gray-300">{formatLocation(stadium)}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="h-10 w-10 flex items-center justify-center">
-                      {stadium.image ? (
-                        <img 
-                          src={stadium.image} 
-                          alt={stadium.name} 
-                          className="h-full w-full rounded-md object-cover"
-                          onError={handleImageError}
-                        />
-                      ) : (
-                        <span className="text-xs text-gray-500">No image</span>
-                      )}
-                    </div>
+                  <div className="h-10 w-10 flex items-center justify-center">
+  {stadium.image ? (
+    <div className="h-full w-full relative">
+      <Image
+        src={stadium.image}
+        alt={stadium.name}
+        fill
+        className="rounded-md object-cover"
+        onError={handleImageError}
+        unoptimized={true} // Only if you're hosting images externally
+      />
+    </div>
+  ) : (
+    <span className="text-xs text-gray-500">No image</span>
+  )}
+</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${

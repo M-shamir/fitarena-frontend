@@ -63,7 +63,7 @@ export default function AdminLogin() {
         // Redirect to admin dashboard
         router.push('/admin/dashboard');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error instanceof z.ZodError) {
         // Handle validation errors
         const errors: Partial<FormData> = {};

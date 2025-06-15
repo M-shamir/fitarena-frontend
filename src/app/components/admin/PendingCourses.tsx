@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Image from 'next/image';
 import api from '@/utils/api';
 
 interface Course {
@@ -98,11 +99,17 @@ export default function PendingCourses() {
                 <tr key={course.id} className="hover:bg-gray-700/50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      {course.thumbnail && (
-                        <div className="flex-shrink-0 h-10 w-10">
-                          <img className="h-10 w-10 rounded-md object-cover" src={course.thumbnail} alt={course.title} />
-                        </div>
-                      )}
+                    {course.thumbnail && (
+  <div className="flex-shrink-0 h-10 w-10 relative">
+    <Image
+      src={course.thumbnail}
+      alt={course.title}
+      fill
+      className="rounded-md object-cover"
+      sizes="40px" // Optimizes for this specific display size
+    />
+  </div>
+)}
                       <div className="ml-4">
                         <div className="text-sm font-medium text-white">{course.title}</div>
                         <div className="text-xs text-gray-400">{getTrainerType(course.trainer_type)}</div>

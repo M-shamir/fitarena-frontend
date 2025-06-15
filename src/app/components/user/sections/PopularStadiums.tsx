@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { FiArrowRight, FiStar, FiMapPin, FiClock } from 'react-icons/fi'
+import { FiArrowRight,  FiMapPin } from 'react-icons/fi'
 import Image from 'next/image'
 import AnimatedContainer from '../ui/AnimatedContainer'
 import api from '@/utils/api'

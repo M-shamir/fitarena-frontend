@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import api from '@/utils/api';
+import Image from 'next/image';
 
 interface ApprovedStadium {
   id: number;
@@ -146,7 +147,7 @@ export default function ApprovedStadiums() {
             <div key={stadium.id} className="bg-gray-700/30 rounded-lg overflow-hidden border border-gray-600 hover:border-gray-500 transition duration-200">
               <div className="h-48 bg-gray-700 relative">
                 {stadium.image ? (
-                  <img 
+                  <Image
                     src={stadium.image} 
                     alt={stadium.name} 
                     className="w-full h-full object-cover"

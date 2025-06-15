@@ -5,7 +5,6 @@ import api from '@/utils/api';
 import { format } from 'date-fns';
 import { FaRupeeSign, FaCalendarAlt, FaMoneyBillWave, FaHistory, FaFilePdf } from 'react-icons/fa';
 import { BsGraphUp } from 'react-icons/bs';
-import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 
 interface Payment {

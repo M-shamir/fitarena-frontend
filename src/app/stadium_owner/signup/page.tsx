@@ -1,5 +1,5 @@
 "use client";
-import { useState, ChangeEvent, FormEvent, useEffect, useRef } from 'react';
+import { useState, ChangeEvent, FormEvent, useRef } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';

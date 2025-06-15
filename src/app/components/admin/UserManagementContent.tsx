@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "@/utils/api"; 
+import Image from 'next/image';
 
 interface User {
   id: number;
@@ -25,8 +26,10 @@ const UserManagementContent: React.FC = () => {
     try {
       const response = await api.get("/admin-api/users/");
       setUsers(response.data.users || []);
-    } catch (err) {
+    } catch (err:unknown) {
       setError("Failed to fetch users");
+      console.log(err);
+      
     } finally {
       setLoading(false);
     }
@@ -41,8 +44,10 @@ const UserManagementContent: React.FC = () => {
           user.id === userId ? { ...user, is_active: !user.is_active } : user
         )
       );
-    } catch (err) {
+    } catch (err:unknown) {
       alert("Failed to update user status");
+      console.log(err);
+      
     }
   };
 
@@ -78,11 +83,13 @@ const UserManagementContent: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-gray-300">{user.email}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-gray-300">{user.role}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <img
-                      src={user.profile_photo}
-                      alt={user.username}
-                      className="h-10 w-10 rounded-full object-cover"
-                    />
+                  <Image
+    src={user.profile_photo}
+    alt={user.username}
+    fill
+    className="object-cover"
+    sizes="40px" 
+  />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.is_staff ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}`}>

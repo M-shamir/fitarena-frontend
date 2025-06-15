@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import api from '@/utils/api';
+import Image from 'next/image';
 
 interface PendingStadium {
   id: number;
@@ -185,7 +186,7 @@ export default function StadiumPendingApprovals() {
                     />
                     {editingStadium.image && !editFormData.image && (
                       <div className="mt-2">
-                        <img 
+                        <Image
                           src={editingStadium.image} 
                           alt="Current stadium" 
                           className="h-24 w-24 object-cover rounded-md"
@@ -328,7 +329,7 @@ export default function StadiumPendingApprovals() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {stadium.image ? (
-                      <img 
+                      <Image 
                         src={stadium.image} 
                         alt={stadium.name} 
                         className="h-10 w-10 rounded-md object-cover"

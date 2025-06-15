@@ -2,6 +2,7 @@ import { FiClock, FiCheckCircle, FiX, FiCalendar, FiLoader } from 'react-icons/f
 import { useState, useEffect } from 'react'
 import api from '@/utils/api'
 import { toast } from 'react-toastify'
+import Image from 'next/image';
 
 interface Booking {
   id: number
@@ -146,7 +147,7 @@ const StadiumBooking = () => {
       <div className="p-5">
         <div className="flex items-start space-x-4">
           <div className="flex-shrink-0">
-            <img 
+            <Image
               src={booking.stadium_image || 'https://via.placeholder.com/64'} 
               alt={booking.stadium_name}
               className="w-16 h-16 rounded-lg object-cover"

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import api from '@/utils/api';
+import Image from 'next/image';
 
 interface Profile {
   id: number;
@@ -110,7 +111,7 @@ export default function StadiumOwnerProfile() {
           {/* Profile Photo */}
           <div className="flex-shrink-0">
             <div className="relative">
-              <img
+              <Image
                 src={profile.profile_photo}
                 alt="Profile"
                 className="w-32 h-32 rounded-full object-cover border-2 border-gray-600"

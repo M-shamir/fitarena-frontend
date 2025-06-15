@@ -1,6 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
-import { FiArrowRight, FiStar } from 'react-icons/fi'
+import {  FiStar } from 'react-icons/fi'
 import Image from 'next/image'
 import AnimatedContainer from '../ui/AnimatedContainer'
 

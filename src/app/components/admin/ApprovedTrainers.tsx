@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import api from '@/utils/api'; // Import the axios instance
+import Image from 'next/image';
 
 interface Trainer {
-  listed: any;
+  listed: unknown;
   id: number;
   username: string;
   email: string;
@@ -251,21 +252,26 @@ const ApprovedTrainers: React.FC = () => {
               ) : profileData ? (
                 <div className="space-y-6 text-gray-300">
                   {profileData.profile_image && (
-                    <div className="flex justify-center">
-                      <div className="h-32 w-32 rounded-full overflow-hidden bg-gray-700 flex items-center justify-center">
-                        <img 
-                          src={profileData.profile_image} 
-                          alt="Trainer profile" 
-                          className="h-full w-full object-cover"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.style.display = 'none';
-                            target.parentElement!.innerHTML = 'TP';
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )}
+  <div className="flex justify-center">
+    <div className="h-32 w-32 rounded-full overflow-hidden bg-gray-700 flex items-center justify-center relative">
+      <Image
+        src={profileData.profile_image}
+        alt="Trainer profile"
+        fill
+        className="object-cover"
+        onError={(e) => {
+          const target = e.currentTarget;
+          target.style.display = 'none';
+          const parent = target.parentElement;
+          if (parent) {
+            parent.innerHTML = '<span className="text-white text-xl font-medium">TP</span>';
+          }
+        }}
+        unoptimized={process.env.NODE_ENV !== 'production'} // Optional: only optimize in production
+      />
+    </div>
+  </div>
+)}
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>

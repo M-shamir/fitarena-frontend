@@ -1,9 +1,6 @@
 "use client";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Head from 'next/head';
-import Link from 'next/link';
-import { ProtectedRoute } from '@/app/components/auth/ProtectedRoute'
 import DashboardContent from '@/app/components/admin/DashboardContent';
 import UserManagementContent from '@/app/components/admin/UserManagementContent';
 import PendingTrainers from '@/app/components/admin/PendingTrainers';

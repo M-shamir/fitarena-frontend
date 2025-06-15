@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import api from '@/utils/api';
 import { toast } from 'react-toastify';
+import Image from 'next/image';
 
 interface ApprovedStadium {
   id: number;
@@ -193,7 +194,7 @@ export default function StadiumApprovedSlots() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="h-10 w-10 flex items-center justify-center">
                       {stadium.image ? (
-                        <img 
+                        <Image
                           src={stadium.image} 
                           alt={stadium.name} 
                           className="h-full w-full rounded-md object-cover"

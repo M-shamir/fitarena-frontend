@@ -22,8 +22,10 @@ const PendingTrainers: React.FC = () => {
     try {
       const response = await api.get("/admin-api/trainers/pending/");
       setTrainers(response.data.pending_trainers || []);
-    } catch (err) {
+    } catch (err:unknown) {
       setError("Failed to fetch pending trainers");
+      console.log(err);
+      
     } finally {
       setLoading(false);
     }
@@ -33,8 +35,10 @@ const PendingTrainers: React.FC = () => {
     try {
       await api.post(`/admin-api/trainers/${trainerId}/approve/`);
       setTrainers((prev) => prev.filter((trainer) => trainer.id !== trainerId));
-    } catch (err) {
+    } catch (err:unknown) {
       alert("Failed to approve trainer");
+      console.log(err);
+      
     }
   };
 
@@ -42,8 +46,10 @@ const PendingTrainers: React.FC = () => {
     try {
       await api.post(`/admin-api/trainers/${trainerId}/reject/`);
       setTrainers((prev) => prev.filter((trainer) => trainer.id !== trainerId));
-    } catch (err) {
+    } catch (err:unknown) {
       alert("Failed to reject trainer");
+      console.log(err);
+      
     }
   };
 
