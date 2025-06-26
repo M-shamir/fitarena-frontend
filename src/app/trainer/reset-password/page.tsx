@@ -34,7 +34,7 @@ export default function ResetPassword() {
     setLoading(true);
   
     try {
-      const response = await api.post("/trainer/reset-password/", {
+      await api.post("/trainer/reset-password/", {
         token,
         new_password: newPassword,
       });
@@ -43,9 +43,10 @@ export default function ResetPassword() {
       setTimeout(() => {
         router.push("/trainer/login");
       }, 3000);
-    } catch (error: any) {
-      if (error.response) {
-        toast.error(error.response.data.error || "Failed to reset password.");
+    } catch (error: unknown) {
+      if (typeof error === 'object' && error !== null && 'response' in error) {
+        const err = error as { response?: { data?: { error?: string } } };
+        toast.error(err.response?.data?.error || "Failed to reset password.");
       } else {
         toast.error("Something went wrong. Please try again.");
       }

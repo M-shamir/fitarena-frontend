@@ -17,6 +17,13 @@ type FormData = {
   username: string;
   password: string;
 }
+type FormErrors = {
+  username?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+  [key: string]: string | undefined;
+}
 
 export default function TrainerLogin() {
   const [formData, setFormData] = useState<FormData>({
@@ -25,7 +32,7 @@ export default function TrainerLogin() {
   });
   const router = useRouter();
   const authStore = useAuthStore();
-  const [formErrors, setFormErrors] = useState<any>({});
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [successMessage, setSuccessMessage] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);

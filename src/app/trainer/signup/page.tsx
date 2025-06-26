@@ -7,6 +7,7 @@ import axios from 'axios';
 import Image from 'next/image';
 
 
+
 // Types based on the provided models
 type TrainerType = {
   id: number;
@@ -28,6 +29,18 @@ type FormData = {
   trainer_type: number[];
   languages_spoken: number[];
 }
+type FormErrors = {
+  username?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+  phone_number?: string;
+  gender?: string;
+  trainer_type?: string;
+  languages_spoken?: string;
+  general?: string; // For non-field specific errors
+}
+
 
 export default function SignUp() {
   const [formData, setFormData] = useState<FormData>({
@@ -42,7 +55,7 @@ export default function SignUp() {
   });
   
   const router = useRouter();
-  const [formErrors, setFormErrors] = useState<any>({});
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [successMessage, setSuccessMessage] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [trainerTypes, setTrainerTypes] = useState<TrainerType[]>([]);
@@ -71,7 +84,7 @@ const trainingPhotoInputRef = useRef<HTMLInputElement>(null);
         setTrainerTypes(response.data);
       } catch (error) {
         console.error('Error fetching trainer types:', error);
-        setFormErrors((prev: any) => ({ ...prev, trainer_type: 'Failed to load trainer types' }));
+        setFormErrors((prev) => ({ ...prev, trainer_type: 'Failed to load trainer types' }));
       } finally {
         setIsLoadingTrainerTypes(false);
       }
@@ -84,7 +97,7 @@ const trainingPhotoInputRef = useRef<HTMLInputElement>(null);
         setLanguages(response.data);
       } catch (error) {
         console.error('Error fetching languages:', error);
-        setFormErrors((prev: any) => ({ ...prev, languages_spoken: 'Failed to load languages' }));
+        setFormErrors((prev) => ({ ...prev, languages_spoken: 'Failed to load languages' }));
       } finally {
         setIsLoadingLanguages(false);
       }
@@ -309,6 +322,9 @@ const trainingPhotoInputRef = useRef<HTMLInputElement>(null);
                       value={formData.username}
                       onChange={handleChange}
                     />
+                    {formErrors.username && (
+    <p className="mt-1 text-sm text-red-400">{formErrors.username}</p>
+  )}
                   </div>
 
                   <div>

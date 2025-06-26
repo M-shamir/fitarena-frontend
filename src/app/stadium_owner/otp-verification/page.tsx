@@ -26,7 +26,7 @@ export default function VerifyOTP() {
   }, [timeLeft]);
   
  
-  const handleChange = (index:number, value:any) => {
+  const handleChange = (index:number, value:string) => {
     if (value.match(/^[0-9]$/) || value === '') {
       const newOtp = [...otp];
       newOtp[index] = value;

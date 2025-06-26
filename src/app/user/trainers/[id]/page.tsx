@@ -170,7 +170,8 @@ export default function TrainerCoursesPage({ params }: { params: { id: string } 
             >
               <div className="relative h-48 w-full">
                 <Image
-                
+                  width={290}
+                  height={400}
                   src={course.thumbnail}
                   alt={course.title}
                   className="object-cover hover:scale-105 transition-transform duration-500"

@@ -1,4 +1,3 @@
-// app/courses/[courseId]/checkout/page.tsx
 'use client'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
@@ -6,11 +5,63 @@ import api from '@/utils/api'
 import Header from '@/app/components/user/layout/Header'
 import Footer from '@/app/components/user/layout/Footer'
 
+interface TrainerType {
+  id: number
+  name: string
+}
+
+interface User {
+  username: string
+  email: string
+}
+
+interface Trainer {
+  id: number
+  user: User
+  phone_number: string
+  gender: string
+  trainer_type: TrainerType[]
+  certifications: string
+  languages_spoken: { id: number; name: string }[]
+  training_photo: string
+  listed: boolean
+}
+
+interface Course {
+  id: number
+  title: string
+  description: string
+  trainer: Trainer
+  trainer_type: TrainerType
+  thumbnail: string
+  start_date: string
+  end_date: string
+  start_time: string
+  end_time: string
+  days_of_week: string[]
+  max_participants: number
+  price: string
+  status: string
+  approval_status: string
+  approval_note: string
+  duration_minutes: number
+  created_at: string
+  available_slots: number
+  current_enrollments: number
+}
+interface ApiError {
+  response?: {
+    data?: {
+      error?: string
+    }
+  }
+}
+
 export default function CourseCheckoutPage() {
   const params = useParams()
   
   const courseId = params.courseId as string
-  const [course, setCourse] = useState<any>(null)
+  const [course, setCourse] = useState<Course | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [paymentProcessing, setPaymentProcessing] = useState(false)
@@ -35,13 +86,11 @@ export default function CourseCheckoutPage() {
   const handlePayment = async () => {
     setPaymentProcessing(true)
     try {
-
       const response = await api.post(`/payment/course/${courseId}/`) 
-      
-      
       window.location.href = response.data.payment_url
     } catch (err: unknown) {
-      setError(err.response?.data?.error || 'Payment failed to initialize')
+      const error = err as ApiError
+      setError(error.response?.data?.error || 'Payment failed to initialize')
       setPaymentProcessing(false)
     }
   };
@@ -70,6 +119,18 @@ export default function CourseCheckoutPage() {
           >
             Try Again
           </button>
+        </div>
+        <Footer />
+      </div>
+    )
+  }
+
+  if (!course) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <Header darkMode={false} setDarkMode={() => {}} />
+        <div className="container mx-auto px-4 pt-20 pb-12">
+          <p className="text-red-500 dark:text-red-400">Course not found</p>
         </div>
         <Footer />
       </div>

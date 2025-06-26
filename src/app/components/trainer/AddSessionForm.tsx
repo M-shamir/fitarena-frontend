@@ -9,6 +9,11 @@ interface AddSessionFormProps {
   setActiveView: (view: string) => void;
 }
 
+interface TrainerType {
+  id: number;
+  name: string;
+}
+
 export default function AddSessionForm({ setActiveView }: AddSessionFormProps) {
   const [formData, setFormData] = useState({
     title: '',
@@ -24,7 +29,7 @@ export default function AddSessionForm({ setActiveView }: AddSessionFormProps) {
     thumbnail: null as File | null,
   });
 
-  const [trainerTypes, setTrainerTypes] = useState<any[]>([]);
+  const [trainerTypes, setTrainerTypes] = useState<TrainerType[]>([]);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);

@@ -23,11 +23,7 @@ interface EarningsSummary {
   all_time: number;
 }
 
-interface TrainerInfo {
-  name: string;
-  email: string;
-  phone: string;
-}
+
 
 
 const PaymentHistory = () => {
@@ -37,11 +33,7 @@ const PaymentHistory = () => {
     this_month: 0, 
     all_time: 0 
   });
-  const [trainerInfo, setTrainerInfo] = useState<TrainerInfo>({ 
-    name: '', 
-    email: '', 
-    phone: '' 
-  });
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -52,8 +44,8 @@ const PaymentHistory = () => {
         const response = await api.get('/trainer/payment-history/');
         setPayments(response.data.payment_history);
         setEarnings(response.data.earnings_summary);
-       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        setTrainerInfo(response.data.trainer_info);
+       
+        
         setLoading(false);
       } catch (err) {
         setError('Failed to fetch payment history');

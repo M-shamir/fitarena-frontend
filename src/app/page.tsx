@@ -17,7 +17,6 @@ export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
   const [showLocationModal, setShowLocationModal] = useState(false);
-  const [locationPermission, setLocationPermission] = useState<'granted' | 'denied' | 'unrequested'>('unrequested');
 
   useEffect(() => {
     // Check system preference for dark mode
@@ -55,22 +54,16 @@ export default function Home() {
         console.log('User location:', userCoords); 
   
         setUserLocation(userCoords);
-        setLocationPermission('granted');
         localStorage.setItem('locationPermissionAsked', 'true');
-        
-        // Store location in localStorage for persistence
         localStorage.setItem('userLocation', JSON.stringify(userCoords));
       } catch (error) {
         console.error('Error getting location:', error);
-        setLocationPermission('denied');
       }
     } else {
-      setLocationPermission('denied');
       localStorage.setItem('locationPermissionAsked', 'true');
     }
     setShowLocationModal(false);
   };
-  
   
   useEffect(() => {
     const savedLocation = localStorage.getItem('userLocation');
@@ -78,18 +71,13 @@ export default function Home() {
       try {
         const location = JSON.parse(savedLocation);
         setUserLocation(location);
-        setLocationPermission('granted');
       } catch (e) {
         console.error('Failed to parse saved location', e);
       }
     }
   }, []);
-  
 
   return (
-    
-
-      
     <div className={`min-h-screen ${darkMode ? 'dark' : ''}`}>
       <div className="dark:bg-gray-900 dark:text-white transition-colors duration-300">
         <Head>
@@ -100,13 +88,12 @@ export default function Home() {
         <Header darkMode={darkMode} setDarkMode={setDarkMode} />
         
         <main>
-        <ProtectedRoute 
-      preventRoles={['admin', 'trainer', 'stadium_owner']}>
-          <Hero />
-          <QuickBooking userLocation={userLocation} />
-          <PopularStadiums userLocation={userLocation} />
-          <Trainers />
-          <HostGame />
+          <ProtectedRoute preventRoles={['admin', 'trainer', 'stadium_owner']}>
+            <Hero />
+            <QuickBooking userLocation={userLocation} />
+            <PopularStadiums userLocation={userLocation} />
+            <Trainers />
+            <HostGame />
           </ProtectedRoute>
           <Testimonials />
           <Newsletter />
@@ -120,6 +107,5 @@ export default function Home() {
         />
       </div>
     </div>
-   
   );
 }

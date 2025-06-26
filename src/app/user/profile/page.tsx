@@ -21,57 +21,16 @@ type UserData = {
   }
 }
 
-type CourseEnrollment = {
-  id: number
-  course_details: {
-    id: number
-    title: string
-    description: string
-    trainer: number
-    start_time: string
-    end_time: string
-    days_of_week: string[]
-    thumbnail: string
-    start_date: string
-    end_date: string
-  }
-  enrolled_at: string
-  is_cancelled: boolean
-}
-
-type SlotBooking = {
-  id: number
-  booking_date: string
-  is_cancelled: boolean
-  booked_at?: string
-  slot: {
-    id: number
-    start_time: string
-    end_time: string
-    stadium: {
-      name: string
-      location: string
-    }
-    sport: string
-  }
-}
-
-type BookingData = {
-  course_enrollments: CourseEnrollment[]
-  slot_bookings: SlotBooking[]
-}
-
 const ProfilePage = () => {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('profile')
   const [userData, setUserData] = useState<UserData | null>(null)
-  const [bookingData, setBookingData] = useState<BookingData | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch profile
+        // Fetch profile only
         const profileResponse = await api.get('/user/profile/')
         const profile = profileResponse.data.profile
         
@@ -80,7 +39,10 @@ const ProfilePage = () => {
           username: profile.username,
           email: profile.email,
           profilePhoto: profile.profile_photo,
-          joinDate: new Date(profile.created_at || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+          joinDate: new Date(profile.created_at || Date.now()).toLocaleDateString('en-US', { 
+            month: 'long', 
+            year: 'numeric' 
+          }),
           stats: {
             completedSessions: 0,
             upcomingSessions: 0,
@@ -89,44 +51,8 @@ const ProfilePage = () => {
         }
         
         setUserData(defaultUserData)
-
-        // Fetch bookings
-        const bookingsResponse = await api.get('/orders/bookings/')
-        setBookingData(bookingsResponse.data)
-        
-        // Calculate stats based on bookings
-        if (bookingsResponse.data) {
-          const upcomingCourses = bookingsResponse.data.course_enrollments.filter(
-            (e: CourseEnrollment) => !e.is_cancelled
-          ).length
-          
-          const upcomingSlots = bookingsResponse.data.slot_bookings.filter(
-            (b: SlotBooking) => !b.is_cancelled
-          ).length
-          
-          // Determine favorite sport from bookings
-          const sportsCount: Record<string, number> = {}
-          bookingsResponse.data.slot_bookings.forEach((b: SlotBooking) => {
-            if (!b.is_cancelled) {
-              sportsCount[b.slot.sport] = (sportsCount[b.slot.sport] || 0) + 1
-            }
-          })
-          
-          const favoriteSport = Object.keys(sportsCount).length > 0 
-            ? Object.entries(sportsCount).sort((a, b) => b[1] - a[1])[0][0]
-            : 'None'
-
-          setUserData(prev => ({
-            ...prev!,
-            stats: {
-              completedSessions: 0,
-              upcomingSessions: upcomingCourses + upcomingSlots,
-              favoriteSport
-            }
-          }))
-        }
       } catch (error) {
-        console.error('Failed to fetch data:', error)
+        console.error('Failed to fetch profile data:', error)
       } finally {
         setLoading(false)
       }
@@ -135,13 +61,7 @@ const ProfilePage = () => {
     fetchData()
   }, [])
 
-
-
- 
-
   const handleLogout = async () => {
-    ; // Get the router instance
-  
     try {
       const response = await api.post('/user/logout/');
   
@@ -155,10 +75,9 @@ const ProfilePage = () => {
       }
     } catch (error) {
       console.error('Logout error:', error);
-      
-      
     }
   };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -178,19 +97,19 @@ const ProfilePage = () => {
         {/* Sidebar Navigation */}
         <div className="w-64 min-h-screen bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4 hidden md:block">
           <div className="flex items-center space-x-3 p-4 mb-8">
-          <div className="relative w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center overflow-hidden">
-  {userData?.profilePhoto ? (
-    <Image
-      src={userData.profilePhoto}
-      alt="Profile"
-      width={48}  // Matches container size
-      height={48} // Matches container size
-      className="rounded-full object-cover w-full h-full"
-    />
-  ) : (
-    <FiUser className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-  )}
-</div>
+            <div className="relative w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center overflow-hidden">
+              {userData?.profilePhoto ? (
+                <Image
+                  src={userData.profilePhoto}
+                  alt="Profile"
+                  width={48}
+                  height={48}
+                  className="rounded-full object-cover w-full h-full"
+                />
+              ) : (
+                <FiUser className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+              )}
+            </div>
             <div>
               <h2 className="font-semibold text-gray-800 dark:text-white">{userData?.username || 'User'}</h2>
               <p className="text-xs text-gray-500 dark:text-gray-400">{userData?.email || ''}</p>
@@ -238,13 +157,13 @@ const ProfilePage = () => {
         <div className="flex-1 p-6">
           <div className="max-w-6xl mx-auto">
             {activeTab === 'profile' && userData && <ProfileSection userData={userData} />}
-            {activeTab === 'trainer' && <TrainerBookings  />}
+            {activeTab === 'trainer' && <TrainerBookings />}
             {activeTab === 'stadium' && <StadiumBookings />}
           </div>
         </div>
       </div>
     </div>
-  ) 
+  )
 }
 
 export default ProfilePage

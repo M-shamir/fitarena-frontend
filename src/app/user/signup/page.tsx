@@ -60,7 +60,7 @@ export default function SignUp() {
       
     } catch (error: unknown) {
       if (error instanceof Error && 'response' in error) {
-        const axiosError = error as { response: { data:any } };
+        const axiosError = error as { response: { data:unknown } };
         const result = axiosError.response.data;
         const backendError = result.email ? result.email[0] : result.message || 'Sign-up failed';
         toast.error(backendError);

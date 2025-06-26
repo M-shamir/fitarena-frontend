@@ -45,10 +45,7 @@ interface UpcomingCourse {
   can_cancel: boolean
 }
 
-interface Booking {
-  id: number
-  // Add other booking properties as needed
-}
+
 
 
 

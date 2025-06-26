@@ -12,6 +12,15 @@ type FormData = {
   confirmPassword: string;
   phone_number: string;
 }
+type FormErrors = {
+  username?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+  phone_number?: string;
+  general?: string; // For non-field specific errors
+}
+
 
 export default function StadiumOwnerSignUp() {
   const [formData, setFormData] = useState<FormData>({
@@ -23,7 +32,7 @@ export default function StadiumOwnerSignUp() {
   });
   
   const router = useRouter();
-  const [formErrors, setFormErrors] = useState<any>({});
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [successMessage, setSuccessMessage] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [documents, setDocuments] = useState<File[]>([]);

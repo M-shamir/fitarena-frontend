@@ -14,6 +14,13 @@ const loginSchema = z.object({
   username: z.string().min(1, 'Username is required'),
   password: z.string().min(1, 'Password is required'),
 });
+type FormErrors = {
+  username?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+  [key: string]: string | undefined;
+}
 
 type FormData = z.infer<typeof loginSchema>;
 
@@ -25,7 +32,7 @@ export default function Login() {
   
   const router = useRouter();
   const authStore = useAuthStore();
-  const [formErrors, setFormErrors] = useState<any>({});
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [successMessage, setSuccessMessage] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -128,12 +135,13 @@ export default function Login() {
       </div>
 
       <div>
-        <button
-          type="submit"
-          className="w-full py-3 px-4 rounded-lg font-medium text-white bg-[#22b664] hover:bg-[#1da058] focus:ring-2 focus:ring-[#22b664] focus:ring-opacity-50 transition duration-200"
-        >
-          Log In
-        </button>
+      <button
+              type="submit"
+              disabled={isLoading}
+              className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white ${isLoading ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#22b664] hover:bg-[#1da058]'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#22b664] transition-all duration-200`}
+            >
+              {isLoading ? 'Signing in...' : 'Sign in'}
+            </button>
       </div>
 
       <div className="text-center text-sm text-gray-400">
