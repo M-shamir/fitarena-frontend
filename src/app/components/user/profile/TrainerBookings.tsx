@@ -216,6 +216,8 @@ const TrainerBookings = () => {
                     {session.thumbnail && (
                       <div className="w-16 h-16 rounded-md overflow-hidden">
                         <Image
+                          width={200}
+                          height={200}
                           src={session.thumbnail} 
                           alt={session.course_title}
                           className="w-full h-full object-cover"
@@ -391,19 +393,7 @@ const TrainerBookings = () => {
                     </div>
                   </div>
                 </div>
-                
-                <div className="border-t border-gray-200 dark:border-gray-700 px-5 py-3 bg-gray-50 dark:bg-gray-700/20">
-                  <div className="flex justify-end space-x-3">
-                    <button className="px-4 py-2 text-sm border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700/50 transition">
-                      View Details
-                    </button>
-                    {course.status === 'completed' && !course.rating && (
-                      <button className="px-4 py-2 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition">
-                        Rate Course
-                      </button>
-                    )}
-                  </div>
-                </div>
+               
               </div>
             ))
           ) : (

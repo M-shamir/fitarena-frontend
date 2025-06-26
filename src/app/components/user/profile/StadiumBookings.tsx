@@ -148,6 +148,8 @@ const StadiumBooking = () => {
         <div className="flex items-start space-x-4">
           <div className="flex-shrink-0">
             <Image
+            width={200}
+            height={200}
               src={booking.stadium_image || 'https://via.placeholder.com/64'} 
               alt={booking.stadium_name}
               className="w-16 h-16 rounded-lg object-cover"

@@ -170,10 +170,11 @@ export default function TrainerCoursesPage({ params }: { params: { id: string } 
             >
               <div className="relative h-48 w-full">
                 <Image
+                
                   src={course.thumbnail}
                   alt={course.title}
-                  fill
                   className="object-cover hover:scale-105 transition-transform duration-500"
+                  
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
                   <h2 className="text-white font-bold text-xl">{course.title}</h2>

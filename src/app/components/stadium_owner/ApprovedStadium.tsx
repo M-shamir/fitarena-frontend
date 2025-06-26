@@ -148,6 +148,8 @@ export default function ApprovedStadiums() {
               <div className="h-48 bg-gray-700 relative">
                 {stadium.image ? (
                   <Image
+                  width={200}
+                  height={200}
                     src={stadium.image} 
                     alt={stadium.name} 
                     className="w-full h-full object-cover"

@@ -187,6 +187,8 @@ export default function StadiumPendingApprovals() {
                     {editingStadium.image && !editFormData.image && (
                       <div className="mt-2">
                         <Image
+                        width={200}
+                        height={200}
                           src={editingStadium.image} 
                           alt="Current stadium" 
                           className="h-24 w-24 object-cover rounded-md"
@@ -330,6 +332,8 @@ export default function StadiumPendingApprovals() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     {stadium.image ? (
                       <Image 
+                      width={200}
+                      height={200}
                         src={stadium.image} 
                         alt={stadium.name} 
                         className="h-10 w-10 rounded-md object-cover"

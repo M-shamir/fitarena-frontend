@@ -56,13 +56,16 @@ type SlotBooking = {
   }
 }
 
-
+type BookingData = {
+  course_enrollments: CourseEnrollment[]
+  slot_bookings: SlotBooking[]
+}
 
 const ProfilePage = () => {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('profile')
   const [userData, setUserData] = useState<UserData | null>(null)
-
+  const [bookingData, setBookingData] = useState<BookingData | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -175,20 +178,19 @@ const ProfilePage = () => {
         {/* Sidebar Navigation */}
         <div className="w-64 min-h-screen bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4 hidden md:block">
           <div className="flex items-center space-x-3 p-4 mb-8">
-            <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center">
-              {userData?.profilePhoto ? (
-                <Image
-                src={userData.profilePhoto}
-                alt="Profile"
-               width={120}
-               height={120}
-                className="object-cover"
-                
-              />
-              ) : (
-                <FiUser className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-              )}
-            </div>
+          <div className="relative w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center overflow-hidden">
+  {userData?.profilePhoto ? (
+    <Image
+      src={userData.profilePhoto}
+      alt="Profile"
+      width={48}  // Matches container size
+      height={48} // Matches container size
+      className="rounded-full object-cover w-full h-full"
+    />
+  ) : (
+    <FiUser className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+  )}
+</div>
             <div>
               <h2 className="font-semibold text-gray-800 dark:text-white">{userData?.username || 'User'}</h2>
               <p className="text-xs text-gray-500 dark:text-gray-400">{userData?.email || ''}</p>

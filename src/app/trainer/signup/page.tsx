@@ -528,6 +528,8 @@ const trainingPhotoInputRef = useRef<HTMLInputElement>(null);
           <div key={index} className="relative group">
             <div className="aspect-square bg-gray-700 rounded-lg overflow-hidden">
               <Image
+              width={200}
+              height={200}
                 src={URL.createObjectURL(file)} 
                 alt={`Preview ${index}`}
                 className="object-cover w-full h-full"
