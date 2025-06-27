@@ -168,15 +168,14 @@ export default function TrainerCoursesPage({ params }: { params: { id: string } 
               whileHover={{ y: -5 }}
               className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all overflow-hidden"
             >
-              <div className="relative h-48 w-full">
-                <Image
-                  width={290}
-                  height={400}
-                  src={course.thumbnail}
-                  alt={course.title}
-                  className="object-cover hover:scale-105 transition-transform duration-500"
-                  
-                />
+              <div className="relative aspect-video w-full"> {/* 16:9 aspect ratio */}
+  <Image
+    fill
+    src={course.thumbnail}
+    alt={course.title}
+    className="object-cover hover:scale-105 transition-transform duration-500"
+    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+  />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
                   <h2 className="text-white font-bold text-xl">{course.title}</h2>
                 </div>

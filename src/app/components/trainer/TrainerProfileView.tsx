@@ -76,11 +76,14 @@ export default function TrainerProfileView() {
         <div className="md:col-span-1">
           <div className="bg-gray-700/50 rounded-lg p-4">
             <div className="flex flex-col items-center">
-              <Image
-                src={profile.profile_photo}
-                alt="Profile"
-                className="w-32 h-32 rounded-full object-cover border-2 border-gray-600 mb-4"
-              />
+            <Image
+        src={profile.profile_photo}
+        alt="Profile"
+        width={200}
+        height={200}
+        className="object-cover" // Ensures the image covers the space while maintaining aspect ratio
+        sizes="(max-width: 768px) 100vw, 33vw" 
+      />
               <h3 className="text-lg font-semibold text-white">{profile.username}</h3>
               <p className="text-gray-400 text-sm">{profile.email}</p>
             </div>
@@ -151,6 +154,8 @@ export default function TrainerProfileView() {
             <div className="bg-gray-700/50 rounded-lg p-4">
               <h3 className="text-lg font-semibold text-white mb-3">Training Photo</h3>
               <Image
+              width={200}
+              height={200}
                 src={profile.training_photo} 
                 alt="Training" 
                 className="rounded-lg max-w-full h-auto max-h-64 object-cover"

@@ -1,8 +1,8 @@
 'use client'
 import { FiEdit, FiUser, FiCalendar, FiActivity, FiAward } from 'react-icons/fi'
 import { useState } from 'react'
-
-
+import api from '@/utils/api'
+import toast from 'react-hot-toast'
 
 const ProfileSection = ({ userData }) => {
   const [isEditing, setIsEditing] = useState(false)
@@ -18,10 +18,19 @@ const ProfileSection = ({ userData }) => {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setIsEditing(false)
-    // Save data to backend
+    try {
+      const profileResponse = await api.patch('/user/profile/edit/', formData)
+      toast.success('Profile updated successfully!')
+      setIsEditing(false)
+      // Update the displayed user data with the new values
+      userData.username = formData.username
+      userData.email = formData.email
+    } catch (error:unknown) {
+      console.error('Error updating profile:', error)
+      toast.error(error.response?.data?.message || 'Failed to update profile')
+    }
   }
 
   return (

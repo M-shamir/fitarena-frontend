@@ -97,14 +97,13 @@ const ProfilePage = () => {
         {/* Sidebar Navigation */}
         <div className="w-64 min-h-screen bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4 hidden md:block">
           <div className="flex items-center space-x-3 p-4 mb-8">
-            <div className="relative w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center overflow-hidden">
-              {userData?.profilePhoto ? (
+<div className="relative w-10 h-7 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center overflow-hidden">              {userData?.profilePhoto ? (
                 <Image
                   src={userData.profilePhoto}
                   alt="Profile"
-                  width={48}
-                  height={48}
-                  className="rounded-full object-cover w-full h-full"
+                  width={100}
+                  height={100}
+                  className="rounded-full object-cover"
                 />
               ) : (
                 <FiUser className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />

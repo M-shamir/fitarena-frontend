@@ -1,6 +1,7 @@
 import api from '@/utils/api';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import useAuthStore from '@/store/authStore';
 
 interface SidebarProps {
   activeView: string;
@@ -17,7 +18,10 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
     reviews: false,
     profile: false
   });
-  
+  const { user} = useAuthStore();
+  const displayName = user?.username 
+    ? user.username.charAt(0).toUpperCase() + user.username.slice(1)
+    : 'Trainer Name';
 
   const toggleMenu = (menu: keyof typeof openMenus) => {
     setOpenMenus(prev => ({ ...prev, [menu]: !prev[menu] }));
@@ -51,7 +55,7 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
             </svg>
           </div>
           <div>
-            <p className="font-medium">Trainer Name</p>
+            <p className="font-medium">{displayName}</p>
             <p className="text-xs text-gray-400">Professional Trainer</p>
           </div>
         </div>

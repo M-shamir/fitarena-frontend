@@ -16,7 +16,7 @@ interface Slot {
   price: string
   status: string
   stadium_id: number
-  stadium?: {  // Make stadium optional
+  stadium?: {
     id: number
     name: string
     image_url: string
@@ -27,7 +27,7 @@ interface Slot {
 interface ApiResponse {
   slots: Slot[]
   total_price: string
-  stadium?: {  // Add stadium to API response interface
+  stadium?: {
     id: number
     name: string
     image_url: string
@@ -35,31 +35,34 @@ interface ApiResponse {
   }
 }
 
-export default function SlotCheckoutPage({ params }: { params: { stadiumId: string } }) {
+export default function SlotCheckoutPage({
+  params,
+}: {
+  params: { stadiumId: string }
+}) {
   const router = useRouter()
-  const searchParams = useSearchParams()
+  const urlSearchParams = useSearchParams()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [slots, setSlots] = useState<Slot[]>([])
-  const [stadium, setStadium] = useState<ApiResponse['stadium']>() // Separate stadium state
+  const [stadium, setStadium] = useState<ApiResponse['stadium']>()
   const [paymentProcessing, setPaymentProcessing] = useState(false)
   const [totalAmount, setTotalAmount] = useState(0)
 
   useEffect(() => {
-    const slotIds = searchParams.get('slotIds')?.split(',') || []
+    const slotIds = urlSearchParams?.get('slotIds')?.split(',') || []
     
     const fetchSlots = async () => {
       try {
-        const stadiumId = params.stadiumId // Access params directly (still works in current Next.js)
+         
         const response = await api.get<ApiResponse>(
-          `/user/stadiums/${stadiumId}/slots/book/?ids=${slotIds.join(',')}`
+          `/user/stadiums/${params.stadiumId}/slots/book/?ids=${slotIds.join(',')}`
         )
         
         if (response.data.slots.length !== slotIds.length) {
           throw new Error('Some slots are no longer available')
         }
         
-        // Verify all slots are available
         const unavailableSlots = response.data.slots.filter(slot => slot.status !== 'available')
         if (unavailableSlots.length > 0) {
           throw new Error('Some selected slots are no longer available')
@@ -68,11 +71,9 @@ export default function SlotCheckoutPage({ params }: { params: { stadiumId: stri
         setSlots(response.data.slots)
         setTotalAmount(parseFloat(response.data.total_price))
         
-        // Set stadium data if available in response
         if (response.data.stadium) {
           setStadium(response.data.stadium)
         } else {
-          // Fallback: Fetch stadium details separately if not in response
           const stadiumRes = await api.get(`/user/stadiums/${stadiumId}/`)
           setStadium(stadiumRes.data)
         }
@@ -90,7 +91,7 @@ export default function SlotCheckoutPage({ params }: { params: { stadiumId: stri
     } else {
       router.push(`/user/bookings/slot/${params.stadiumId}`)
     }
-  }, [params.stadiumId, searchParams, router])
+  }, [params.stadiumId, urlSearchParams, router])
 
   const handlePayment = async () => {
     setPaymentProcessing(true)
