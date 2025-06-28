@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import Image from 'next/image';
+import api from '@/utils/api'
 
 
 
@@ -70,11 +71,7 @@ export default function SignUp() {
   const certificationInputRef = useRef<HTMLInputElement>(null);
 const trainingPhotoInputRef = useRef<HTMLInputElement>(null);
 
-  const api = axios.create({
-    baseURL: 'http://localhost/api',
-    withCredentials: true,
-    timeout: 30000
-  });
+  
 
   useEffect(() => {
     const fetchTrainerTypes = async () => {

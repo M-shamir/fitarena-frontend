@@ -21,7 +21,7 @@ const ProfileSection = ({ userData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const profileResponse = await api.patch('/user/profile/edit/', formData)
+       await api.patch('/user/profile/edit/', formData)
       toast.success('Profile updated successfully!')
       setIsEditing(false)
       // Update the displayed user data with the new values
