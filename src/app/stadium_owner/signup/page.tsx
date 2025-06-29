@@ -107,8 +107,7 @@ export default function StadiumOwnerSignUp() {
       documents.forEach(file => {
         apiData.append('documents', file);
       });
-
-      const response = await axios.post('http://localhost/api/stadium_owner/auth/signup', apiData, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}stadium_owner/auth/signup`,  apiData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         },

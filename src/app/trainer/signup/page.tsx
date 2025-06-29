@@ -211,8 +211,7 @@ const trainingPhotoInputRef = useRef<HTMLInputElement>(null);
       if (trainingPhotos.length > 0) {
         apiData.append('training_photo', trainingPhotos[0]);
       }
-
-      const response = await axios.post('http://localhost/api/trainer/auth/signup', apiData, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}trainer/auth/signup`, apiData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         },
