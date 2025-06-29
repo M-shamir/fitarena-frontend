@@ -7,9 +7,9 @@ const footerLinks = [
     title: "Quick Links",
     links: [
       { name: "Home", href: "/" },
-      { name: "Stadiums", href: "/stadiums" },
-      { name: "Trainers", href: "/trainers" },
-      { name: "Host Game", href: "/host" },
+      { name: "Stadiums", href: "user/stadium" },
+      { name: "Trainers", href: "user/trainers" },
+      { name: "Host Game", href: "user/host" },
       { name: "Pricing", href: "/pricing" }
     ]
   },

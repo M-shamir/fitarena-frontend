@@ -5,6 +5,7 @@ import { FiArrowRight,  FiMapPin } from 'react-icons/fi'
 import Image from 'next/image'
 import AnimatedContainer from '../ui/AnimatedContainer'
 import api from '@/utils/api'
+import Link from 'next/link'
 
 interface Stadium {
   id: number
@@ -176,6 +177,7 @@ export default function PopularStadiums({ userLocation }: { userLocation: { lat:
                 </div>
                 
                 <div className="px-6 pb-6">
+                  <Link href={`/user/stadiums/${stadium.id}`} passHref>
                   <motion.button
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
@@ -183,6 +185,7 @@ export default function PopularStadiums({ userLocation }: { userLocation: { lat:
                   >
                     Book Now <FiArrowRight className="ml-2" />
                   </motion.button>
+                  </Link>
                 </div>
               </motion.div>
             </AnimatedContainer>

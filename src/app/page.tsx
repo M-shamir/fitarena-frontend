@@ -11,7 +11,6 @@ import HostGame from './components/user/sections/HostGame';
 import Testimonials from './components/user/sections/Testimonials';
 import Newsletter from './components/user/sections/Newsletter';
 import LocationPermissionModal from './components/user/ui/LocationPermissionModal';
-import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
@@ -88,13 +87,12 @@ export default function Home() {
         <Header darkMode={darkMode} setDarkMode={setDarkMode} />
         
         <main>
-          <ProtectedRoute preventRoles={['admin', 'trainer', 'stadium_owner']}>
             <Hero />
             <QuickBooking userLocation={userLocation} />
             <PopularStadiums userLocation={userLocation} />
             <Trainers />
             <HostGame />
-          </ProtectedRoute>
+         
           <Testimonials />
           <Newsletter />
         </main>
