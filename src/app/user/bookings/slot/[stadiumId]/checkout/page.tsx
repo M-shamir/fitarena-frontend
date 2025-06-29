@@ -74,7 +74,7 @@ export default function SlotCheckoutPage({
         if (response.data.stadium) {
           setStadium(response.data.stadium)
         } else {
-          const stadiumRes = await api.get(`/user/stadiums/${stadiumId}/`)
+          const stadiumRes = await api.get(`/user/stadiums/${params.stadiumId}/`)
           setStadium(stadiumRes.data)
         }
         
