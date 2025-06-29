@@ -79,14 +79,14 @@ export default function StadiumOwnerProfile() {
     <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold">Profile Information</h2>
-        {!isEditing && (
+        {/* {!isEditing && (
           <button 
             onClick={() => setIsEditing(true)}
             className="text-sm text-blue-400 hover:text-blue-300"
           >
             Edit Profile
           </button>
-        )}
+        )} */}
       </div>
 
       {loading && !profile ? (
