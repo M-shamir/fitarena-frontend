@@ -122,9 +122,9 @@ export default function TrainerLogin() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label htmlFor="password" className="block text-sm font-medium text-gray-300">Password</label>
-                  <Link href="/trainer/forgot-password" className="text-xs text-[#22b664] hover:text-[#1da058] transition duration-200">
+                  {/* <Link href="/trainer/forgot-password" className="text-xs text-[#22b664] hover:text-[#1da058] transition duration-200">
                     Forgot password?
-                  </Link>
+                  </Link> */}
                 </div>
                 <input
                   id="password"
