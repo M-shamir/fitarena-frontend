@@ -91,11 +91,11 @@ const PaymentHistory = () => {
       });
       
       // Transactions Section
-      doc.text('Transaction History', 14, (doc as any).lastAutoTable.finalY + 15);
+      doc.text('Transaction History', 14, (doc as unknown).lastAutoTable.finalY + 15);
       
       // Transactions Table
       autoTable.default(doc, {
-        startY: (doc as any).lastAutoTable.finalY + 20,
+        startY: (doc as unknown).lastAutoTable.finalY + 20,
         head: [['Date', 'Course', 'Student', 'Amount (₹)', 'Status']],
         body: payments.map(payment => [
           format(new Date(payment.payment_date), 'dd MMM yyyy'), // Added format string

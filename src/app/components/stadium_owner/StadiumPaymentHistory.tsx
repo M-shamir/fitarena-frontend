@@ -89,11 +89,11 @@ const StadiumPaymentHistory = () => {
       });
       
       // Transactions Section
-      doc.text('Booking History', 14, (doc as any).lastAutoTable.finalY + 15);
+      doc.text('Booking History', 14, (doc as unknown).lastAutoTable.finalY + 15);
       
       // Transactions Table
       autoTable.default(doc, {
-        startY: (doc as any).lastAutoTable.finalY + 20,
+        startY: (doc as unknown).lastAutoTable.finalY + 20,
         head: [['Date', 'Stadium', 'Slot Details', 'Customer', 'Amount (₹)', 'Status']],
         body: payments.map(payment => [
           format(new Date(payment.payment_date), 'dd MMM yyyy'), 
@@ -141,7 +141,7 @@ const StadiumPaymentHistory = () => {
       setError('Failed to generate PDF');
     }
   };
-  
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
