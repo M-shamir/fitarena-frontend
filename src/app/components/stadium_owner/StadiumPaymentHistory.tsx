@@ -59,14 +59,10 @@ const StadiumPaymentHistory = () => {
     try {
       // Dynamic import to avoid SSR issues
       const { default: jsPDF } = await import('jspdf');
-      const autoTable = (await import('jspdf-autotable')).default;
+      const autoTable = await import('jspdf-autotable');
       
       // Initialize jsPDF
       const doc = new jsPDF();
-      
-      // With this:
-      // @ts-expect-error - We're adding the plugin manually
-      doc.autoTable = autoTable;
       
       // Title
       doc.setFontSize(18);
@@ -77,7 +73,7 @@ const StadiumPaymentHistory = () => {
       doc.text('Earnings Summary', 14, 35);
       
       // Summary Table
-      doc.autoTable({
+      autoTable.default(doc, {
         startY: 40,
         head: [['Period', 'Amount (₹)']],
         body: [
@@ -93,11 +89,11 @@ const StadiumPaymentHistory = () => {
       });
       
       // Transactions Section
-      doc.text('Booking History', 14, doc.autoTable.previous.finalY + 15);
+      doc.text('Booking History', 14, (doc as any).lastAutoTable.finalY + 15);
       
       // Transactions Table
-      doc.autoTable({
-        startY: doc.autoTable.previous.finalY + 20,
+      autoTable.default(doc, {
+        startY: (doc as any).lastAutoTable.finalY + 20,
         head: [['Date', 'Stadium', 'Slot Details', 'Customer', 'Amount (₹)', 'Status']],
         body: payments.map(payment => [
           format(new Date(payment.payment_date), 'dd MMM yyyy'), 
@@ -145,7 +141,7 @@ const StadiumPaymentHistory = () => {
       setError('Failed to generate PDF');
     }
   };
-
+  
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
