@@ -1,5 +1,5 @@
 "use client";
-import { useState, ChangeEvent, FormEvent } from 'react';
+import { useState, ChangeEvent, FormEvent,useEffect} from 'react';
 import api from '@/utils/api'
 import Link from 'next/link';
 import { signupSchema } from '@/validation/userValidation';
@@ -34,6 +34,7 @@ export default function SignUp() {
   });
   const router = useRouter()
   const [formErrors, setFormErrors] = useState<FormErrors>({});
+
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -116,6 +117,19 @@ export default function SignUp() {
     toast.error('Google sign-in failed');
   }
 
+  
+
+  const handleFacebookLogin = () => {
+    const params = new URLSearchParams({
+      client_id: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || '',
+      redirect_uri: `${window.location.origin}/user/auth/facebook/callback`,
+      scope: 'email,public_profile',  // email must be first
+      state: Math.random().toString(36).substring(2),
+      response_type: 'code',
+    });
+    window.location.href = `https://www.facebook.com/v19.0/dialog/oauth?${params}`;
+  };
+  
   return (
     <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''}>
     <div className="min-h-screen bg-gray-900 flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
@@ -248,15 +262,16 @@ export default function SignUp() {
            
 
             <div>
-              <button
-                className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-                onClick={() => console.log('Facebook sign-in')}
-              >
-                <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M22,12c0-5.52-4.48-10-10-10S2,6.48,2,12c0,4.84,3.44,8.87,8,9.8V15H8v-3h2V9.5C10,7.57,11.57,6,13.5,6H16v3h-2 c-0.55,0-1,0.45-1,1v2h3v3h-3v6.95C18.05,21.45,22,17.19,22,12z"/>
-                </svg>
-                Facebook
-              </button>
+            <button
+      onClick={handleFacebookLogin}
+      className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+      disabled={useAuthStore.getState().loading}
+    >
+      <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M22,12c0-5.52-4.48-10-10-10S2,6.48,2,12c0,4.84,3.44,8.87,8,9.8V15H8v-3h2V9.5C10,7.57,11.57,6,13.5,6H16v3h-2 c-0.55,0-1,0.45-1,1v2h3v3h-3v6.95C18.05,21.45,22,17.19,22,12z"/>
+      </svg>
+      Facebook
+    </button>
             </div>
           </div>
         </div>
