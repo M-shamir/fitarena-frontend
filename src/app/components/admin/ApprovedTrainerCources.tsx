@@ -17,21 +17,45 @@ interface TrainerCourse {
   duration_minutes: number;
 }
 
+interface Pagination {
+  count: number;
+  next: string | null;
+  previous: string | null;
+}
+
 export default function ApprovedTrainerCourses() {
   const [courses, setCourses] = useState<TrainerCourse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [pagination, setPagination] = useState<Pagination>({
+    count: 0,
+    next: null,
+    previous: null
+  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5; // Fixed page size
 
   useEffect(() => {
     fetchApprovedCourses();
-  }, []);
+  }, [currentPage]);
 
   const fetchApprovedCourses = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await api.get<TrainerCourse[]>('admin-api/trainer-courses/approved/');
-      setCourses(response.data);
+      const response = await api.get<{
+        count: number;
+        next: string | null;
+        previous: string | null;
+        results: TrainerCourse[];
+      }>(`admin-api/trainer-courses/approved/?page=${currentPage}&page_size=${pageSize}`);
+      
+      setCourses(response.data.results);
+      setPagination({
+        count: response.data.count,
+        next: response.data.next,
+        previous: response.data.previous
+      });
     } catch (err) {
       setError("Failed to fetch approved courses. Please try again.");
       console.error("Error fetching courses:", err);
@@ -53,13 +77,18 @@ export default function ApprovedTrainerCourses() {
     });
   };
 
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
+
   return (
     <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold">Approved Training Programs</h2>
         <div className="flex items-center gap-4">
           <span className="text-sm text-gray-400">
-            {courses.length} program{courses.length !== 1 ? 's' : ''}
+            Showing {(currentPage - 1) * pageSize + 1} to{' '}
+            {Math.min(currentPage * pageSize, pagination.count)} of {pagination.count} programs
           </span>
           <button 
             onClick={fetchApprovedCourses}
@@ -97,8 +126,9 @@ export default function ApprovedTrainerCourses() {
           <p className="mt-1 text-sm text-gray-500">No training programs have been approved yet.</p>
         </div>
       ) : (
-        <div className="space-y-4">
-          {courses.map((course) => (
+        <>
+          <div className="space-y-4 mb-6">
+            {courses.map((course) => (
             <div key={course.id} className="bg-gray-700/30 rounded-lg border border-gray-600 p-5 hover:border-gray-500 transition duration-200">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
                 <div>
@@ -154,8 +184,32 @@ export default function ApprovedTrainerCourses() {
               </div>
             </div>
           ))}
-        </div>
+          </div>
+
+          {/* Pagination controls */}
+          <div className="flex items-center justify-between mt-4">
+            <div className="text-sm text-gray-400">
+              Page {currentPage} of {Math.ceil(pagination.count / pageSize)}
+            </div>
+            <div className="flex space-x-2">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={!pagination.previous}
+                className={`px-3 py-1 rounded ${!pagination.previous ? 'bg-gray-700 cursor-not-allowed' : 'bg-gray-600 hover:bg-gray-500'}`}
+              >
+                Previous
+              </button>
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={!pagination.next}
+                className={`px-3 py-1 rounded ${!pagination.next ? 'bg-gray-700 cursor-not-allowed' : 'bg-gray-600 hover:bg-gray-500'}`}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
-}
+}  

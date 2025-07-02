@@ -13,23 +13,41 @@ interface User {
   is_active: boolean;
 }
 
+interface Pagination {
+  count: number;
+  next: string | null;
+  previous: string | null;
+}
+
 const UserManagementContent: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [pagination, setPagination] = useState<Pagination>({
+    count: 0,
+    next: null,
+    previous: null
+  });
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageSize = 6; 
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [currentPage]);
 
   const fetchUsers = async () => {
     try {
-      const response = await api.get("/admin-api/users/");
-      setUsers(response.data.users || []);
-    } catch (err:unknown) {
+      setLoading(true);
+      const response = await api.get(`/admin-api/users/?page=${currentPage}&page_size=${pageSize}`);
+      setUsers(response.data.results || []);
+      setPagination({
+        count: response.data.count,
+        next: response.data.next,
+        previous: response.data.previous
+      });
+    } catch (err: unknown) {
       setError("Failed to fetch users");
       console.log(err);
-      
     } finally {
       setLoading(false);
     }
@@ -38,17 +56,19 @@ const UserManagementContent: React.FC = () => {
   const toggleUserStatus = async (userId: number) => {
     try {
       await api.patch(`/admin-api/users/${userId}/block-unblock/`);
-
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>
+      setUsers(prevUsers =>
+        prevUsers.map(user =>
           user.id === userId ? { ...user, is_active: !user.is_active } : user
         )
       );
-    } catch (err:unknown) {
+    } catch (err: unknown) {
       alert("Failed to update user status");
       console.log(err);
-      
     }
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
   };
 
   return (
@@ -83,13 +103,14 @@ const UserManagementContent: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-gray-300">{user.email}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-gray-300">{user.role}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                  <Image
-    src={user.profile_photo}
-    alt={user.username}
-    fill
-    className="object-cover"
-    sizes="40px" 
-  />
+                    <Image
+                      src={user.profile_photo}
+                      width={50}
+                      height={50}
+                      alt={user.username}
+                      className="object-cover"
+                      sizes="40px" 
+                    />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.is_staff ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}`}>
@@ -113,6 +134,30 @@ const UserManagementContent: React.FC = () => {
               ))}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* Pagination controls */}
+      <div className="flex items-center justify-between mt-4">
+        <div className="text-sm text-gray-400">
+          Showing {(currentPage - 1) * pageSize + 1} to{' '}
+          {Math.min(currentPage * pageSize, pagination.count)} of {pagination.count} users
+        </div>
+        <div className="flex space-x-2">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={!pagination.previous}
+            className={`px-3 py-1 rounded ${!pagination.previous ? 'bg-gray-700 cursor-not-allowed' : 'bg-gray-600 hover:bg-gray-500'}`}
+          >
+            Previous
+          </button>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={!pagination.next}
+            className={`px-3 py-1 rounded ${!pagination.next ? 'bg-gray-700 cursor-not-allowed' : 'bg-gray-600 hover:bg-gray-500'}`}
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>
