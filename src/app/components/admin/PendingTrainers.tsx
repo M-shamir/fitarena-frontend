@@ -33,7 +33,7 @@ const PendingTrainers: React.FC = () => {
 
   const showConfirmation = async (action: 'approve' | 'reject', trainerId: number) => {
     const actionText = action === 'approve' ? 'approve' : 'reject';
-    const actionColor = action === 'approve' ? 'green' : 'red';
+    
 
     const confirmAction = await new Promise((resolve) => {
       toast(

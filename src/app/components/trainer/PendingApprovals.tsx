@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import api from '@/utils/api';
 import { toast } from 'react-toastify';
+import Image from 'next/image';
 
 interface PendingSession {
   id: string;
@@ -290,7 +291,9 @@ export default function PendingApprovals() {
       </div>
       
       <div className="mt-2 relative group">
-        <img 
+        <Image
+        width={200}
+        height={200}
           src={editingSession.thumbnail} 
           alt="Current thumbnail" 
           className="h-24 w-24 rounded-md object-cover border border-gray-600 hover:border-gray-500 transition"
