@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useEffect, useState,useCallback } from 'react';
 import api from '@/utils/api';
 
 interface TrainerCourse {
@@ -35,11 +35,7 @@ export default function ApprovedTrainerCourses() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5; // Fixed page size
 
-  useEffect(() => {
-    fetchApprovedCourses();
-  }, [currentPage]);
-
-  const fetchApprovedCourses = async () => {
+  const fetchApprovedCourses = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -62,7 +58,11 @@ export default function ApprovedTrainerCourses() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage]);
+
+  useEffect(() => {
+    fetchApprovedCourses();
+  }, [currentPage, fetchApprovedCourses]); 
 
   const formatTime = (timeString: string) => {
     const [hours, minutes] = timeString.split(':');

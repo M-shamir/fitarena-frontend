@@ -1,5 +1,5 @@
 "use client";
-import { useState, ChangeEvent, FormEvent,useEffect} from 'react';
+import { useState, ChangeEvent, FormEvent} from 'react';
 import api from '@/utils/api'
 import Link from 'next/link';
 import { signupSchema } from '@/validation/userValidation';
@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { ToastContainer, toast } from 'react-toastify';
 import Head from 'next/head';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { CredentialResponse } from '@react-oauth/google';
 import useAuthStore from '@/store/authStore';
 
 type FormData = {
@@ -83,7 +84,7 @@ export default function SignUp() {
     }
   };
 
-  const handleGoogleSuccess = async (credentialResponse: any) => {
+  const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
     console.log('Google response:', credentialResponse);
     try {
       useAuthStore.getState().setLoading(true);
@@ -98,13 +99,13 @@ export default function SignUp() {
         username: result.user.username,
         email: result.user.email,
         role: result.user.role,
-        // Include any other user fields you need
+       
       });
       
 
       router.push('/')
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error(error.response?.data?.message || 'Google sign-in failed');
     }
     finally {

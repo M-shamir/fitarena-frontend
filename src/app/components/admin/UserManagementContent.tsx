@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useCallback } from "react";
 import api from "@/utils/api"; 
 import Image from 'next/image';
 
@@ -31,11 +31,7 @@ const UserManagementContent: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 6; 
 
-  useEffect(() => {
-    fetchUsers();
-  }, [currentPage]);
-
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
       const response = await api.get(`/admin-api/users/?page=${currentPage}&page_size=${pageSize}`);
@@ -51,7 +47,11 @@ const UserManagementContent: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage]); 
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]); 
 
   const toggleUserStatus = async (userId: number) => {
     try {

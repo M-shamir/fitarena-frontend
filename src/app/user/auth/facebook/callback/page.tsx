@@ -1,13 +1,12 @@
-// app/user/auth/facebook/callback/page.tsx
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'react-toastify';
 import api from '@/utils/api';
 import useAuthStore from '@/store/authStore';
 
-export default function FacebookCallback() {
+function CallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -35,7 +34,7 @@ export default function FacebookCallback() {
           } else {
             throw new Error('User data missing in response');
           }
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error('Facebook callback error:', err);
           toast.error(err.response?.data?.detail || 'Login failed. Please try again.');
           router.push('/user/login');
@@ -53,5 +52,13 @@ export default function FacebookCallback() {
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
       <p>Completing Facebook login...</p>
     </div>
+  );
+}
+
+export default function FacebookCallback() {
+  return (
+    <Suspense>
+      <CallbackContent />
+    </Suspense>
   );
 }
