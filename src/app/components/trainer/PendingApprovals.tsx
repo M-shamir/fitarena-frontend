@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import api from '@/utils/api';
+import { toast } from 'react-toastify';
 
 interface PendingSession {
   id: string;
@@ -152,11 +153,54 @@ export default function PendingApprovals() {
   };
 
   const handleCancel = async (id: string) => {
+    
+    const confirmCancel = await new Promise((resolve) => {
+      toast(
+        <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg max-w-md mx-auto">
+          <div className="text-sm font-medium text-white mb-3">
+            Are you sure you want to cancel this session?
+          </div>
+          <div className="flex justify-end space-x-3">
+            <button
+              onClick={() => {
+                toast.dismiss();
+                resolve(false);
+              }}
+              className="px-4 py-2 text-sm font-medium rounded-md bg-gray-700 text-gray-300 hover:bg-gray-600 transition-colors border border-gray-600"
+            >
+              No
+            </button>
+            <button
+              onClick={() => {
+                toast.dismiss();
+                resolve(true);
+              }}
+              className="px-4 py-2 text-sm font-medium rounded-md text-white bg-red-600 border border-red-500 hover:bg-red-700 transition-colors"
+            >
+              Yes, Cancel
+            </button>
+          </div>
+        </div>,
+        {
+          position: "top-center",
+          autoClose: false,
+          closeButton: false,
+          closeOnClick: false,
+          draggable: false,
+          className: '!bg-transparent !shadow-none !p-0',
+        }
+      );
+    });
+  
+    if (!confirmCancel) return;
+  
     try {
       await api.delete(`trainer/trainer-cources/${id}/`);
       setSessions((prev) => prev.filter(session => session.id !== id));
+      toast.success('Session cancelled successfully');
     } catch (error) {
       console.error("Error cancelling session:", error);
+      toast.error('Failed to cancel session');
     }
   };
 
@@ -223,20 +267,39 @@ export default function PendingApprovals() {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Thumbnail</label>
-                    <input
-                      type="file"
-                      name="thumbnail"
-                      accept="image/*"
-                      onChange={handleFormChange}
-                      className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gray-700 file:text-gray-300 hover:file:bg-gray-600"
-                    />
-                    {editingSession.thumbnail && !editFormData.thumbnail && (
-                      <div className="mt-2 text-xs text-gray-400">
-                        Current: {editingSession.thumbnail}
-                      </div>
-                    )}
-                  </div>
+  <label className="block text-sm font-medium text-gray-300 mb-1">Thumbnail</label>
+  <input
+    type="file"
+    name="thumbnail"
+    accept="image/*"
+    onChange={handleFormChange}
+    className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gray-700 file:text-gray-300 hover:file:bg-gray-600"
+  />
+  
+  {editingSession.thumbnail && (
+    <div className="mt-3">
+      <div className="flex items-center gap-3">
+        <span className="text-xs text-gray-400">Current thumbnail:</span>
+        <button 
+          type="button"
+          onClick={() => window.open(editingSession.thumbnail, '_blank')}
+          className="text-xs text-blue-400 hover:text-blue-300"
+        >
+          (View full size)
+        </button>
+      </div>
+      
+      <div className="mt-2 relative group">
+        <img 
+          src={editingSession.thumbnail} 
+          alt="Current thumbnail" 
+          className="h-24 w-24 rounded-md object-cover border border-gray-600 hover:border-gray-500 transition"
+        />
+        
+      </div>
+    </div>
+  )}
+</div>
                 </div>
                 
                 {/* Schedule & Pricing */}

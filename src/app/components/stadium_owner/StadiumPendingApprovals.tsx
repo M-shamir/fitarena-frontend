@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import api from '@/utils/api';
 import Image from 'next/image';
+import { toast } from 'react-toastify';
 
 interface PendingStadium {
   id: number;
@@ -122,11 +123,54 @@ export default function StadiumPendingApprovals() {
   };
 
   const handleCancel = async (id: number) => {
+    // Show confirmation dialog
+    const confirmCancel = await new Promise((resolve) => {
+      toast(
+        <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg max-w-md mx-auto">
+          <div className="text-sm font-medium text-white mb-3">
+            Are you sure you want to cancel this stadium?
+          </div>
+          <div className="flex justify-end space-x-3">
+            <button
+              onClick={() => {
+                toast.dismiss();
+                resolve(false);
+              }}
+              className="px-4 py-2 text-sm font-medium rounded-md bg-gray-700 text-gray-300 hover:bg-gray-600 transition-colors border border-gray-600"
+            >
+              No
+            </button>
+            <button
+              onClick={() => {
+                toast.dismiss();
+                resolve(true);
+              }}
+              className="px-4 py-2 text-sm font-medium rounded-md text-white bg-red-600 border border-red-500 hover:bg-red-700 transition-colors"
+            >
+              Yes, Cancel
+            </button>
+          </div>
+        </div>,
+        {
+          position: "top-center",
+          autoClose: false,
+          closeButton: false,
+          closeOnClick: false,
+          draggable: false,
+          className: '!bg-transparent !shadow-none !p-0',
+        }
+      );
+    });
+  
+    if (!confirmCancel) return;
+  
     try {
       await api.delete(`stadium_owner/stadiums/delete/${id}/`);
       setStadiums((prev) => prev.filter(stadium => stadium.id !== id));
+      toast.success('Stadium cancelled successfully');
     } catch (error) {
       console.error("Error cancelling stadium:", error);
+      toast.error('Failed to cancel stadium');
     }
   };
 

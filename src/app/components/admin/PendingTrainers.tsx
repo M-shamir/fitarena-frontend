@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import api from "@/utils/api"; // <-- Replaces axios import
+import api from "@/utils/api"; 
+import { toast } from "react-toastify";
 
 interface Trainer {
   id: number;
@@ -22,35 +23,84 @@ const PendingTrainers: React.FC = () => {
     try {
       const response = await api.get("/admin-api/trainers/pending/");
       setTrainers(response.data.pending_trainers || []);
-    } catch (err:unknown) {
+    } catch (err: unknown) {
       setError("Failed to fetch pending trainers");
       console.log(err);
-      
     } finally {
       setLoading(false);
     }
   };
 
-  const approveTrainer = async (trainerId: number) => {
+  const showConfirmation = async (action: 'approve' | 'reject', trainerId: number) => {
+    const actionText = action === 'approve' ? 'approve' : 'reject';
+    const actionColor = action === 'approve' ? 'green' : 'red';
+
+    const confirmAction = await new Promise((resolve) => {
+      toast(
+        <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg">
+          <div className="text-sm font-medium text-white mb-3">
+            Are you sure you want to {actionText} this trainer?
+          </div>
+          <div className="flex justify-end space-x-3">
+            <button
+              onClick={() => {
+                toast.dismiss();
+                resolve(false);
+              }}
+              className="px-4 py-2 text-sm font-medium rounded-md bg-gray-700 text-gray-300 hover:bg-gray-600 transition-colors border border-gray-600"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                toast.dismiss();
+                resolve(true);
+              }}
+              className={`px-4 py-2 text-sm font-medium rounded-md text-white transition-colors ${
+                action === 'approve' 
+                  ? 'bg-green-600 border border-green-500 hover:bg-green-700' 
+                  : 'bg-red-600 border border-red-500 hover:bg-red-700'
+              }`}
+            >
+              {action === 'approve' ? 'Approve' : 'Reject'}
+            </button>
+          </div>
+        </div>,
+        {
+          autoClose: false,
+          closeButton: false,
+          closeOnClick: false,
+          draggable: false,
+          className: '!bg-transparent !shadow-none !p-0',
+        }
+      );
+    });
+
+    if (!confirmAction) return false;
+
     try {
-      await api.post(`/admin-api/trainers/${trainerId}/approve/`);
+      if (action === 'approve') {
+        await api.post(`/admin-api/trainers/${trainerId}/approve/`);
+        toast.success('Trainer approved successfully');
+      } else {
+        await api.post(`/admin-api/trainers/${trainerId}/reject/`);
+        toast.success('Trainer rejected successfully');
+      }
       setTrainers((prev) => prev.filter((trainer) => trainer.id !== trainerId));
-    } catch (err:unknown) {
-      alert("Failed to approve trainer");
+      return true;
+    } catch (err: unknown) {
+      toast.error(`Failed to ${actionText} trainer`);
       console.log(err);
-      
+      return false;
     }
   };
 
+  const approveTrainer = async (trainerId: number) => {
+    await showConfirmation('approve', trainerId);
+  };
+
   const rejectTrainer = async (trainerId: number) => {
-    try {
-      await api.post(`/admin-api/trainers/${trainerId}/reject/`);
-      setTrainers((prev) => prev.filter((trainer) => trainer.id !== trainerId));
-    } catch (err:unknown) {
-      alert("Failed to reject trainer");
-      console.log(err);
-      
-    }
+    await showConfirmation('reject', trainerId);
   };
 
   return (

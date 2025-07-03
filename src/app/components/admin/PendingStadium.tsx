@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from 'react';
 import api from '@/utils/api';
-import { toast } from 'react-toastify';
+
 import Image from 'next/image';
+import { toast } from 'react-toastify';
 
 interface PendingStadium {
     status: string;
@@ -44,28 +45,64 @@ interface PendingStadium {
       }
     };
 
-  const handleApproveReject = async (stadiumId: number, action: 'approve' | 'reject') => {
-    if (!window.confirm(`Are you sure you want to ${action} this stadium?`)) return;
+    const handleApproveReject = async (stadiumId: number, action: 'approve' | 'reject') => {
+      const confirmAction = await new Promise((resolve) => {
+        toast(
+          <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg max-w-md mx-auto shadow-xl">
+            <div className="text-sm font-medium text-white mb-3">
+              Are you sure you want to {action} this stadium?
+            </div>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => {
+                  toast.dismiss();
+                  resolve(false);
+                }}
+                className="px-4 py-2 text-sm font-medium rounded-md bg-gray-700 text-gray-300 hover:bg-gray-600 transition-colors border border-gray-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  toast.dismiss();
+                  resolve(true);
+                }}
+                className={`px-4 py-2 text-sm font-medium rounded-md text-white transition-colors ${
+                  action === 'approve' 
+                    ? 'bg-green-600 border border-green-500 hover:bg-green-700' 
+                    : 'bg-red-600 border border-red-500 hover:bg-red-700'
+                }`}
+              >
+                {action === 'approve' ? 'Approve' : 'Reject'}
+              </button>
+            </div>
+          </div>,
+          {
+            position: "top-center",
+            autoClose: false,
+            closeButton: false,
+            closeOnClick: false,
+            draggable: false,
+            className: '!bg-transparent !shadow-none !p-0',
+           
+          }
+        );
+      });
     
-    setActionLoading(stadiumId);
-    try {
-      await api.post(`/admin-api/stadiums/${stadiumId}/${action}/`);
-      setStadiums(prev => prev.filter(stadium => stadium.id !== stadiumId));
-      toast.success(`Stadium ${action}d successfully!`);
-      
-      
-    //   if (stadiums.length <= 2 && currentPage > 1) {
-    //     setCurrentPage(prev => Math.max(1, prev - 1));
-    //   } else {
-    //     fetchPendingStadiums();
-    //   }
-    } catch (err) {
-      toast.error(`Failed to ${action} stadium. Please try again.`);
-      console.error(`Error ${action}ing stadium:`, err);
-    } finally {
-      setActionLoading(null);
-    }
-  };
+      if (!confirmAction) return;
+    
+      setActionLoading(stadiumId);
+      try {
+        await api.post(`/admin-api/stadiums/${stadiumId}/${action}/`);
+        setStadiums(prev => prev.filter(stadium => stadium.id !== stadiumId));
+        toast.success(`Stadium ${action}d successfully!`);
+      } catch (err) {
+        toast.error(`Failed to ${action} stadium. Please try again.`);
+        console.error(`Error ${action}ing stadium:`, err);
+      } finally {
+        setActionLoading(null);
+      }
+    };
 
   const formatLocation = (stadium: PendingStadium) => {
     const locationParts = [

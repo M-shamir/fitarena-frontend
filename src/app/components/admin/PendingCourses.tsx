@@ -39,22 +39,63 @@ export default function PendingCourses() {
   }, []);
 
   const handleAction = async (courseId: number, actionType: 'approve' | 'reject') => {
+    const confirmAction = await new Promise((resolve) => {
+      toast(
+        <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg">
+          <div className="text-sm font-medium text-white mb-3">
+            Are you sure you want to {actionType} this course?
+          </div>
+          <div className="flex justify-end space-x-3">
+            <button
+              onClick={() => {
+                toast.dismiss();
+                resolve(false);
+              }}
+              className="px-4 py-2 text-sm font-medium rounded-md bg-gray-700 text-gray-300 hover:bg-gray-600 transition-colors border border-gray-600"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                toast.dismiss();
+                resolve(true);
+              }}
+              className={`px-4 py-2 text-sm font-medium rounded-md text-white transition-colors ${
+                actionType === 'approve' 
+                  ? 'bg-[#22b664] border border-[#1da058] hover:bg-[#1da058]' 
+                  : 'bg-red-600 border border-red-500 hover:bg-red-700'
+              }`}
+            >
+              {actionType === 'approve' ? 'Approve' : 'Reject'}
+            </button>
+          </div>
+        </div>,
+        {
+          autoClose: false,
+          closeButton: false,
+          closeOnClick: false,
+          draggable: false,
+          className: '!bg-transparent !shadow-none !p-0',
+        }
+      );
+    });
+  
+    if (!confirmAction) return;
+  
     try {
       const endpoint = actionType === 'approve' 
         ? `/admin-api/trainers/cource/${courseId}/approve/`
         : `/admin-api/trainers/cource/${courseId}/reject/`;
-
+  
       await api.post(endpoint);
-
+  
       toast.success(`Course ${actionType === 'approve' ? 'approved' : 'rejected'} successfully!`);
-
       setCourses((prevCourses) => prevCourses.filter(course => course.id !== courseId));
     } catch (error) {
       console.error(`Error ${actionType}ing course:`, error);
       toast.error(`Failed to ${actionType} course`);
     }
   };
-
   const formatDays = (days?: string[]) => {
     if (!days) return 'N/A';
     return [...new Set(days)].join(', ');
@@ -71,7 +112,7 @@ export default function PendingCourses() {
 
   return (
     <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="top-center" autoClose={3000} />
       
       <h3 className="text-2xl font-semibold text-white mb-6">Pending Courses Approval</h3>
 

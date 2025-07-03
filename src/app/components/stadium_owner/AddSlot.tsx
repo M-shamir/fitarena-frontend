@@ -195,6 +195,8 @@ export default function StadiumApprovedSlots() {
                       {stadium.image ? (
                         <Image
                           src={stadium.image} 
+                          width={200}
+                          height={200}
                           alt={stadium.name} 
                           className="h-full w-full rounded-md object-cover"
                           onError={handleImageError}

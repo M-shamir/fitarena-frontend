@@ -1,9 +1,10 @@
 import { FiVideo, FiClock, FiCheckCircle, FiStar, FiX } from 'react-icons/fi'
 import { useState, useEffect } from 'react'
 import api from '@/utils/api'
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Image from 'next/image';
 
-import { toast } from 'react-toastify'
 
 interface LiveSession {
   id: number
@@ -112,6 +113,45 @@ const TrainerBookings = () => {
   }, [activeTab])
 
   const handleCancelCourse = async (enrollmentId: number) => {
+    // Show confirmation dialog
+    const confirmCancel = await new Promise((resolve) => {
+      toast.info(
+        <div className="p-2">
+          <div className="text-sm font-medium text-gray-800 dark:text-white mb-2">
+            Are you sure you want to cancel this course?
+          </div>
+          <div className="flex justify-end space-x-2 mt-3">
+            <button
+              onClick={() => {
+                toast.dismiss()
+                resolve(false)
+              }}
+              className="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600"
+            >
+              No
+            </button>
+            <button
+              onClick={() => {
+                toast.dismiss()
+                resolve(true)
+              }}
+              className="px-3 py-1 text-sm bg-red-600 text-white rounded-md hover:bg-red-700"
+            >
+              Yes, Cancel
+            </button>
+          </div>
+        </div>,
+        {
+          autoClose: false,
+          closeButton: false,
+          closeOnClick: false,
+          draggable: false,
+        }
+      )
+    })
+  
+    if (!confirmCancel) return
+  
     setCancellingCourse(enrollmentId)
     try {
       await api.delete(`/user/enrolled-courses/${enrollmentId}/cancel/`)
@@ -302,12 +342,12 @@ const TrainerBookings = () => {
                   <div className="flex space-x-3">
                     {course.can_cancel && (
                       <button 
-                        onClick={() => handleCancelCourse(course.id)}
-                        disabled={cancellingCourse === course.id}
-                        className="px-4 py-2 border border-red-100 dark:border-red-900/50 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition disabled:opacity-50"
-                      >
-                        {cancellingCourse === course.id ? 'Cancelling...' : 'Cancel'}
-                      </button>
+                      onClick={() => handleCancelCourse(course.id)}
+                      disabled={cancellingCourse === course.id}
+                      className="px-4 py-2 border border-red-100 dark:border-red-900/50 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition disabled:opacity-50"
+                    >
+                      {cancellingCourse === course.id ? 'Cancelling...' : 'Cancel'}
+                    </button>
                     )}
                   </div>
                 </div>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { toast} from 'react-toastify';
 import api from '@/utils/api';
 
 interface StadiumOwner {
@@ -34,15 +35,59 @@ const PendingOwners: React.FC = () => {
   };
 
   const handleApproveReject = async (ownerId: number, action: 'approve' | 'reject') => {
-    if (!window.confirm(`Are you sure you want to ${action} this stadium owner?`)) return;
-    
+    const confirmAction = await new Promise((resolve) => {
+      toast(
+        <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg max-w-md mx-auto shadow-xl">
+          <div className="text-sm font-medium text-white mb-3">
+            Are you sure you want to {action} this stadium owner?
+          </div>
+          <div className="flex justify-end space-x-3">
+            <button
+              onClick={() => {
+                toast.dismiss();
+                resolve(false);
+              }}
+              className="px-4 py-2 text-sm font-medium rounded-md bg-gray-700 text-gray-300 hover:bg-gray-600 transition-colors border border-gray-600"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                toast.dismiss();
+                resolve(true);
+              }}
+              className={`px-4 py-2 text-sm font-medium rounded-md text-white transition-colors ${
+                action === 'approve' 
+                  ? 'bg-green-600 border border-green-500 hover:bg-green-700' 
+                  : 'bg-red-600 border border-red-500 hover:bg-red-700'
+              }`}
+            >
+              {action === 'approve' ? 'Approve' : 'Reject'}
+            </button>
+          </div>
+        </div>,
+        {
+          position: "top-center",
+          autoClose: false,
+          closeButton: false,
+          closeOnClick: false,
+          draggable: false,
+          className: '!bg-transparent !shadow-none !p-0',
+          bodyClassName: '!p-0',
+        }
+      );
+    });
+  
+    if (!confirmAction) return;
+  
     setActionLoading(ownerId);
     try {
       await api.post(`/admin-api/stadium_owner/${ownerId}/${action}/`);
       setOwners(prev => prev.filter(owner => owner.id !== ownerId));
+      toast.success(`Stadium owner ${action === 'approve' ? 'approved' : 'rejected'} successfully!`);
     } catch (err) {
-      alert(`Failed to ${action} stadium owner`);
       console.error(`Error ${action}ing stadium owner:`, err);
+      toast.error(`Failed to ${action} stadium owner`);
     } finally {
       setActionLoading(null);
     }

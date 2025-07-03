@@ -74,6 +74,47 @@ const StadiumBooking = () => {
   }, [activeTab])
 
   const handleCancelBooking = async (slotbookingId: number) => {
+    // Show confirmation dialog
+    const confirmCancel = await new Promise((resolve) => {
+      toast(
+        <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg max-w-md mx-auto">
+          <div className="text-sm font-medium text-white mb-3">
+            Are you sure you want to cancel this booking?
+          </div>
+          <div className="flex justify-end space-x-3">
+            <button
+              onClick={() => {
+                toast.dismiss();
+                resolve(false);
+              }}
+              className="px-4 py-2 text-sm font-medium rounded-md bg-gray-700 text-gray-300 hover:bg-gray-600 transition-colors border border-gray-600"
+            >
+              No
+            </button>
+            <button
+              onClick={() => {
+                toast.dismiss();
+                resolve(true);
+              }}
+              className="px-4 py-2 text-sm font-medium rounded-md text-white bg-red-600 border border-red-500 hover:bg-red-700 transition-colors"
+            >
+              Yes, Cancel
+            </button>
+          </div>
+        </div>,
+        {
+          position: "top-center",
+          autoClose: false,
+          closeButton: false,
+          closeOnClick: false,
+          draggable: false,
+          className: '!bg-transparent !shadow-none !p-0',
+        }
+      );
+    });
+  
+    if (!confirmCancel) return;
+  
     setCancellingBooking(slotbookingId);
     try {
       await api.post(`/user/bookings/${slotbookingId}/cancel/`);
