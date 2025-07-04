@@ -33,6 +33,7 @@ const ProfilePage = () => {
         // Fetch profile only
         const profileResponse = await api.get('/user/profile/')
         const profile = profileResponse.data.profile
+       
         
         // Set default user data
         const defaultUserData = {
