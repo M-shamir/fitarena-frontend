@@ -8,12 +8,16 @@ const api = axios.create({
 let isRefreshing = false;
 
 // Queue for requests that fail during token refresh
-let failedQueue: any[] = [];
+type FailedRequest = {
+  resolve: (value?: unknown) => void;
+  reject: (reason?: unknown) => void;
+};
+let failedQueue: FailedRequest[] = [];
 
 /**
  * Retry all requests waiting in the queue after refresh token is done
  */
-const processQueue = (error: any, token: string | null = null) => {
+const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach(promise => {
     if (error) promise.reject(error);
     else promise.resolve(token);

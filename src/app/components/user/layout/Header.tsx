@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiMenu, FiX, FiUser, FiBell } from 'react-icons/fi';
 import Link from 'next/link';
 import useAuthStore from '@/store/authStore';
-import { setupNotificationSocket, closeNotificationSocket } from '@/utils/websocket';
+import { setupNotificationSocket} from '@/utils/websocket';
 import api from '@/utils/api';
 
 interface Notification {
@@ -21,7 +21,7 @@ const navItems = [
   { name: 'Host', href: '/host' },
 ];
 
-export default function Header({ darkMode, setDarkMode }: { darkMode: boolean; setDarkMode: (mode: boolean) => void }) {
+export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
