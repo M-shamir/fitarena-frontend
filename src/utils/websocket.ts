@@ -7,7 +7,8 @@ export const setupNotificationSocket = (showNotification: (msg: string) => void)
   if (socket) return socket; // Return existing connection if it exists
 
   
-  socket = new WebSocket(`ws://localhost/ws/notifications/`);
+  const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost/ws/notifications/';
+  socket = new WebSocket(wsUrl);
 
   socket.onopen = () => {
     console.log('✅ WebSocket connected');
