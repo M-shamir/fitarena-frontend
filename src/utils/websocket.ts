@@ -28,7 +28,7 @@ export const setupNotificationSocket = (showNotification: (msg: string) => void)
   socket.onclose = (event) => {
     console.log('🔒 WebSocket closed', event);
     if (reconnectAttempts < maxReconnectAttempts) {
-      const delay = Math.min(1000 * Math.pow(2, reconnectAttempts), 30000); // Exponential backoff
+      const delay = Math.min(1000 * Math.pow(2, reconnectAttempts), 30000); 
       setTimeout(() => {
         reconnectAttempts++;
         setupNotificationSocket(showNotification);
