@@ -247,12 +247,12 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
               >
                 View Profile
               </button>
-              {/* <button 
+              <button 
                 onClick={() => setActiveView('editProfile')}
                 className={`block w-full text-left p-2 rounded-lg ${activeView === 'editProfile' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}
               >
                 Edit Profile
-              </button> */}
+              </button>
               {/* <button 
                 onClick={() => setActiveView('changePassword')}
                 className={`block w-full text-left p-2 rounded-lg ${activeView === 'changePassword' ? 'bg-gray-700' : 'hover:bg-gray-700'} transition duration-200 text-sm`}

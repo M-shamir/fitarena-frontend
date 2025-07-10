@@ -15,13 +15,25 @@ import useAuthStore from "@/store/authStore";
 import { motion, AnimatePresence } from 'framer-motion';
 import { setupNotificationSocket } from '@/utils/websocket';
 import api from '@/utils/api';
+import TrainerProfileEdit from '@/app/components/trainer/TrainerProfileEdit';
 
 interface Notification {
-  id: string;
-  text: string;
+  id: number;
+  message: string;
+  created_at: string;
   time: string;
   read: boolean;
+  related_url: string | null;
 }
+interface WebSocketNotification {
+  id: number;
+  message: string;
+  created_at: string;
+  time: string;
+  read: boolean;
+  related_url: string | null;
+}
+
 
 export default function TrainerDashboard() {
   const [activeView, setActiveView] = useState('dashboardOverview');
@@ -51,12 +63,14 @@ export default function TrainerDashboard() {
     fetchNotifications();
 
     // Setup WebSocket connection
-    const handleNewNotification = (message: string) => {
+    const handleNewNotification = (notificationData: WebSocketNotification) => {
       const newNotification: Notification = {
-        id: Date.now().toString(),
-        text: message,
-        time: 'Just now',
-        read: false
+        id: notificationData.id,
+        message: notificationData.message,
+        created_at: notificationData.created_at,
+        time: notificationData.time,
+        read: notificationData.read,
+        related_url: notificationData.related_url
       };
       setNotifications(prev => [newNotification, ...prev]);
     };
@@ -68,7 +82,7 @@ export default function TrainerDashboard() {
     };
   }, [user]);
 
-  const markAsRead = async (id: string) => {
+  const markAsRead = async (id: number) => {
     try {
       await api.post(`/notifications/${id}/read/`);
       setNotifications(prev => 
@@ -85,6 +99,14 @@ export default function TrainerDashboard() {
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
     } catch (error) {
       console.error('Failed to mark all notifications as read:', error);
+    }
+  };
+
+  const handleNotificationClick = (notification: Notification) => {
+    markAsRead(notification.id);
+    if (notification.related_url) {
+      // Handle navigation to related URL if needed
+      // window.location.href = notification.related_url;
     }
   };
 
@@ -140,9 +162,9 @@ export default function TrainerDashboard() {
                             <div 
                               key={notification.id}
                               className={`p-3 border-b border-gray-700 hover:bg-gray-700 cursor-pointer ${!notification.read ? 'bg-gray-750' : ''}`}
-                              onClick={() => markAsRead(notification.id)}
+                              onClick={() => handleNotificationClick(notification)}
                             >
-                              <p className="text-sm">{notification.text}</p>
+                              <p className="text-sm">{notification.message}</p>
                               <p className="text-xs text-gray-400 mt-1">{notification.time}</p>
                             </div>
                           ))
@@ -168,20 +190,19 @@ export default function TrainerDashboard() {
             </div>
           </header>
 
-        <main className="flex-1 overflow-y-auto p-6 bg-gray-900">
-          {activeView === 'dashboardOverview' && <DashboardOverview />}
-          {activeView === 'addSession' && <AddSessionForm setActiveView={setActiveView} />}
-          {activeView === 'pendingApprovals' && <PendingApprovals />}
-          {activeView === 'approvedSessions' && <ApprovedSessions />}
-          {activeView === 'viewProfile' && <TrainerProfileView/>}
-          {activeView === 'courseEnrollments' && <CourseEnrollments/>}
-
-          {activeView === 'liveSessions' && <LiveSessions/>}
-          {activeView === 'paymentHistory' && <PaymentHistory/>}
-          
-        </main>
+          <main className="flex-1 overflow-y-auto p-6 bg-gray-900">
+            {activeView === 'dashboardOverview' && <DashboardOverview />}
+            {activeView === 'addSession' && <AddSessionForm setActiveView={setActiveView} />}
+            {activeView === 'pendingApprovals' && <PendingApprovals />}
+            {activeView === 'approvedSessions' && <ApprovedSessions />}
+            {activeView === 'viewProfile' && <TrainerProfileView/>}
+            {activeView === 'courseEnrollments' && <CourseEnrollments/>}
+            {activeView === 'liveSessions' && <LiveSessions/>}
+            {activeView === 'paymentHistory' && <PaymentHistory/>}
+            {activeView === 'editProfile' && <TrainerProfileEdit/>}
+          </main>
+        </div>
       </div>
-    </div>
     </ProtectedRoute>
   );
 }

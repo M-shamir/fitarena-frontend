@@ -12,19 +12,29 @@ import PendingStadiums from '@/app/components/admin/PendingStadium';
 import ApprovedStadiums from '@/app/components/admin/ApprovedStadiums';
 import ApprovedTrainerCourses from '@/app/components/admin/ApprovedTrainerCources';
 import api from '@/utils/api';
-import { setupNotificationSocket} from '@/utils/websocket';
+import { setupNotificationSocket } from '@/utils/websocket';
 import useAuthStore from '@/store/authStore';
 
 interface Notification {
-  id: string;
-  text: string;
+  id: number;
+  message: string;
+  created_at: string;
   time: string;
   read: boolean;
+  related_url: string | null;
+}
+interface WebSocketNotification {
+  id: number;
+  message: string;
+  created_at: string;
+  time: string;
+  read: boolean;
+  related_url: string | null;
 }
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const {  isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   
   const [activePage, setActivePage] = useState('dashboard');
   const [trainerDropdownOpen, setTrainerDropdownOpen] = useState(false);
@@ -50,12 +60,14 @@ export default function AdminDashboard() {
     fetchNotifications();
 
     // Setup WebSocket connection
-    const handleNewNotification = (message: string) => {
+    const handleNewNotification = (notificationData: WebSocketNotification) => {
       const newNotification: Notification = {
-        id: Date.now().toString(),
-        text: message,
-        time: 'Just now',
-        read: false
+        id: notificationData.id,
+        message: notificationData.message,
+        created_at: notificationData.created_at,
+        time: notificationData.time,
+        read: notificationData.read,
+        related_url: notificationData.related_url
       };
       setNotifications(prev => [newNotification, ...prev]);
     };
@@ -89,7 +101,7 @@ export default function AdminDashboard() {
     setStadiumDropdownOpen(!stadiumDropdownOpen);
   };
 
-  const markAsRead = async (id: string) => {
+  const markAsRead = async (id: number) => {
     try {
       await api.post(`/notifications/${id}/read/`);
       setNotifications(prev => 
@@ -102,7 +114,7 @@ export default function AdminDashboard() {
 
   const markAllAsRead = async () => {
     try {
-      await api.post('/notifications/mark-all-read/');
+      await api.post('/notifications/read-all/');
       setNotifications(prev => 
         prev.map(n => ({ ...n, read: true }))
       );
@@ -396,7 +408,7 @@ export default function AdminDashboard() {
                             >
                               <div className="p-3 hover:bg-gray-700">
                                 <div className="flex justify-between items-start">
-                                  <p className="text-sm text-gray-300">{notification.text}</p>
+                                  <p className="text-sm text-gray-300">{notification.message}</p>
                                   {!notification.read && (
                                     <button
                                       onClick={() => markAsRead(notification.id)}

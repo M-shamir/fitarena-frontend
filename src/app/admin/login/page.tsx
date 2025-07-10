@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { z } from "zod";
 import { useRouter } from 'next/navigation';
 import api from '@/utils/api'; 
+import useAuthStore from '@/store/authStore';
 
 
 const loginSchema = z.object({
@@ -58,9 +59,18 @@ export default function AdminLogin() {
         if (response.data.access_token) {
           localStorage.setItem('adminToken', response.data.access_token);
         }
+        const user = response.data.user;
+
+        if (user) {
+          useAuthStore.getState().login({
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+          });
+        }
+
         setSuccessMessage(response.data.message || 'Login successful');
-        
-        // Redirect to admin dashboard
         router.push('/admin/dashboard');
       }
     } catch (error: unknown) {

@@ -19,6 +19,8 @@ interface Payment {
   slot_date: string;
   start_time: string;
   end_time: string;
+  refund_amount?: number;
+  refunded_at?: string;
 }
 
 interface EarningsSummary {
@@ -36,12 +38,13 @@ const StadiumPaymentHistory = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState<'completed' | 'refunded'>('completed');
 
   useEffect(() => {
     const fetchPaymentHistory = async () => {
       try {
         setLoading(true);
-        const response = await api.get('/stadium_owner/payment-history/');
+        const response = await api.get(`/stadium_owner/payment-history/?filter=${activeTab}`);
         setPayments(response.data.payment_history);
         setEarnings(response.data.earnings_summary);
         setLoading(false);
@@ -53,7 +56,7 @@ const StadiumPaymentHistory = () => {
     };
 
     fetchPaymentHistory();
-  }, []);
+  }, [activeTab]);
 
   const generatePDF = async () => {
     try {
@@ -66,7 +69,7 @@ const StadiumPaymentHistory = () => {
       
       // Title
       doc.setFontSize(18);
-      doc.text('Stadium Booking History Report', 14, 20);
+      doc.text(`Stadium Booking History Report (${activeTab === 'completed' ? 'Completed' : 'Refunded'})`, 14, 20);
       
       // Summary Section
       doc.setFontSize(12);
@@ -94,15 +97,27 @@ const StadiumPaymentHistory = () => {
       // Transactions Table
       autoTable.default(doc, {
         startY: (doc as unknown).lastAutoTable.finalY + 20,
-        head: [['Date', 'Stadium', 'Slot Details', 'Customer', 'Amount (₹)', 'Status']],
-        body: payments.map(payment => [
-          format(new Date(payment.payment_date), 'dd MMM yyyy'), 
-          payment.stadium_name,
-          `${format(new Date(payment.slot_date), 'dd MMM yyyy')}\n${payment.start_time} - ${payment.end_time}`,
-          payment.customer_email,
-          payment.amount.toLocaleString('en-IN'),
-          'Completed'
-        ]),
+        head: activeTab === 'completed' 
+          ? [['Date', 'Stadium', 'Slot Details', 'Customer', 'Amount (₹)', 'Status']]
+          : [['Date', 'Stadium', 'Slot Details', 'Customer', 'Amount (₹)', 'Refunded At', 'Refund Amount']],
+        body: activeTab === 'completed' 
+          ? payments.map(payment => [
+              format(new Date(payment.payment_date), 'dd MMM yyyy'), 
+              payment.stadium_name,
+              `${format(new Date(payment.slot_date), 'dd MMM yyyy')}\n${payment.start_time} - ${payment.end_time}`,
+              payment.customer_email,
+              payment.amount.toLocaleString('en-IN'),
+              'Completed'
+            ])
+          : payments.map(payment => [
+              format(new Date(payment.payment_date), 'dd MMM yyyy'), 
+              payment.stadium_name,
+              `${format(new Date(payment.slot_date), 'dd MMM yyyy')}\n${payment.start_time} - ${payment.end_time}`,
+              payment.customer_email,
+              payment.amount.toLocaleString('en-IN'),
+              payment.refunded_at ? format(new Date(payment.refunded_at), 'dd MMM yyyy hh:mm a') : 'N/A',
+              payment.refund_amount ? payment.refund_amount.toLocaleString('en-IN') : 'N/A'
+            ]),
         theme: 'grid',
         headStyles: {
           fillColor: [34, 182, 100],
@@ -112,14 +127,24 @@ const StadiumPaymentHistory = () => {
           overflow: 'linebreak',
           cellWidth: 'wrap'
         },
-        columnStyles: {
-          0: { cellWidth: 25 },
-          1: { cellWidth: 40 },
-          2: { cellWidth: 40 },
-          3: { cellWidth: 45 },
-          4: { cellWidth: 25 },
-          5: { cellWidth: 20 }
-        }
+        columnStyles: activeTab === 'completed' 
+          ? {
+              0: { cellWidth: 25 },
+              1: { cellWidth: 40 },
+              2: { cellWidth: 40 },
+              3: { cellWidth: 45 },
+              4: { cellWidth: 25 },
+              5: { cellWidth: 20 }
+            }
+          : {
+              0: { cellWidth: 25 },
+              1: { cellWidth: 30 },
+              2: { cellWidth: 35 },
+              3: { cellWidth: 40 },
+              4: { cellWidth: 25 },
+              5: { cellWidth: 30 },
+              6: { cellWidth: 25 }
+            }
       });
       
       // Footer
@@ -135,7 +160,7 @@ const StadiumPaymentHistory = () => {
         );
       }
       
-      doc.save(`stadium_booking_history_${new Date().toISOString().slice(0, 10)}.pdf`);
+      doc.save(`stadium_booking_history_${activeTab}_${new Date().toISOString().slice(0, 10)}.pdf`);
     } catch (err) {
       console.error('PDF generation failed:', err);
       setError('Failed to generate PDF');
@@ -168,6 +193,22 @@ const StadiumPaymentHistory = () => {
           className="flex items-center gap-2 px-4 py-2 bg-[#22b664] hover:bg-[#1da058] text-white rounded-md transition-colors"
         >
           <FaFilePdf /> Download PDF
+        </button>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex border-b border-gray-600 mb-6">
+        <button
+          className={`px-4 py-2 font-medium text-sm ${activeTab === 'completed' ? 'text-[#22b664] border-b-2 border-[#22b664]' : 'text-gray-400 hover:text-white'}`}
+          onClick={() => setActiveTab('completed')}
+        >
+          Completed
+        </button>
+        <button
+          className={`px-4 py-2 font-medium text-sm ${activeTab === 'refunded' ? 'text-[#22b664] border-b-2 border-[#22b664]' : 'text-gray-400 hover:text-white'}`}
+          onClick={() => setActiveTab('refunded')}
+        >
+          Refunded
         </button>
       </div>
       
@@ -239,7 +280,7 @@ const StadiumPaymentHistory = () => {
         <div className="p-4 border-b border-gray-600 flex justify-between items-center">
           <h2 className="text-lg font-semibold text-white flex items-center">
             <FaHistory className="mr-2 text-[#22b664]" />
-            Booking History
+            {activeTab === 'completed' ? 'Completed Bookings' : 'Refunded Bookings'}
           </h2>
           <p className="text-sm text-gray-300">
             {payments.length} booking{payments.length !== 1 ? 's' : ''}
@@ -255,6 +296,12 @@ const StadiumPaymentHistory = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Slot Details</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Customer</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Amount</th>
+                {activeTab === 'refunded' && (
+                  <>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Refunded At</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Refund Amount</th>
+                  </>
+                )}
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
               </tr>
             </thead>
@@ -294,17 +341,39 @@ const StadiumPaymentHistory = () => {
                         {payment.amount.toLocaleString('en-IN')}
                       </div>
                     </td>
+                    {activeTab === 'refunded' && (
+                      <>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-white">
+                            {payment.refunded_at ? format(new Date(payment.refunded_at), 'dd MMM yyyy') : 'N/A'}
+                          </div>
+                          <div className="text-sm text-gray-400">
+                            {payment.refunded_at ? format(new Date(payment.refunded_at), 'hh:mm a') : ''}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-white">
+                            <FaRupeeSign className="inline mr-1" />
+                            {payment.refund_amount ? payment.refund_amount.toLocaleString('en-IN') : 'N/A'}
+                          </div>
+                        </td>
+                      </>
+                    )}
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-500/20 text-green-400">
-                        Completed
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        activeTab === 'completed' 
+                          ? 'bg-green-500/20 text-green-400' 
+                          : 'bg-red-500/20 text-red-400'
+                      }`}>
+                        {activeTab === 'completed' ? 'Completed' : 'Refunded'}
                       </span>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-400">
-                    No booking history found
+                  <td colSpan={activeTab === 'completed' ? 6 : 8} className="px-6 py-4 text-center text-sm text-gray-400">
+                    No {activeTab} bookings found
                   </td>
                 </tr>
               )}

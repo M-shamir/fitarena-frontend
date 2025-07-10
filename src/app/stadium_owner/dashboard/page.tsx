@@ -16,10 +16,21 @@ import api from '@/utils/api';
 import useAuthStore from "@/store/authStore";
 
 interface Notification {
-  id: string;
-  text: string;
+  id: number;
+  message: string;
+  created_at: string;
   time: string;
   read: boolean;
+  related_url: string | null;
+}
+
+interface WebSocketNotification {
+  id: number;
+  message: string;
+  created_at: string;
+  time: string;
+  read: boolean;
+  related_url: string | null;
 }
 
 export default function OwnerDashboard() {
@@ -40,8 +51,8 @@ export default function OwnerDashboard() {
     // Fetch initial notifications
     const fetchNotifications = async () => {
       try {
-        const response = await api.get('/notifications/');
-        setNotifications(response.data);
+        const response = await api.get<{ data: Notification[] }>('/notifications/');
+        setNotifications(response.data.data);
       } catch (error) {
         console.error('Failed to fetch notifications:', error);
       }
@@ -50,24 +61,25 @@ export default function OwnerDashboard() {
     fetchNotifications();
 
     // Setup WebSocket connection
-    const handleNewNotification = (message: string) => {
+    const handleNewNotification = (notificationData: WebSocketNotification) => {
       const newNotification: Notification = {
-        id: Date.now().toString(),
-        text: message,
-        time: 'Just now',
-        read: false
+        id: notificationData.id,
+        message: notificationData.message,
+        created_at: notificationData.created_at,
+        time: notificationData.time,
+        read: notificationData.read,
+        related_url: notificationData.related_url
       };
       setNotifications(prev => [newNotification, ...prev]);
     };
 
     setupNotificationSocket(handleNewNotification);
-
     return () => {
       // Cleanup if needed
     };
   }, [user]);
 
-  const markAsRead = async (id: string) => {
+  const markAsRead = async (id: number) => {
     try {
       await api.post(`/notifications/${id}/read/`);
       setNotifications(prev => 
@@ -84,6 +96,14 @@ export default function OwnerDashboard() {
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
     } catch (error) {
       console.error('Failed to mark all notifications as read:', error);
+    }
+  };
+
+  const handleNotificationClick = (notification: Notification) => {
+    markAsRead(notification.id);
+    if (notification.related_url) {
+      // Handle navigation to related URL if needed
+      // window.location.href = notification.related_url;
     }
   };
 
@@ -138,9 +158,9 @@ export default function OwnerDashboard() {
                           <div 
                             key={notification.id}
                             className={`p-3 border-b border-gray-700 hover:bg-gray-700 cursor-pointer ${!notification.read ? 'bg-gray-750' : ''}`}
-                            onClick={() => markAsRead(notification.id)}
+                            onClick={() => handleNotificationClick(notification)}
                           >
-                            <p className="text-sm">{notification.text}</p>
+                            <p className="text-sm">{notification.message}</p>
                             <p className="text-xs text-gray-400 mt-1">{notification.time}</p>
                           </div>
                         ))
@@ -166,47 +186,17 @@ export default function OwnerDashboard() {
           </div>
         </header>
 
-
         <main className="flex-1 overflow-y-auto p-6 bg-gray-900">
           {activeView === 'dashboardOverview' && <StadiumOwnerDashboard />}
-          
-
           {activeView === 'addStadium' && <AddStadiumForm setActiveView={setActiveView} />}
           {activeView === 'pendingstadiums' && <StadiumPendingApprovals />}
-          
-          
-         {activeView === 'viewStadiums' && <ApprovedStadiums />}
-          {/* {activeView === 'viewStadiums' && <ViewStadiums />}
-          {activeView === 'editStadium' && <EditStadium />}
-          {activeView === 'stadiumVerification' && <StadiumVerification />} */}
-          
-           {activeView === 'addSlot' && <StadiumApprovedSlots />}
-           {activeView === 'bookingHistory' && <BookingHistory />}
-           {activeView === 'paymentStatus' && <StadiumPaymentHistory />}
-           {activeView === 'profileSettings' && <StadiumOwnerProfile />}
-          
-          {/* {activeView === 'addSlot' && <AddSlotForm />}
-          {activeView === 'manageSlots' && <ManageSlots />}
-          {activeView === 'slotBookingSummary' && <SlotBookingSummary />}
-          
-
-          
-          
-          
-          {activeView === 'upcomingBookings' && <UpcomingBookings />}
-          
-      
-          
-          
-          {activeView === 'supportChat' && <SupportChat />}
-          {activeView === 'rejectionReasons' && <RejectionReasons />}
-          {activeView === 'raiseComplaint' && <RaiseComplaint />}
-          
-          
-          {activeView === 'notificationSettings' && <NotificationSettings />} */}
+          {activeView === 'viewStadiums' && <ApprovedStadiums />}
+          {activeView === 'addSlot' && <StadiumApprovedSlots />}
+          {activeView === 'bookingHistory' && <BookingHistory />}
+          {activeView === 'paymentStatus' && <StadiumPaymentHistory />}
+          {activeView === 'profileSettings' && <StadiumOwnerProfile />}
         </main>
       </div>
     </div>
-   
   );
 }
