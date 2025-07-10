@@ -8,7 +8,8 @@ const nextConfig: NextConfig = {
       'plus.unsplash.com',
       'source.unsplash.com',
       'www.istockphoto.com',
-      'fitarena.s3.amazonaws.com'
+      'fitarena.s3.amazonaws.com',
+      'fitarenaproject.s3.amazonaws.com' 
     ],
   },
   typescript: {
