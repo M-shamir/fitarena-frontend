@@ -50,13 +50,18 @@ export default function OwnerDashboard() {
 
     // Fetch initial notifications
     const fetchNotifications = async () => {
-      try {
-        const response = await api.get<{ data: Notification[] }>('/notifications/');
-        setNotifications(response.data.data);
-      } catch (error) {
-        console.error('Failed to fetch notifications:', error);
-      }
-    };
+  try {
+    const response = await api.get<{ data: Notification[] } | Notification[]>('/notifications/');
+    // Handle both possible response structures
+    const data = Array.isArray(response.data) 
+      ? response.data 
+      : response.data?.data || [];
+    setNotifications(data);
+  } catch (error) {
+    console.error('Failed to fetch notifications:', error);
+    setNotifications([]); // Ensure it's set to empty array on error
+  }
+};
 
     fetchNotifications();
 
