@@ -4,14 +4,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiMenu, FiX, FiUser, FiBell } from 'react-icons/fi';
 import Link from 'next/link';
 import useAuthStore from '@/store/authStore';
-import { setupNotificationSocket} from '@/utils/websocket';
+import { setupNotificationSocket } from '@/utils/websocket';
 import api from '@/utils/api';
 
 interface Notification {
-  id: string;
-  text: string;
+  id: number;
+  message: string;
+  created_at: string;
   time: string;
   read: boolean;
+  related_url: string | null;
 }
 
 const navItems = [
@@ -44,13 +46,7 @@ export default function Header() {
     fetchNotifications();
 
     // Setup WebSocket connection
-    const handleNewNotification = (message: string) => {
-      const newNotification: Notification = {
-        id: Date.now().toString(),
-        text: message,
-        time: 'Just now',
-        read: false
-      };
+    const handleNewNotification = (newNotification: Notification) => {
       setNotifications(prev => [newNotification, ...prev]);
     };
 
@@ -62,7 +58,14 @@ export default function Header() {
     };
   }, [isAuthenticated]);
 
-  const markAsRead = async (id: string) => {
+  const handleNotificationClick = (notification: Notification) => {
+    markAsRead(notification.id);
+    if (notification.related_url) {
+      window.location.href = notification.related_url;
+    }
+  };
+
+  const markAsRead = async (id: number) => {
     try {
       await api.post(`/notifications/${id}/read/`);
       setNotifications(prev => 
@@ -81,6 +84,7 @@ export default function Header() {
       console.error('Failed to mark all notifications as read:', error);
     }
   };
+
   return (
     <nav className="fixed w-full z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-sm">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -129,50 +133,51 @@ export default function Header() {
               </button>
 
               <AnimatePresence>
-        {showNotifications && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="absolute right-0 mt-2 w-72 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-50"
-          >
-            <div className="p-3 border-b border-gray-200 dark:border-gray-700">
-              <h3 className="font-semibold text-gray-800 dark:text-white">Notifications</h3>
-            </div>
-            <div className="max-h-80 overflow-y-auto">
-              {notifications.length > 0 ? (
-                notifications.map((notification) => (
-                  <div
-                    key={notification.id}
-                    onClick={() => markAsRead(notification.id)}
-                    className={`p-3 border-b border-gray-100 dark:border-gray-700 cursor-pointer ${
-                      !notification.read ? 'bg-green-50 dark:bg-gray-700' : ''
-                    }`}
+                {showNotifications && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute right-0 mt-2 w-72 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-50"
                   >
-                    <p className="text-sm text-gray-700 dark:text-gray-200">{notification.text}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{notification.time}</p>
-                  </div>
-                ))
-              ) : (
-                <div className="p-4 text-center text-gray-500 dark:text-gray-400">
-                  No notifications yet
-                </div>
-              )}
+                    <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+                      <h3 className="font-semibold text-gray-800 dark:text-white">Notifications</h3>
+                    </div>
+                    <div className="max-h-80 overflow-y-auto">
+                      {notifications.length > 0 ? (
+                        notifications.map((notification) => (
+                          <div
+                            key={notification.id}
+                            onClick={() => handleNotificationClick(notification)}
+                            className={`p-3 border-b border-gray-100 dark:border-gray-700 cursor-pointer ${
+                              !notification.read ? 'bg-green-50 dark:bg-gray-700' : ''
+                            }`}
+                          >
+                            <p className="text-sm text-gray-700 dark:text-gray-200">{notification.message}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                              {notification.time || new Date(notification.created_at).toLocaleTimeString()}
+                            </p>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+                          No notifications yet
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-2 border-t border-gray-200 dark:border-gray-700 text-center">
+                      <button 
+                        onClick={markAllAsRead}
+                        className="text-sm text-green-500 hover:text-green-600 dark:hover:text-green-400"
+                      >
+                        Mark all as read
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-            <div className="p-2 border-t border-gray-200 dark:border-gray-700 text-center">
-              <button 
-                onClick={markAllAsRead}
-                className="text-sm text-green-500 hover:text-green-600 dark:hover:text-green-400"
-              >
-                Mark all as read
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-            </div>
-
 
             {isAuthenticated ? (
               <Link href="/user/profile">
@@ -250,7 +255,6 @@ export default function Header() {
                   )}
                 </button>
 
-
                 {isAuthenticated ? (
                   <Link 
                     href="/user/profile"
@@ -277,40 +281,42 @@ export default function Header() {
 
               {/* Mobile notifications dropdown */}
               {showNotifications && (
-  <div className="mt-2 bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
-    <div className="p-3 border-b border-gray-200 dark:border-gray-700">
-      <h3 className="font-semibold text-gray-800 dark:text-white">Notifications</h3>
-    </div>
-    <div className="max-h-60 overflow-y-auto">
-      {notifications.length > 0 ? (
-        notifications.map((notification) => (
-          <div
-            key={notification.id}
-            onClick={() => markAsRead(notification.id)}
-            className={`p-3 border-b border-gray-100 dark:border-gray-700 cursor-pointer ${
-              !notification.read ? 'bg-green-50 dark:bg-gray-700' : ''
-            }`}
-          >
-            <p className="text-sm text-gray-700 dark:text-gray-200">{notification.text}</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{notification.time}</p>
-          </div>
-        ))
-      ) : (
-        <div className="p-4 text-center text-gray-500 dark:text-gray-400">
-          No notifications yet
-        </div>
-      )}
-    </div>
-    <div className="p-2 border-t border-gray-200 dark:border-gray-700 text-center">
-      <button 
-        onClick={markAllAsRead}
-        className="text-sm text-green-500 hover:text-green-600 dark:hover:text-green-400"
-      >
-        Mark all as read
-      </button>
-    </div>
-  </div>
-)}
+                <div className="mt-2 bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+                  <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+                    <h3 className="font-semibold text-gray-800 dark:text-white">Notifications</h3>
+                  </div>
+                  <div className="max-h-60 overflow-y-auto">
+                    {notifications.length > 0 ? (
+                      notifications.map((notification) => (
+                        <div
+                          key={notification.id}
+                          onClick={() => handleNotificationClick(notification)}
+                          className={`p-3 border-b border-gray-100 dark:border-gray-700 cursor-pointer ${
+                            !notification.read ? 'bg-green-50 dark:bg-gray-700' : ''
+                          }`}
+                        >
+                          <p className="text-sm text-gray-700 dark:text-gray-200">{notification.message}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            {notification.time || new Date(notification.created_at).toLocaleTimeString()}
+                          </p>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+                        No notifications yet
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-2 border-t border-gray-200 dark:border-gray-700 text-center">
+                    <button 
+                      onClick={markAllAsRead}
+                      className="text-sm text-green-500 hover:text-green-600 dark:hover:text-green-400"
+                    >
+                      Mark all as read
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </motion.div>
         )}
