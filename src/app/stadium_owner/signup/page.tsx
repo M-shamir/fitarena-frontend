@@ -4,6 +4,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { log } from 'console';
 
 type FormData = {
   username: string;
@@ -107,7 +108,7 @@ export default function StadiumOwnerSignUp() {
       documents.forEach(file => {
         apiData.append('documents', file);
       });
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/stadium_owner/auth/signup`,  apiData, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}stadium_owner/auth/signup`,  apiData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         },
@@ -128,8 +129,14 @@ export default function StadiumOwnerSignUp() {
     } catch (error) {
       setIsUploading(false);
       if (axios.isAxiosError(error)) {
-        const responseData = error.response?.data;
+        const responseData = error.response.data;
+        console.log(responseData);
+        
+
+        
         if (responseData) {
+            const formFieldErrors: Record<string, string> = {};
+
           if (responseData.email && Array.isArray(responseData.email)) {
             setErrorMessage(responseData.email[0]);
           } else if (responseData.message) {
